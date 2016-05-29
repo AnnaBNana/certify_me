@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Certify Me</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='../static/css/normalize.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='../static/css/skeleton.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='../static/css/style.css') }}">
+    <link href='https://fonts.googleapis.com/css?family=Raleway' rel='stylesheet' type='text/css'>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.4/jquery.min.js"></script>
+    <script type="text/javascript">
+      $(document).ready(function() {
+        $('.send').click(function() {
+          $('.success').css('display', 'block')
+        });
+        $('.dismiss').click(function() {
+          $('.success').css('display', 'none');
+        });
+      });
+    </script>
+  </head>
+  <body>
+    <h1 class="heading">Attendees</h1>
+    <div class="container login_container">
+      <div class="row offset-by-one eleven columns">
+        <div class="nine columns">
+          <input type="checkbox" name="option1" value="user" checked> <a href="view">User name</a> email address
+        </div>
+        <a href="/edit"><button type="button" name="button">edit email</button></a>
+      </div>
+      <div class="row offset-by-one eleven columns">
+        <div class="nine columns">
+          <input type="checkbox" name="option2" value="user" checked> <a href="view">User name</a> email address
+        </div>
+        <a href="/edit"><button type="button" name="button">edit email</button></a>
+      </div>
+      <div class="row offset-by-one eleven columns">
+        <div class="nine columns">
+          <input type="checkbox" name="option2" value="user" checked> <a href="view">User name</a> email address
+        </div>
+        <a href="/edit"><button type="button" name="button">edit email</button></a>
+      </div>
+      <div class="row offset-by-one eleven columns">
+        <div class="nine columns">
+          <input type="checkbox" name="option2" value="user" checked> <a href="view">User name</a> email address
+        </div>
+        <a href="/edit"><button type="button" name="button">edit email</button></a>
+      </div>
+      <div class="row offset-by-one eleven columns">
+        <div class="nine columns">
+          <input type="checkbox" name="option2" value="user" checked> <a href="view">User name</a> email address
+        </div>
+        <a href="/edit"><button type="button" name="button">edit email</button></a>
+      </div>
+      <div class="row offset-by-one eleven columns">
+        <div class="nine columns">
+          <input type="checkbox" name="option2" value="user" checked> <a href="view">User name</a> email address
+        </div>
+        <a href="/edit"><button type="button" name="button">edit email</button></a>
+      </div>
+      <div class="row offset-by-one eleven columns">
+        <div class="nine columns">
+          <input type="checkbox" name="option2" value="user" checked> <a href="view">User name</a> email address
+        </div>
+        <a href="/edit"><button type="button" name="button">edit email</button></a>
+      </div>
+      <div class="row offset-by-one eleven columns">
+        <div class="nine columns">
+          <input type="checkbox" name="option2" value="user" checked> <a href="view">User name</a> email address
+        </div>
+        <a href="/edit"><button type="button" name="button">edit email</button></a>
+      </div>
+    </div>
+    <div class="logout_btn">
+      <a href="/"><button type="button">log me out</button></a>
+    </div>
+    <div class="success">
+      <p>your emails have been sent!</p>
+      <button type="button" class="dismiss">ok</button>
+    </div>
+  </body>
+</html>

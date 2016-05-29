@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Certify Me!</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='../static/css/normalize.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='../static/css/skeleton.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='../static/css/style.css') }}">
+    <link href='https://fonts.googleapis.com/css?family=Raleway' rel='stylesheet' type='text/css'>
+  </head>
+  <body>
+    <div class="heading">
+      <h1>Certify Me</h1>
+    </div>
+    <div class="container login_container">
+      <div class="row offset-by-one eleven columns">
+        <label>email:</label>
+        <input class="ten columns" type="text" placeholder="email">
+      </div>
+      <div class="row offset-by-one eleven columns">
+        <label class="ten columns">password:</label>
+        <input class="ten columns" type="password" placeholder="password">
+      </div>
+      <div class="row offset-by-one eleven columns btn-center">
+        <a href="/client"><input class="four columns" type="button" value="Log me in!"></a>
+      </div>
+    </div>
+  </body>
+</html>

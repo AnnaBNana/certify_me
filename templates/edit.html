@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Certify Me</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='../static/css/normalize.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='../static/css/skeleton.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='../static/css/style.css') }}">
+    <link href='https://fonts.googleapis.com/css?family=Raleway' rel='stylesheet' type='text/css'>
+  </head>
+  <body>
+    <h1 class="heading">Edit Email</h1>
+    <div class="container login_container">
+      <div class="row offset-by-one eleven columns">
+        <input class="eleven columns" type="text" value="user@user.com">
+      </div>
+      <div class="row offset-by-one eleven columns">
+        <textarea class="eleven columns" placeholder="email text here"></textarea>
+      </div>
+      <div class="row offset-by-one eleven columns btn-center">
+        <a href="/list"><input class="four columns" type="button" value="Send email"></a>
+      </div>
+    </div>
+    <div class="logout_btn">
+      <a href="/"><button type="button">log me out</button></a>
+    </div>
+
+  </body>
+</html>

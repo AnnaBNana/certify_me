@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Certify Me!</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='../static/css/normalize.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='../static/css/skeleton.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='../static/css/style.css') }}">
+    <link href='https://fonts.googleapis.com/css?family=Raleway' rel='stylesheet' type='text/css'>
+  </head>
+  <body>
+    <div class="heading">
+      <h1>Certify Me</h1>
+    </div>
+    <div class="container login_container">
+      <div class="row offset-by-one eleven columns">
+        <label>select client:</label>
+        <select class="ten columns" name="">
+          <option value="noclient">New Client</option>
+          <option value="client1">David Liss</option>
+          <option value="client2">Another Client</option>
+          <option value="client3">Some Other Client</option>
+        </select>
+      </div>
+      <div class="row offset-by-one eleven columns">
+        <label>or enter new client:</label>
+        <input class="ten columns" type="text" placeholder="client name">
+      </div>
+      <div class="row offset-by-one eleven columns btn-center">
+        <a href="/emails"><input class="four columns" type="button" value="Next"></a>
+      </div>
+    </div>
+    <div class="logout_btn">
+      <a href="/"><button type="button">log me out</button></a>
+    </div>
+  </body>
+</html>
