@@ -1,32 +1,38 @@
 $barely_yellow: #fffef4;
 $light_yellow: #e7e0ad;
 $teal: #052633;
+$links: #287ea1;
 $purple: #23032a;
 $shadow: #b4b2b2;
-.column {
-  margin-left: 0;
+@mixin inline-block($width) {
+  display: inline-block;
+  vertical-align: top;
+  width: $width;
+}
+@mixin container($width) {
+  border: 1px solid $shadow;
+  border-radius: 4px;
+  background: linear-gradient(135deg, #ffffff, $light_yellow);
+  background-color: $barely_yellow;
+  width: $width;
+}
+.main_content {
+  @include inline-block(75%);
+  margin: 0 0 50px 20px;
 }
 .heading {
   color: $barely_yellow;
   text-align: center;
   margin-top: 50px;
 }
-.login_container {
-  border: 1px solid $shadow;
-  border-radius: 4px;
-  width: 60%;
+.main_container {
+  @include container(100%);
   padding: 50px 0;
   margin-top: 50px;
-  background: linear-gradient(135deg, #ffffff, $light_yellow);
-  background-color: $barely_yellow;
 }
 body {
   background: linear-gradient(135deg, $purple, $teal);
   min-height: 100vh;
-}
-.logout_btn {
-  margin: 50px auto;
-  width: 10%;
 }
 textarea {
   resize: none;
@@ -43,4 +49,51 @@ textarea {
   position: relative;
   top: -500px;
   box-shadow: 2px 2px 10px $shadow;
+}
+.sidebar {
+  @include inline-block(17%);
+  margin-left: 10px;
+
+  .expand_icon {
+    padding: 10px 0 0 10px;
+    color: $barely_yellow;
+    font-size: 2em;
+  }
+  .sidebar_content {
+    display: none;
+    padding: 10px;
+    box-sizing: border-box;
+    margin-top: 5em;
+    a {
+      color: $links;
+      display: block;
+      text-decoration: none;
+      font-size: 2em;
+      border-bottom: 1px solid $links;
+    }
+  }
+}
+
+.client_select {
+  display: none;
+}
+.logo {
+  visibility: visible;
+  h1 {
+    color: $barely_yellow;
+    position: absolute;
+    top: 50px;
+    left: 40px;
+    opacity: 0.1;
+    font-size: 10em;
+    z-index: -2;
+  }
+  h5 {
+    color: $purple;
+    position: absolute;
+    top: 80px;
+    left: 70px;
+    z-index: -1;
+    font-size: 5em;
+  }
 }

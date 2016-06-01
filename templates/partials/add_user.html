@@ -1,0 +1,43 @@
+
+<div class="heading">
+  <h1 class="page_title">{{title}}</h1>
+</div>
+<div class="container main_container">
+  <div class="offset-by-one ten columns">
+    <div class="row ">
+      <label>name:</label>
+      <input class="twelve columns" type="text" name="name" placeholder="name">
+    </div>
+    <div class="row ">
+      <label>email:</label>
+      <input class="twelve columns" type="text" name="email" placeholder="email">
+    </div>
+    <div class="row">
+      <label>password:</label>
+      <input class="twelve columns" type="password" name="pword" placeholder="password">
+    </div>
+    <div class="row">
+      <label>confirm password:</label>
+      <input class="twelve columns" type="password" name="confirmpword" placeholder="password">
+    </div>
+    <div class="row">
+      <label>permissions <i class="fa fa-question-circle info" aria-hidden="true"></i></label>
+      <select name="permission" class="twelve columns permissions">
+        <option value="super-admin">super-admin</option>
+        <option value="admin" class="">admin</option>
+        <option value="user" class="">user</option>
+      </select>
+    </div>
+    <div class="row client_select">
+      <label>access</label>
+      <select name="clients" class="twelve columns clients">
+        <option value="liss">David Liss</option>
+        <option value="roark" class="">Andy Roark</option>
+      </select>
+    </div>
+    <div class="row btn-center">
+      <input class="register" type="button" value="Register a New User">
+    </div>
+  </div>
+</div>
+<script type="text/javascript" src="{{ url_for('static', filename='js/add_user.js') }}"></script>

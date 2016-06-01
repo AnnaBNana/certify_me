@@ -6,11 +6,11 @@ class MySQLConnection(object):
         config = {
                 'host': 'localhost',
                 'database': db,
-                'user': 'root',
+                'user': 'apropas',
                 'password': 'root',
-                'port': '8889'
+                'port': 'localhost'
         }
-        DATABASE_URI = "mysql://{}:{}@127.0.0.1:{}/{}".format(config['user'], config['password'], config['port'], config['database'])
+        DATABASE_URI = "postgresql://{}:{}@127.0.0.1:{}/{}".format(config['user'], config['password'], config['port'], config['database'])
         app.config['SQLALCHEMY_DATABASE_URI'] = DATABASE_URI
         app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = True
         print app.config

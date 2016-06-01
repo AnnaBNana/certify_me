@@ -1,27 +1,25 @@
-from flask import Flask, render_template, request, redirect
-from server.mysqlconnection import MySQLConnection
+from flask import Flask, render_template, request, redirect, jsonify
+from server.mysqlconnection import MySQLConnector
 
 app= Flask(__name__)
+postgresql = MySQLConnector(app, 'CertifyMe')
 
 @app.route('/')
 def index():
-    return render_template('index.html')
-@app.route('/client')
-def client():
-    return render_template('client.html')
-@app.route('/emails')
-def emails():
-    return render_template('emails.html')
-@app.route('/uploads')
-def uploads():
-    return render_template('uploads.html')
-@app.route('/list')
-def list():
-    return render_template('list.html')
-@app.route('/view')
-def view():
-    return render_template('view.html')
-@app.route('/edit')
-def edit():
-    return render_template('edit.html')
+    title = "Certify Me!"
+    return render_template('index.html', title=title)
+#partial loading routes
+@app.route('/index/login')
+def login():
+    title = "Choose a Client"
+    return render_template('partials/client.html', title=title)
+@app.route('/index/add_user')
+def add_user():
+    title = "Add a User"
+    return render_template('partials/add_user.html', title=title)
+@app.route('/index/add_client')
+def add_client():
+    title = "Add a Client"
+    return render_template('partials/add_client.html', title=title)
+#end partials
 app.run(debug=True)

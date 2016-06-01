@@ -1,0 +1,24 @@
+<div class="heading">
+  <h1 class="page_title">{{title}}</h1>
+</div>
+<div class="container main_container">
+  <div class="offset-by-one ten columns">
+    <div class="select_client">
+      <div class="row">
+        <label>select client:</label>
+        <select class="twelve columns existing_client" name="existing_client">
+          <option value="client1">David Liss</option>
+          <option value="client2">Andy Roark</option>
+          <option value="client3">Some Other Client</option>
+        </select>
+      </div>
+      <div class="row">
+        <input class="twelve columns add_client" type="button" value="or add new client">
+      </div>
+      <div class="row">
+        <input class="four columns next" type="button" value="Next">
+      </div>
+    </div>
+  </div>
+</div>
+<script type="text/javascript" src="{{ url_for('static', filename='js/client.js') }}"></script>

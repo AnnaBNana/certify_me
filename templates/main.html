@@ -15,34 +15,19 @@
     <div class="sidebar">
       <p class="expand_icon"><i class="fa fa-bars" aria-hidden="true"></i></p>
       <div class="sidebar_content">
-        <!-- only show if user logged in is admin or super-admin -->
-        <a href="#" class="add_user">add a user</a>
-        <!-- only show if user logged in as super-admin -->
-        <a href="#" class="add_client">add a client</a>
-        <a href="#" class="edit_email">edit email</a>
-        <a href="#" class="new_class">new seminar</a>
-        <a href="#" class="new_class">generate PDF</a>
+
+        <a href="/main">add a user</a>
+        <a href="/main">add a client</a>
+        <a href="/main">change email text</a>
         <a href="/">log out</a>
       </div>
     </div>
     <div class="main_content">
       <div class="heading">
-        <h1 class="page_title">{{title}}</h1>
+        <h1>Certify Me</h1>
       </div>
-      <div class="container main_container">
-        <div class="offset-by-one ten columns">
-          <div class="row ">
-            <label>email:</label>
-            <input class="twelve columns" type="text" placeholder="email">
-          </div>
-          <div class="row">
-            <label>password:</label>
-            <input class="twelve columns" type="password" placeholder="password">
-          </div>
-          <div class="row btn-center">
-            <input class="login" type="button" value="Log me in!">
-          </div>
-        </div>
+      <div class="container login_container">
+
       </div>
     </div>
   </body>
