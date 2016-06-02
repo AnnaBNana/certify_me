@@ -26,17 +26,58 @@ textarea {
   resize: none;
   height: 40vh; }
 
-.success {
+label {
+  font-weight: 400; }
+
+input[type=button]:hover,
+input[type=submit]:hover {
+  border: 1px solid #ec795b; }
+
+.logo {
+  visibility: visible; }
+  .logo .badge {
+    color: #fffef4;
+    position: absolute;
+    top: 35px;
+    left: 30px;
+    opacity: 0.1;
+    font-size: 10em;
+    z-index: -2; }
+  .logo .paw {
+    color: #23032a;
+    position: absolute;
+    top: 92px;
+    left: 60px;
+    z-index: -1;
+    font-size: 5em; }
+
+.info {
+  color: #ec795b; }
+
+.info_window {
   display: none;
-  width: 40%;
+  width: 60%;
   margin: 0 auto;
   background-color: #fff;
   border-radius: 4px;
-  text-align: center;
-  padding: 20px 0;
+  text-align: left;
+  padding: 20px;
   position: relative;
   top: -500px;
   box-shadow: 2px 2px 10px #b4b2b2; }
+  .info_window span {
+    font-weight: 700;
+    color: #287ea1; }
+  .info_window .close_container {
+    text-align: right; }
+    .info_window .close_container .close {
+      font-size: 1.4em;
+      color: #ec795b; }
+
+.error {
+  display: none;
+  color: #ec795b;
+  font-weight: bold; }
 
 .sidebar {
   display: inline-block;
@@ -61,23 +102,5 @@ textarea {
 
 .client_select {
   display: none; }
-
-.logo {
-  visibility: visible; }
-  .logo h1 {
-    color: #fffef4;
-    position: absolute;
-    top: 50px;
-    left: 40px;
-    opacity: 0.1;
-    font-size: 10em;
-    z-index: -2; }
-  .logo h5 {
-    color: #23032a;
-    position: absolute;
-    top: 80px;
-    left: 70px;
-    z-index: -1;
-    font-size: 5em; }
 
 /*# sourceMappingURL=style.css.map */

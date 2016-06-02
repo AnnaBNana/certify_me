@@ -1,0 +1,41 @@
+<div class="heading">
+  <h1 class="page_title">{{title}}</h1>
+</div>
+<div class="container main_container">
+  <div class="offset-by-one ten columns">
+    <div class="select_client">
+      <div class="row">
+        <label>name:</label>
+        <input class="twelve columns" type="text" name="name" placeholder="seminar title">
+      </div>
+      <div class="row">
+        <label>duration:</label>
+        <input class="twelve columns" type="text" name="duration" placeholder="required duration for attendees">
+      </div>
+      <div class="row">
+        <label>date:</label>
+        <input class="twelve columns" type="date" name="date" value="">
+      </div>
+      <div class="row">
+        <label>email text:</label>
+        <!-- placeholder text should be pulled from text of the email for that clients most recent seminar -->
+        <textarea class="twelve columns" type="text" name="email_text" placeholder="required duration for attendees"></textarea>
+      </div>
+      <div class="row">
+        <label>RACE verbiage:</label>
+        <!-- to be inserted at bottom of certificate. will be different for each seminar -->
+        <textarea class="twelve columns" type="text" name="email_text" placeholder="RACE required text for certificate"></textarea>
+      </div>
+      <div class="row">
+        <label>CVMP verbiage (optional):</label>
+        <!-- same as above, but only some users will be able to see this -->
+        <textarea class="twelve columns" type="text" name="email_text" placeholder="CVMP required text for certificate"></textarea>
+      </div>
+
+      <div class="row">
+        <input class="four columns add_seminar" type="button" value="Add Seminar">
+      </div>
+    </div>
+  </div>
+</div>
+<script type="text/javascript" src="{{ url_for('static', filename='js/add_class.js') }}"></script>

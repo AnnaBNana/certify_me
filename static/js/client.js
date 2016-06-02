@@ -5,5 +5,11 @@ $(document).ready(function() {
       $('.main_content').html(res);
     })
   });
+  //when next is clicked, load add class partial
+  $('.next').click(function(){
+    $.get('/index/add_class', function(res) {
+      $('.main_content').html(res);
+    })
+  })
 
 });

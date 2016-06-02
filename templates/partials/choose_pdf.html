@@ -1,0 +1,28 @@
+<div class="heading">
+  <h1 class="page_title">{{title}}</h1>
+</div>
+<div class="container main_container">
+  <div class="offset-by-one ten columns">
+    <div class="row">
+      <label>select a seminar:</label>
+      <select class="twelve columns class_name" name="class">
+        <option value="client1">Seminar w/ status incomplete</option>
+        <option value="client1">Seminar w/ status incomplete</option>
+        <option value="client1">Seminar w/ status incomplete</option>
+      </select>
+    </div>
+    <div class="row">
+      <input class="twelve columns default_pdf" type="button" value="use existing client PDF">
+    </div>
+    <div class="row">
+      <input class="twelve columns change_pdf" type="button" value="or replace with new PDF">
+    </div>
+    <div class="row">
+      <input class="twelve columns add_csv" type="button" value="upload CSV file">
+    </div>
+    <div class="row">
+      <input class="four columns make" type="button" value="Generate Certificates">
+    </div>
+  </div>
+</div>
+<script type="text/javascript" src="{{ url_for('static', filename='js/certificates.js') }}"></script>

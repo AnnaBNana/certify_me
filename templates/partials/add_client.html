@@ -2,15 +2,15 @@
   <h1 class="page_title">{{title}}</h1>
 </div>
 <div class="container main_container">
-  <div class="offset-by-one ten columns">
+  <form class="offset-by-one ten columns">
     <div class="client_form">
       <div class="row ">
-        <label>name:</label>
-        <input class="twelve columns" type="text" name="name" placeholder="client name, including degrees">
+        <label>name: </label>
+        <input class="twelve columns required" type="text" name="name" placeholder="client name, including degrees">
       </div>
       <div class="row ">
-        <label>email:</label>
-        <input class="twelve columns" type="text" name="email" placeholder="client email">
+        <label>email: </label>
+        <input class="twelve columns required" type="text" name="email" placeholder="client email">
       </div>
       <div class="row ">
         <label>client title (optional):</label>
@@ -29,16 +29,16 @@
         <input class="twelve columns" type="text" name="instagram" placeholder="@username">
       </div>
       <div class="row ">
-        <label>business name:</label>
-        <input class="twelve columns" type="text" name="business_name" placeholder="business name">
+        <label>business name: </label>
+        <input class="twelve columns required" type="text" name="business_name" placeholder="business name">
       </div>
       <div class="row">
-        <label>business address:</label>
-        <input class="twelve columns" type="text" name="street_addr" placeholder="street address">
+        <label>business address: </label>
+        <input class="twelve columns required" type="text" name="street_addr" placeholder="street address">
       </div>
       <div class="row">
-        <input class="four columns" type="text" name="city_addr" placeholder="city">
-        <select name="state" class="four columns">
+        <input class="four columns required" type="text" name="city_addr" placeholder="city">
+        <select name="state_addr" class="four columns required">
           <option selected value="">state</option>
           <option value="AL">Alabama</option>
           <option value="AK">Alaska</option>
@@ -91,19 +91,22 @@
           <option value="WI">Wisconsin</option>
           <option value="WY">Wyoming</option>
         </select>
-        <input class="four columns" type="text" name="zip_addr" placeholder="zip code">
+        <input class="four columns required" type="number" name="zip_addr" placeholder="zip code">
       </div>
       <div class="row">
         <label>website (optional):</label>
         <input class="twelve columns" type="text" name="url" placeholder="website url">
       </div>
+      <div class="row error">
+        <p>please fill out all required fields</p>
+      </div>
       <div class="row">
-        <input type="button" name="action" value="add new client">
+        <input type="submit" name="action" value="add new client">
       </div>
       <div class="row">
         <a href="#" class="client">back to select client</a>
       </div>
     </div>
-  </div>
+  </form>
 </div>
 <script type="text/javascript" src="{{ url_for('static', filename='js/add_client.js') }}"></script>

@@ -3,7 +3,7 @@
   <h1 class="page_title">{{title}}</h1>
 </div>
 <div class="container main_container">
-  <div class="offset-by-one ten columns">
+  <form class="offset-by-one ten columns">
     <div class="row ">
       <label>name:</label>
       <input class="twelve columns" type="text" name="name" placeholder="name">
@@ -14,11 +14,11 @@
     </div>
     <div class="row">
       <label>password:</label>
-      <input class="twelve columns" type="password" name="pword" placeholder="password">
+      <input class="twelve columns password" type="password" name="password" placeholder="password">
     </div>
     <div class="row">
       <label>confirm password:</label>
-      <input class="twelve columns" type="password" name="confirmpword" placeholder="password">
+      <input class="twelve columns confirmpassword" type="password" name="confirmpassword" placeholder="password">
     </div>
     <div class="row">
       <label>permissions <i class="fa fa-question-circle info" aria-hidden="true"></i></label>
@@ -35,9 +35,29 @@
         <option value="roark" class="">Andy Roark</option>
       </select>
     </div>
-    <div class="row btn-center">
-      <input class="register" type="button" value="Register a New User">
+    <div class="row error">
+      <p>please fill out all fields</p>
     </div>
+    <div class="row error nomatch">
+      <p>password and confirmation do not match</p>
+    </div>
+    <div class="row btn-center">
+      <input class="register" type="submit" value="Register a New User">
+    </div>
+  </form>
+</div>
+<div class="info_window">
+  <div class="row close_container">
+    <i class="fa fa-times-circle close" aria-hidden="true"></i>
+  </div>
+  <div class="row">
+    <span>Super-Admin:</span> has access to all clients and can add and remove users with any permission level.
+  </div>
+  <div class="row">
+    <span>Admin:</span> has access to only one client and can add or remove other admins for same client.
+  </div>
+  <div class="row">
+    <span>User:</span> has access to only one client and can not add or remove other users.
   </div>
 </div>
 <script type="text/javascript" src="{{ url_for('static', filename='js/add_user.js') }}"></script>

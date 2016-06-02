@@ -4,6 +4,7 @@ $teal: #052633;
 $links: #287ea1;
 $purple: #23032a;
 $shadow: #b4b2b2;
+$warn: #ec795b;
 @mixin inline-block($width) {
   display: inline-block;
   vertical-align: top;
@@ -16,6 +17,7 @@ $shadow: #b4b2b2;
   background-color: $barely_yellow;
   width: $width;
 }
+//all pages content and background
 .main_content {
   @include inline-block(75%);
   margin: 0 0 50px 20px;
@@ -38,18 +40,68 @@ textarea {
   resize: none;
   height: 40vh;
 }
-.success {
+label {
+  font-weight: 400;
+}
+input[type=button]:hover,
+input[type=submit]:hover {
+  border: 1px solid $warn;
+}
+//bg paw certificate logo as seen on every page
+.logo {
+  visibility: visible;
+  .badge {
+    color: $barely_yellow;
+    position: absolute;
+    top: 35px;
+    left: 30px;
+    opacity: 0.1;
+    font-size: 10em;
+    z-index: -2;
+  }
+  .paw {
+    color: $purple;
+    position: absolute;
+    top: 92px;
+    left: 60px;
+    z-index: -1;
+    font-size: 5em;
+  }
+}
+//any place that requires pop-up window can use this style
+.info {
+  color: $warn;
+}
+.info_window {
   display: none;
-  width: 40%;
+  width: 60%;
   margin: 0 auto;
   background-color: #fff;
   border-radius: 4px;
-  text-align: center;
-  padding: 20px 0;
+  text-align: left;
+  padding: 20px;
   position: relative;
   top: -500px;
   box-shadow: 2px 2px 10px $shadow;
+  span {
+    font-weight: 700;
+    color: $links;
+  }
+  .close_container {
+    text-align: right;
+    .close {
+      font-size: 1.4em;
+      color: $warn;
+    }
+  }
 }
+//error display for all forms
+.error {
+  display: none;
+  color: $warn;
+  font-weight: bold;
+}
+//collapsable sidebar as seen on every page
 .sidebar {
   @include inline-block(17%);
   margin-left: 10px;
@@ -73,27 +125,7 @@ textarea {
     }
   }
 }
-
+//on add user page
 .client_select {
   display: none;
-}
-.logo {
-  visibility: visible;
-  h1 {
-    color: $barely_yellow;
-    position: absolute;
-    top: 50px;
-    left: 40px;
-    opacity: 0.1;
-    font-size: 10em;
-    z-index: -2;
-  }
-  h5 {
-    color: $purple;
-    position: absolute;
-    top: 80px;
-    left: 70px;
-    z-index: -1;
-    font-size: 5em;
-  }
 }
