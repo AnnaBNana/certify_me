@@ -24,7 +24,6 @@ class PSQLConnection(object):
             self.db.session.commit()
             for r in result:
                 new_result = r[0]
-                print r[0]
             return new_result
         else:
             self.db.session.commit()

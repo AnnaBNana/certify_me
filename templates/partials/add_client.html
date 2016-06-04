@@ -97,16 +97,23 @@
         <label>website (optional):</label>
         <input class="twelve columns" type="text" name="url" placeholder="website url">
       </div>
-      <div class="row error">
+      <div class="row jserror">
         <p>please fill out all required fields</p>
       </div>
       <div class="row">
         <input type="submit" name="action" value="add new client">
       </div>
       <div class="row">
-        <a href="#" class="client">back to select client</a>
+        <a href="#" class="client">back to choose client</a>
       </div>
     </div>
   </form>
+</div>
+<div class="popup">
+  <div class="row close_container">
+    <i class="fa fa-times-circle close" aria-hidden="true"></i>
+  </div>
+  <p>client was added to the database</p>
+  <a href="#" class="activate"><button type="button">choose newly added client</button></a> or <a href="#" class="choose"><button type="button">return to choose client</button></a>
 </div>
 <script type="text/javascript" src="{{ url_for('static', filename='js/add_client.js') }}"></script>

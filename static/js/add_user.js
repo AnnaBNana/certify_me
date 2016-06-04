@@ -13,7 +13,7 @@ $(document).ready(function() {
   });
   //show info window when client clicks question mark next to permissions label
   $('.info').click(function(){
-    $('.info_window').show('slow');
+    $('.info_window').show(900);
   })
   //close info window
   $('.close').click(function() {
@@ -30,18 +30,25 @@ $(document).ready(function() {
     });
     //if some fields are empty, show empty error
     if (!valid) {
-      $('.error').show();
+      $('.jserror').show();
     } else {
       //if passwords do not match, show nomatch error
       if ($('.password').val() != $('.confirmpassword').val()) {
         $('.nomatch').show();
       } else {
-        $('.error').hide();
+        $('.jserror').hide();
         $('.nomatch').hide();
         var data = $(this).serialize();
         $.post('/add_user', data, function(res){
           console.log(res);
-          $('input').each(function(){
+          if (res.error) {
+            $('.dberror').append('<p>' + res.error + '</p>')
+            $('.jserror').show();
+          }
+          else if (res.id) {
+            $('.success').show();
+          }
+          $('input:not(:submit)').each(function(){
             $(this).val("");
           })
         })

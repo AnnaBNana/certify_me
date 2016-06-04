@@ -17,21 +17,6 @@ $warn: #ec795b;
   background-color: $barely_yellow;
   width: $width;
 }
-//all pages content and background
-.main_content {
-  @include inline-block(75%);
-  margin: 0 0 50px 20px;
-}
-.heading {
-  color: $barely_yellow;
-  text-align: center;
-  margin-top: 50px;
-}
-.main_container {
-  @include container(100%);
-  padding: 50px 0;
-  margin-top: 50px;
-}
 body {
   background: linear-gradient(135deg, $purple, $teal);
   min-height: 100vh;
@@ -47,8 +32,54 @@ input[type=button]:hover,
 input[type=submit]:hover {
   border: 1px solid $warn;
 }
+a {
+  color: $links;
+  text-decoration: none;
+}
+//all pages content and background
+.main_content {
+  @include inline-block(75%);
+  margin: 0 0 50px 20px;
+  .heading {
+    color: $barely_yellow;
+    text-align: center;
+    margin-top: 50px;
+  }
+  .main_container {
+    @include container(100%);
+    padding: 50px 0;
+    margin-top: 50px;
+  }
+}
+//collapsable sidebar as seen on every page
+.sidebar {
+  @include inline-block(17%);
+  margin-left: 10px;
+  // z-index: 99;
+  .expand_icon {
+    padding: 10px 0 0 10px;
+    color: $barely_yellow;
+    font-size: 2em;
+  }
+  .sidebar_content {
+    display: none;
+    padding: 10px;
+    box-sizing: border-box;
+    margin-top: 5em;
+    a {
+      display: block;
+      font-size: 1.7em;
+      border-bottom: 1px solid $links;
+    }
+  }
+}
+//on add user page
+.client_select {
+  display: none;
+}
 //bg paw certificate logo as seen on every page
 .logo {
+  @include inline-block(0);
   visibility: visible;
   .badge {
     color: $barely_yellow;
@@ -72,7 +103,7 @@ input[type=submit]:hover {
 .info {
   color: $warn;
 }
-.info_window {
+.popup {
   display: none;
   width: 60%;
   margin: 0 auto;
@@ -95,37 +126,16 @@ input[type=submit]:hover {
     }
   }
 }
-//error display for all forms
+//pyhton flash error display for all forms
 .error {
+  color: $warn;
+  font-weight: bold;
+  padding-bottom: 10px;
+}
+//javascript toggle error display for all forms
+.jserror {
   display: none;
   color: $warn;
   font-weight: bold;
-}
-//collapsable sidebar as seen on every page
-.sidebar {
-  @include inline-block(17%);
-  margin-left: 10px;
-
-  .expand_icon {
-    padding: 10px 0 0 10px;
-    color: $barely_yellow;
-    font-size: 2em;
-  }
-  .sidebar_content {
-    display: none;
-    padding: 10px;
-    box-sizing: border-box;
-    margin-top: 5em;
-    a {
-      color: $links;
-      display: block;
-      text-decoration: none;
-      font-size: 2em;
-      border-bottom: 1px solid $links;
-    }
-  }
-}
-//on add user page
-.client_select {
-  display: none;
+  padding-bottom: 10px;
 }

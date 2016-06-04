@@ -7,9 +7,9 @@
       <div class="row">
         <label>select client:</label>
         <select class="twelve columns existing_client" name="existing_client">
-          <option value="client1">David Liss</option>
-          <option value="client2">Andy Roark</option>
-          <option value="client3">Some Other Client</option>
+          {% for client in all_clients %}
+          <option value="{{client.id}}">{{client.name}}</option>
+          {% endfor %}
         </select>
       </div>
       <div class="row">

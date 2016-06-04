@@ -7,9 +7,10 @@ $(document).ready(function() {
   });
   //when next is clicked, load add class partial
   $('.next').click(function(){
-    $.get('/index/add_class', function(res) {
+    client = {"id": $('.existing_client').val()}
+    console.log(client)
+    $.post('/choose_client', client, function(res) {
       $('.main_content').html(res);
     })
   })
-
 });

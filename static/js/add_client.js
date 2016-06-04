@@ -1,6 +1,6 @@
 $(document).ready(function() {
   $('.client').click(function(){
-    $.get('/index/login', function(res) {
+    $.get('/index/choose_client', function(res) {
       $('.main_content').html(res);
     })
   })
@@ -13,15 +13,16 @@ $(document).ready(function() {
       }
     });
     if (!valid) {
-      $('.error').show();
+      $('.jserror').show();
     } else {
-      $('.error').hide();
+      $('.jserror').hide();
       var data = $(this).serialize();
       $.post('/add_client', data, function(res) {
         console.log(res);
         $('input:not(:submit),select').each(function(){
           $(this).val("");
         })
+        $('.popup').show('slow');
       })
     }
     return false;

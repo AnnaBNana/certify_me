@@ -23,22 +23,28 @@
     <div class="row">
       <label>permissions <i class="fa fa-question-circle info" aria-hidden="true"></i></label>
       <select name="permission" class="twelve columns permissions">
-        <option value="super-admin">super-admin</option>
+        {% if session['permission'] == "super-admin" %}
+          <option value="super-admin">super-admin</option>
+        {% endif %}
         <option value="admin" class="">admin</option>
         <option value="user" class="">user</option>
       </select>
     </div>
-    <div class="row client_select">
-      <label>access</label>
-      <select name="clients" class="twelve columns clients">
-        <option value="liss">David Liss</option>
-        <option value="roark" class="">Andy Roark</option>
-      </select>
-    </div>
-    <div class="row error">
+    {% if session['permission'] == "super-admin" %}
+      <div class="row client_select">
+        <label>access</label>
+        <select name="client" class="twelve columns client">
+          <option value="">select client</option>
+          {% for client in all_clients %}
+            <option value="{{client.id}}">{{client.name}}</option>
+          {% endfor %}
+        </select>
+      </div>
+    {% endif %}
+    <div class="row jserror">
       <p>please fill out all fields</p>
     </div>
-    <div class="row error nomatch">
+    <div class="row jserror nomatch">
       <p>password and confirmation do not match</p>
     </div>
     <div class="row btn-center">
@@ -46,18 +52,34 @@
     </div>
   </form>
 </div>
-<div class="info_window">
+<div class="popup info_window">
   <div class="row close_container">
     <i class="fa fa-times-circle close" aria-hidden="true"></i>
   </div>
+  {% if session['permission'] == "super-admin" %}
+    <div class="row">
+      <span>Super-Admin:</span> has access to all clients and can add and remove users with any permission level.
+    </div>
+  {% endif %}
   <div class="row">
-    <span>Super-Admin:</span> has access to all clients and can add and remove users with any permission level.
+    <span>Admin:</span> has access to
+    {% if session['permission'] == "super-admin" %} only one {% endif %}
+    client's data and can edit, add and remove other admins and users.
   </div>
   <div class="row">
-    <span>Admin:</span> has access to only one client and can add or remove other admins for same client.
-  </div>
-  <div class="row">
-    <span>User:</span> has access to only one client and can not add or remove other users.
+    <span>User:</span> has access to {% if session['permission'] == "super-admin" %} only one {% endif %} client's data, but can not edit, add or remove other users.
   </div>
 </div>
+<div class="popup success">
+  <div class="row close_container">
+    <i class="fa fa-times-circle close" aria-hidden="true"></i>
+  </div>
+  <p>User has been successfully added to the database.</p>
+</div>
+<div class="popup dberror">
+  <div class="row close_container">
+    <i class="fa fa-times-circle close" aria-hidden="true"></i>
+  </div>
+</div>
+
 <script type="text/javascript" src="{{ url_for('static', filename='js/add_user.js') }}"></script>
