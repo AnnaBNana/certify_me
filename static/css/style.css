@@ -10,8 +10,10 @@ label {
   font-weight: 400; }
 
 input[type=button]:hover,
-input[type=submit]:hover {
-  border: 1px solid #ec795b; }
+input[type=submit]:hover,
+button:hover {
+  border: 1px solid #ec795b;
+  color: #ec795b; }
 
 a {
   color: #287ea1;
@@ -80,6 +82,9 @@ a {
 
 .info {
   color: #ec795b; }
+
+.centered {
+  text-align: center; }
 
 .popup {
   display: none;

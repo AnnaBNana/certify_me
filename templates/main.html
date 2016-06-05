@@ -18,15 +18,17 @@
         <!-- only show if user logged in is admin or super-admin -->
         {% if session['permission'] != "user": %}
           <a href="#" class="add_user">add a user</a>
+          <a href="#" class="users">view users</a>
         {% endif %}
         <!-- only show if user logged in as super-admin -->
         {% if session['permission'] == "super-admin": %}
+          <a href="#" class="choose_client">choose a client</a>
           <a href="#" class="add_client">add a client</a>
-          <a href="#" class="edit_client">edit a client</a>
+          <a href="#" class="clients">view clients</a>
         {% endif %}
         <!-- show for all users -->
         <a href="#" class="add_class">add a seminar</a>
-        <a href="#" class="edit_class">edit seminar</a>
+        <a href="#" class="classes">view seminars</a>
         <a href="#" class="generate_certs">generate certificates</a>
         <a href="/logout" class="logout">log out</a>
       </div>

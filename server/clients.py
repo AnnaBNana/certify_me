@@ -1,26 +1,22 @@
-from flask import Flask
+from flask import Flask, session
 from server.psqlconnection import PSQLConnector
+from server.businesses import Businesses
 
 app = Flask(__name__)
 postgresql = PSQLConnector(app, 'CertifyMe')
+businesses = Businesses()
 
 class Clients(object):
     def add(self, form_data):
         print "form data", form_data
-        biz_query = "INSERT INTO businesses (name, street, city, state, zip, website, created_at) VALUES (:name, :street, :city, :state, :zip, :website, NOW()) RETURNING id;"
-        biz_values = {
-            "name": form_data['business_name'],
-            "street": form_data['street_addr'],
-            "city": form_data['city_addr'],
-            "state": form_data['state_addr'],
-            "zip": form_data['zip_addr'],
-            "website": form_data['url']
-        }
-        biz_id = postgresql.query_db(biz_query, biz_values);
+        if 'existing_biz' in form_data:
+            biz_id = form_data['existing_biz']
+        else:
+            biz_id = businesses.add(form_data)
         print "biz id: ", biz_id
-        #social_media_1 : facebook
-        #social_media_2 : twitter
-        #social_media_3 : instagram
+        # social_media_1 : facebook
+        # social_media_2 : twitter
+        # social_media_3 : instagram
         client_query = "INSERT INTO clients (email, name, title, business_id, social_media_1, social_media_2, social_media_3, created_at) VALUES (:email, :name, :title, :business_id, :facebook, :twitter, :instagram, NOW()) RETURNING id;"
         client_values = {
             "email": form_data['email'],
@@ -32,6 +28,7 @@ class Clients(object):
             "instagram": form_data['instagram']
         }
         client_id = postgresql.query_db(client_query, client_values)
+        session['client_id'] = client_id
         print "client id: ", client_id
         return str(client_id)
     def findAll(self):

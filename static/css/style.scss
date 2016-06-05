@@ -29,8 +29,10 @@ label {
   font-weight: 400;
 }
 input[type=button]:hover,
-input[type=submit]:hover {
+input[type=submit]:hover,
+button:hover {
   border: 1px solid $warn;
+  color: $warn;
 }
 a {
   color: $links;
@@ -102,6 +104,9 @@ a {
 //any place that requires pop-up window can use this style
 .info {
   color: $warn;
+}
+.centered {
+  text-align: center;
 }
 .popup {
   display: none;

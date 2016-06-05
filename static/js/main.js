@@ -1,6 +1,6 @@
 $(document).ready(function() {
   $.get('/permission_partial', function(res){
-    console.log(res)
+    // console.log(res)
     if (res.error) {
       window.location.assign('/')
     } else {
@@ -15,6 +15,11 @@ $(document).ready(function() {
   //when add `user link is clicked, load add user partial
   $('.add_user').click(function() {
     $.get('/index/add_user', function(res) {
+      $('.main_content').html(res);
+    })
+  });
+  $('.choose_client').click(function() {
+    $.get('/index/choose_client', function(res) {
       $('.main_content').html(res);
     })
   });

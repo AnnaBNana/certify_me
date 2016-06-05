@@ -2,13 +2,15 @@ from flask import Flask, render_template, request, redirect, jsonify, session, f
 import os
 from server.users import Users
 from server.clients import Clients
+from server.businesses import Businesses
 
 app= Flask(__name__)
 
 users = Users()
 clients = Clients()
+businesses = Businesses()
 app.secret_key = os.urandom(24)
-
+#base page loading routes: index, main, permissions check, logout
 @app.route('/')
 def index():
     if 'logged' in session:
@@ -31,14 +33,14 @@ def permission():
         else:
             return redirect('/index/add_class')
     else:
-        #returns an error as AJAX response, which is handled in front end as a redirect the root route
+        #returns an error as AJAX response, which is handled in front end as a redirect to the root route
         error = {'error': 'redirect'}
         return jsonify(error)
 @app.route('/logout')
 def logout():
     session.clear()
     return redirect('/')
-#partial loading routes
+#begin partial loading routes
 @app.route('/index/choose_client')
 def client():
     title = "Choose a Client"
@@ -49,10 +51,14 @@ def add_user():
     title = "Add a User"
     all_clients = clients.findAll()
     return render_template('partials/add_user.html', title=title, all_clients=all_clients)
+@app.route('/index/add_biz')
+def add_biz():
+    return render_template('partials/add_business.html')
 @app.route('/index/add_client')
 def add_client():
     title = "Add a Client"
-    return render_template('partials/add_client.html', title=title)
+    all_businesses = businesses.findAll()
+    return render_template('partials/add_client.html', title=title, businesses=all_businesses)
 @app.route('/index/add_class')
 def add_class():
     title = "Add a Seminar"
@@ -61,8 +67,8 @@ def add_class():
 def pdf():
     title = "Generate Certificates"
     return render_template('partials/choose_pdf.html', title=title)
-#end partials
-#form submission routes
+#end partial loading routes
+#begin post routes
 @app.route('/login', methods=['POST'])
 def login():
     logged = users.login(request.form)
@@ -86,4 +92,8 @@ def choose_client():
     session['client_id'] = request.form['id']
     print "my current session data", session
     return redirect('/index/add_class')
+@app.route('/add_class', methods=['POST'])
+def new_class():
+    print request.form
+    return redirect('/index/certificates')
 app.run(debug=True)

@@ -2,7 +2,7 @@
   <h1 class="page_title">{{title}}</h1>
 </div>
 <div class="container main_container">
-  <div class="offset-by-one ten columns">
+  <form class="offset-by-one ten columns">
     <div class="select_client">
       <div class="row">
         <label>name:</label>
@@ -19,7 +19,7 @@
       <div class="row">
         <label>email text:</label>
         <!-- placeholder text should be pulled from text of the email for that clients most recent seminar -->
-        <textarea class="twelve columns" type="text" name="email_text" placeholder="required duration for attendees"></textarea>
+        <textarea class="twelve columns" type="text" name="email_text" placeholder="email text to be sent to every attendee"></textarea>
       </div>
       <div class="row">
         <label>RACE verbiage:</label>
@@ -33,9 +33,9 @@
       </div>
 
       <div class="row">
-        <input class="four columns add_seminar" type="button" value="Add Seminar">
+        <input class="four columns add_seminar" type="submit" value="Add Seminar">
       </div>
     </div>
-  </div>
+  </form>
 </div>
 <script type="text/javascript" src="{{ url_for('static', filename='js/add_class.js') }}"></script>

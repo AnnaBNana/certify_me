@@ -28,75 +28,22 @@
         <label>instagram (optional):</label>
         <input class="twelve columns" type="text" name="instagram" placeholder="@username">
       </div>
-      <div class="row ">
-        <label>business name: </label>
-        <input class="twelve columns required" type="text" name="business_name" placeholder="business name">
+      <!-- get all businesses, populate select on page load -->
+      <div class="biz_opts">
+        <label>choose client business name:</label>
+        <div class="row">
+          <select class="six columns business" name="existing_biz">
+            {% for business in businesses %}
+            <option value="{{business.id}}">{{business.name}}</option>
+            {% endfor %}
+          </select>
+          <!-- if user clicks this button new partial will be loaded, but this row will be removed using .remove() as well -->
+          <button type="button" class="six columns add_biz">or add new business</button>
+        </div>
       </div>
-      <div class="row">
-        <label>business address: </label>
-        <input class="twelve columns required" type="text" name="street_addr" placeholder="street address">
-      </div>
-      <div class="row">
-        <input class="four columns required" type="text" name="city_addr" placeholder="city">
-        <select name="state_addr" class="four columns required">
-          <option selected value="">state</option>
-          <option value="AL">Alabama</option>
-          <option value="AK">Alaska</option>
-          <option value="AZ">Arizona</option>
-          <option value="AR">Arkansas</option>
-          <option value="CA">California</option>
-          <option value="CO">Colorado</option>
-          <option value="CT">Connecticut</option>
-          <option value="DE">Delaware</option>
-          <option value="FL">Florida</option>
-          <option value="GA">Georgia</option>
-          <option value="HI">Hawaii</option>
-          <option value="ID">Idaho</option>
-          <option value="IL">Illinois</option>
-          <option value="IN">Indiana</option>
-          <option value="IA">Iowa</option>
-          <option value="KS">Kansas</option>
-          <option value="KY">Kentucky</option>
-          <option value="LA">Louisiana</option>
-          <option value="ME">Maine</option>
-          <option value="MD">Maryland</option>
-          <option value="MA">Massachusetts</option>
-          <option value="MI">Michigan</option>
-          <option value="MN">Minnesota</option>
-          <option value="MS">Mississippi</option>
-          <option value="MO">Missouri</option>
-          <option value="MT">Montana</option>
-          <option value="NE">Nebraska</option>
-          <option value="NV">Nevada</option>
-          <option value="NH">New Hampshire</option>
-          <option value="NJ">New Jersey</option>
-          <option value="NM">New Mexico</option>
-          <option value="NY">New York</option>
-          <option value="NC">North Carolina</option>
-          <option value="ND">North Dakota</option>
-          <option value="OH">Ohio</option>
-          <option value="OK">Oklahoma</option>
-          <option value="OR">Oregon</option>
-          <option value="PA">Pennsylvania</option>
-          <option value="RI">Rhode Island</option>
-          <option value="SC">South Carolina</option>
-          <option value="SD">South Dakota</option>
-          <option value="TN">Tennessee</option>
-          <option value="TX">Texas</option>
-          <option value="UT">Utah</option>
-          <option value="VT">Vermont</option>
-          <option value="VA">Virginia</option>
-          <option value="WA">Washington</option>
-          <option value="WV">West Virginia</option>
-          <option value="WI">Wisconsin</option>
-          <option value="WY">Wyoming</option>
-        </select>
-        <input class="four columns required" type="number" name="zip_addr" placeholder="zip code">
-      </div>
-      <div class="row">
-        <label>website (optional):</label>
-        <input class="twelve columns" type="text" name="url" placeholder="website url">
-      </div>
+      <!-- load add business partial -->
+      <div class="new_biz"></div>
+
       <div class="row jserror">
         <p>please fill out all required fields</p>
       </div>
@@ -113,7 +60,14 @@
   <div class="row close_container">
     <i class="fa fa-times-circle close" aria-hidden="true"></i>
   </div>
-  <p>client was added to the database</p>
-  <a href="#" class="activate"><button type="button">choose newly added client</button></a> or <a href="#" class="choose"><button type="button">return to choose client</button></a>
+  <p class="centered">client was added to the database</p>
+  <div class="row">
+    <a href="#" class="activate"><button type="button" class="twelve columns">make newly added client active</button></a>
+  </div>
+  <div class="row centered">OR</div>
+  <div class="row">
+    <a href="#" class="choose"><button type="button" class="twelve columns">select a different client</button></a>
+  </div>
+
 </div>
 <script type="text/javascript" src="{{ url_for('static', filename='js/add_client.js') }}"></script>

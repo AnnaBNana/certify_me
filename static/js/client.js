@@ -8,7 +8,7 @@ $(document).ready(function() {
   //when next is clicked, load add class partial
   $('.next').click(function(){
     client = {"id": $('.existing_client').val()}
-    console.log(client)
+    // console.log(client)
     $.post('/choose_client', client, function(res) {
       $('.main_content').html(res);
     })
