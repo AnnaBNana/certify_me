@@ -6,36 +6,100 @@
     <div class="select_client">
       <div class="row">
         <label>name:</label>
-        <input class="twelve columns" type="text" name="name" placeholder="seminar title">
+        <input class="twelve columns required" type="text" name="name" placeholder="seminar title">
+        {% with name_error = get_flashed_messages(category_filter=['name_error'])%}
+          {% if name_error %}
+            {% for msg in name_error %}
+              <div class="error">{{ msg }}</div>
+            {% endfor %}
+          {% endif %}
+        {% endwith %}
       </div>
       <div class="row">
         <label>duration:</label>
-        <input class="twelve columns" type="text" name="duration" placeholder="required duration for attendees">
+        <input class="twelve columns required" type="number" name="duration" placeholder="required duration for attendees in minutes">
+        {% with duration_error = get_flashed_messages(category_filter=['duration_error'])%}
+          {% if duration_error %}
+            {% for msg in duration_error %}
+              <div class="error">{{ msg }}</div>
+            {% endfor %}
+          {% endif %}
+        {% endwith %}
       </div>
       <div class="row">
         <label>date:</label>
-        <input class="twelve columns" type="date" name="date" value="">
+        <input class="twelve columns required" type="date" name="date" value="">
+        {% with date_error = get_flashed_messages(category_filter=['date_error'])%}
+          {% if date_error %}
+            {% for msg in date_error %}
+              <div class="error">{{ msg }}</div>
+            {% endfor %}
+          {% endif %}
+        {% endwith %}
+      </div>
+      <div class="row instructor">
+        <label>instructor:</label>
+        <select class=" twelve columns" name="existing_instructor">
+          <option value="">no instructor selected</option>
+          {% for instructor in instructors %}
+            <option value="{{instructor.id}}">{{instructor.name}}</option>
+          {% endfor %}
+        </select>
+      </div>
+      {% with instructor_error = get_flashed_messages(category_filter=['instructor_error'])%}
+        {% if instructor_error %}
+          {% for msg in instructor_error %}
+            <div class="error">{{ msg }}</div>
+          {% endfor %}
+        {% endif %}
+      {% endwith %}
+      <div class="row add_target">
+        <button type="button" class="twelve columns new_instructor">add a new or additional instructor</button>
       </div>
       <div class="row">
         <label>email text:</label>
         <!-- placeholder text should be pulled from text of the email for that clients most recent seminar -->
-        <textarea class="twelve columns" type="text" name="email_text" placeholder="email text to be sent to every attendee"></textarea>
+        <textarea class="twelve columns required" type="text" name="email_text" placeholder="email text to be sent to every attendee"></textarea>
+        {% with email_error = get_flashed_messages(category_filter=['email_error'])%}
+          {% if email_error %}
+            {% for msg in email_error %}
+              <div class="error">{{ msg }}</div>
+            {% endfor %}
+          {% endif %}
+        {% endwith %}
       </div>
       <div class="row">
         <label>RACE verbiage:</label>
         <!-- to be inserted at bottom of certificate. will be different for each seminar -->
-        <textarea class="twelve columns" type="text" name="email_text" placeholder="RACE required text for certificate"></textarea>
+        <textarea class="twelve columns required" type="text" name="race_verbiage" placeholder="RACE required text for certificate"></textarea>
+        {% with race_error = get_flashed_messages(category_filter=['race_error'])%}
+          {% if race_error %}
+            {% for msg in race_error %}
+              <div class="error">{{ msg }}</div>
+            {% endfor %}
+          {% endif %}
+        {% endwith %}
       </div>
       <div class="row">
-        <label>CVMP verbiage (optional):</label>
+        <label>CVPM verbiage (optional):</label>
         <!-- same as above, but only some users will be able to see this -->
-        <textarea class="twelve columns" type="text" name="email_text" placeholder="CVMP required text for certificate"></textarea>
+        <textarea class="twelve columns" type="text" name="cvpm_verbiage" placeholder="CVMP required text for certificate"></textarea>
       </div>
-
+      <div class="row jserror">
+        <p>please fill out all required fields</p>
+      </div>
       <div class="row">
         <input class="four columns add_seminar" type="submit" value="Add Seminar">
       </div>
     </div>
   </form>
 </div>
+{% if session['permission'] == "super-admin" and session['client_id'] == 7 %}
+<div class="popup client_alert">
+  <div class="row">
+    <p>you haven't chosen a client yet!</p>
+    <button type="button" name="button" class="client_alert_button">ok</button>
+  </div>
+</div>
+{% endif %}
 <script type="text/javascript" src="{{ url_for('static', filename='js/add_class.js') }}"></script>

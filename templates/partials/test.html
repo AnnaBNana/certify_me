@@ -1,0 +1,15 @@
+<div class="heading">
+  <h1 class="page_title">{{title}}</h1>
+</div>
+<div class="container main_container">
+  <div class="offset-by-one ten columns">
+    {% for class in class_list %}
+    <div class="row">
+      <pre class="twelve columns">
+        {{class.email_text}}
+      </pre>
+    </div>
+    {% endfor %}
+  </div>
+</div>
+<script type="text/javascript" src="{{ url_for('static', filename='js/test.js') }}"></script>

@@ -40,7 +40,6 @@ $(document).ready(function() {
         $('.nomatch').hide();
         var data = $(this).serialize();
         $.post('/add_user', data, function(res){
-          console.log(res);
           if (res.error) {
             $('.dberror').append('<p>' + res.error + '</p>')
             $('.jserror').show();

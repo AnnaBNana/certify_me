@@ -15,10 +15,14 @@
       <input class="twelve columns default_pdf" type="button" value="use existing client PDF">
     </div>
     <div class="row">
-      <input class="twelve columns change_pdf" type="button" value="or replace with new PDF">
+      <input type="button" class="twelve columns change_pdf" value="or replace with new PDF">
+      <input type="text" class="twelve columns pdffilename" value="" disabled>
+      <input type="file" class="pdfupload" accept=".pdf">
     </div>
     <div class="row">
-      <input class="twelve columns add_csv" type="button" value="upload CSV file">
+      <input type="button" class="twelve columns add_csv" value="upload CSV file">
+      <input type="text" class="twelve columns csvfilename" value="" disabled>
+      <input type="file" class="csvupload" accept=".csv">
     </div>
     <div class="row">
       <input class="four columns make" type="button" value="Generate Certificates">

@@ -1,7 +1,11 @@
 $(document).ready(function() {
   $('.client').click(function(){
     $.get('/index/choose_client', function(res) {
-      $('.main_content').html(res);
+      if (res.error) {
+        window.location.assign('/')
+      } else {
+        $('.main_content').html(res);
+      }
     })
   })
   //submit form data to add client to db
@@ -37,13 +41,21 @@ $(document).ready(function() {
   $('.activate').click(function(){
     $.get('/index/add_class', function(res) {
       $('.popup').hide()
-      $('.main_content').html(res)
+      if (res.error) {
+        window.location.assign('/')
+      } else {
+        $('.main_content').html(res);
+      }
     })
   });
   $('.choose').click(function(){
     $.get('/index/choose_client', function(res) {
       $('.popup').hide()
-      $('.main_content').html(res)
+      if (res.error) {
+        window.location.assign('/')
+      } else {
+        $('.main_content').html(res);
+      }
     })
   })
   $('.close').click(function(){

@@ -2,7 +2,11 @@ $(document).ready(function() {
   //when add new client clicked, display add client partial
   $('.add_client').click(function(){
     $.get('/index/add_client', function(res) {
-      $('.main_content').html(res);
+      if (res.error) {
+        window.location.assign('/')
+      } else {
+        $('.main_content').html(res);
+      }
     })
   });
   //when next is clicked, load add class partial
@@ -10,7 +14,11 @@ $(document).ready(function() {
     client = {"id": $('.existing_client').val()}
     // console.log(client)
     $.post('/choose_client', client, function(res) {
-      $('.main_content').html(res);
+      if (res.error) {
+        window.location.assign('/')
+      } else {
+        $('.main_content').html(res);
+      }
     })
   })
 });
