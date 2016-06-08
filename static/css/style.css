@@ -122,6 +122,12 @@ a {
   font-weight: bold;
   padding-bottom: 10px; }
 
+.jssuccess {
+  text-align: center;
+  display: none;
+  font-weight: bold;
+  padding-bottom: 10px; }
+
 .switch {
   padding: 4px;
   text-align: right; }

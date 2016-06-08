@@ -1,0 +1,25 @@
+<div class="heading">
+  <h1 class="page_title">{{title}}</h1>
+</div>
+<div class="container main_container">
+  <div class="offset-by-one ten columns">
+    <div class="select_client">
+      <div class="row">
+        <label>select client:</label>
+        <select class="twelve columns existing_client" name="existing_client">
+          {% for client in all_clients %}
+          <option value="{{client.id}}">{{client.client_name}}</option>
+          {% endfor %}
+        </select>
+      </div>
+      <div class="row">
+        <input class="twelve columns add_client" type="button" value="or add new client">
+      </div>
+      <div class="row">
+        <input class="four columns add" type="button" data-source="add" value="add new seminar">
+        <input class="u-pull-right four columns gen" data-source="gen" type="button" value="generate certificates">
+      </div>
+    </div>
+  </div>
+</div>
+<script type="text/javascript" src="{{ url_for('static', filename='js/choose_client.js') }}"></script>

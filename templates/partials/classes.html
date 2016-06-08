@@ -1,0 +1,28 @@
+<div class="heading">
+  <h1 class="page_title">{{title}}</h1>
+</div>
+<div class="container main_container">
+  <div class="offset-by-one ten columns">
+    <div class="row">
+      <table class="u-full-width">
+        <thead>
+          <th>seminar title</th>
+          <th>date</th>
+          <th>status</th>
+          <th>action</th>
+        </thead>
+        <tbody>
+          {% for class in classes %}
+          <tr>
+            <td>{{class.name}}</td>
+            <td>{{class.date}}</td>
+            <td>{{class.status}}</td>
+            <td><button type="button" class="edit">edit class</button></td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+<script type="text/javascript" src="{{ url_for('static', filename='js/client.js') }}"></script>

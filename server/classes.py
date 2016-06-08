@@ -10,6 +10,12 @@ class Classes(object):
     def add(self, form_data):
         print "form data", form_data
         validate = True
+        instructor_list = []
+        for k, v in form_data.iteritems():
+            #check every key to see if it begins with new instructor
+            if k.startswith('new_instructor'):
+                #if it does push value to a list
+                instructor_list.append(v)
         if len(form_data['name']) < 6:
             flash("Name should be at lease 6 characters long", "name_error")
             validate = False
@@ -19,7 +25,7 @@ class Classes(object):
         if len(form_data['date']) < 10:
             flash("Please enter correct date format", "date_error")
             validate = False
-        if form_data['existing_instructor'] == "" and ('new_instructor' not in form_data or form_data['new_instructor'] == ""):
+        if form_data['existing_instructor'] == "" and len(instructor_list) < 1:
             print "instructor validation fail"
             flash("Please choose existing instructor or add at least one new instructor", "instructor_error")
             validate = False
@@ -37,12 +43,6 @@ class Classes(object):
             return "error"
         else:
             print "validation pass"
-            instructor_list = []
-            for k, v in form_data.iteritems():
-                #check every key to see if it begins with new instructor
-                if k.startswith('new_instructor'):
-                    #if it does push value to a list
-                    instructor_list.append(v)
             print instructor_list
             query = "INSERT INTO classes (name, duration, client_id, email_text, date, created_at, race_verbiage, cvpm_verbiage, status) VALUES (:name, :duration, :client_id, :email_text, :date, NOW(), :race_verbiage, :cvpm_verbiage, :status) RETURNING id"
             values = {
@@ -62,19 +62,25 @@ class Classes(object):
             instructor_ids = instructors.add(instructor_list, class_id)
             print "instructor ids: ", instructor_ids
             # with returned ids, we then go and add entries to relational table
-            query = "INSERT INTO class_instructor (instructor_id, class_id) VALUES (:instructor_id, :class_id) RETURNING instructor_id"
+            instructor_query = "INSERT INTO class_instructor (instructor_id, class_id) VALUES (:instructor_id, :class_id) RETURNING instructor_id"
             for id in instructor_ids:
-                values = {
+                instructor = {
                     "instructor_id": id,
                     "class_id": class_id
                 }
                 postgresql.query_db(instructor_query, instructor)
-            print all_instructor_ids
             return class_id
     def findAll(self):
         query = "SELECT * FROM classes";
         classes = postgresql.query_db(query)
         return classes
+    def findIncomplete(self):
+        query = "SELECT * FROM classes WHERE status=:status"
+        values = {
+            "status": "incomplete"
+        }
+        incomplete_classes = postgresql.query_db(query, values)
+        return incomplete_classes
     def findOne(self, class_id):
         query = "SELECT * FROM classes WHERE id=:class_id";
         values = {

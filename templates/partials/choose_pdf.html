@@ -6,9 +6,9 @@
     <div class="row">
       <label>select a seminar:</label>
       <select class="twelve columns class_name" name="class">
-        <option value="client1">Seminar w/ status incomplete</option>
-        <option value="client1">Seminar w/ status incomplete</option>
-        <option value="client1">Seminar w/ status incomplete</option>
+        {% for class in incomplete_classes %}
+        <option value="{{class.id}}">{{class.name}}</option>
+        {% endfor %}
       </select>
     </div>
     <div class="row">
@@ -29,4 +29,12 @@
     </div>
   </div>
 </div>
+{% if session['permission'] == "super-admin" and session['client_id'] == 7 %}
+<div class="popup client_alert">
+  <div class="row">
+    <p>you haven't chosen a client yet!</p>
+    <button type="button" name="button" class="client_alert_button">ok</button>
+  </div>
+</div>
+{% endif %}
 <script type="text/javascript" src="{{ url_for('static', filename='js/certificates.js') }}"></script>

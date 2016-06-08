@@ -1,0 +1,40 @@
+<div class="heading">
+  <h1 class="page_title">{{title}}</h1>
+</div>
+<div class="container main_container">
+  <div class="offset-by-one ten columns">
+      <table class="u-full-width">
+        <thead>
+          <th>name</th>
+          <th>email</th>
+          {% if session['permission'] == 'super-admin' %}
+          <th>permission</th>
+          {% endif %}
+          <th class="u-pull-right">actions</th>
+        </thead>
+        <tbody>
+          {% for user in users %}
+          <tr>
+            <td>{{user.name}}</td>
+            <td>{{user.email}}</td>
+            {% if session['permission'] == 'super-admin' %}
+            <td>{{user.permission}}</td>
+            {% endif %}
+            <td>
+              <button type="button" data-user-id="{{user.id}}" name="button" class="u-pull-right delete">delete user</button>
+              <button type="button" data-user-id="{{user.id}}" name="button" class="u-pull-right edit">edit user info</button>
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+  </div>
+</div>
+<div class="popup jssuccess delete_popup">
+  <div class="row">
+    <p>are you sure?  user will be permanently removed from the database</p>
+    <button type="button" name="button" class="offset-by-two four columns confirm_delete">destroy user forever!</button>
+    <button type="button" name="button" class="offset-by-one four columns cancel_delete">no, I changed my mind</button>
+  </div>
+</div>
+<script type="text/javascript" src="{{ url_for('static', filename='js/users.js') }}"></script>

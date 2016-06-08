@@ -1,0 +1,28 @@
+<div class="heading">
+  <h1 class="page_title">{{title}}</h1>
+</div>
+<div class="container main_container">
+  <div class="offset-by-one ten columns">
+      <table class="u-full-width">
+        <thead>
+          <th>client name</th>
+          <th>client email</th>
+          <th>business name</th>
+          <th class="u-pull-right">action</th>
+        </thead>
+        <tbody>
+          {% for client in clients %}
+          <tr>
+            <td>{{client.client_name}}</td>
+            <td>{{client.email}}</td>
+            <td>{{client.business_name}}</td>
+            <td>
+              <button type="button" data-client-id="{{client.id}}" name="button" class="u-pull-right edit">edit client info</button>
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+  </div>
+</div>
+<script type="text/javascript" src="{{ url_for('static', filename='js/clients.js') }}"></script>

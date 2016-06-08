@@ -17,6 +17,19 @@ class Businesses(object):
         }
         biz_id = postgresql.query_db(biz_query, biz_values)
         return biz_id
+    def update(self, form_data):
+        print form_data
+        query = "UPDATE businesses SET name=:name, street=:street, city=:city, state=:state, zip=:zip, website=:website, updated_at=NOW() WHERE id=:id"
+        values = {
+            "name": form_data['business_name'],
+            "street": form_data['street_addr'],
+            "city": form_data['city_addr'],
+            "state": form_data['state_addr'],
+            "zip": form_data['zip_addr'],
+            "website": form_data['website'],
+            "id": form_data['business_id']
+        }
+        postgresql.query_db(query, values)
     def findOne(self, biz_id):
         query = "SELECT * FROM businesses WHERE id=:id"
         values = {

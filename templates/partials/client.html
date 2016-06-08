@@ -1,24 +1,120 @@
-<div class="heading">
+3<div class="heading">
   <h1 class="page_title">{{title}}</h1>
 </div>
 <div class="container main_container">
-  <div class="offset-by-one ten columns">
-    <div class="select_client">
-      <div class="row">
-        <label>select client:</label>
-        <select class="twelve columns existing_client" name="existing_client">
-          {% for client in all_clients %}
-          <option value="{{client.id}}">{{client.name}}</option>
-          {% endfor %}
-        </select>
-      </div>
-      <div class="row">
-        <input class="twelve columns add_client" type="button" value="or add new client">
-      </div>
-      <div class="row">
-        <input class="four columns next" type="button" value="Next">
-      </div>
+  <form class="offset-by-one ten columns">
+    <div class="row ">
+      <label>name: </label>
+      <input class="twelve columns required" type="text" name="name" value="{{client.client_name}}">
     </div>
+    <div class="row ">
+      <label>email: </label>
+      <input class="twelve columns required" type="text" name="email" value="{{client.email}}">
+    </div>
+    <div class="row ">
+      <label>title(optional): </label>
+      <input class="twelve columns required" type="text" name="title" value="{{client.title}}">
+    </div>
+    <div class="row ">
+      <label>facebook(optional): </label>
+      <input class="twelve columns" type="text" name="facebook" value="{{client.social_media_1}}">
+    </div>
+    <div class="row ">
+      <label>twitter handle(optional): </label>
+      <input class="twelve columns" type="text" name="twitter" value="{{client.social_media_2}}">
+    </div>
+    <div class="row ">
+      <label>instagram(optional): </label>
+      <input class="twelve columns" type="text" name="instagram" value="{{client.social_media_3}}">
+    </div>
+    <div class="row ">
+      <label>business name: </label>
+      <input class="twelve columns required" type="text" name="business_name" value="{{client.business_name}}">
+    </div>
+    <div class="row">
+      <label>business address: </label>
+      <input class="twelve columns required" type="text" name="street_addr" value="{{client.street}}">
+    </div>
+    <div class="row">
+      <input class="four columns required" type="text" name="city_addr" value="{{client.city}}">
+      <select name="state_addr" class="four columns state required" data-client-state="{{client.state}}">
+        <option value="AL">Alabama</option>
+        <option value="AK">Alaska</option>
+        <option value="AZ">Arizona</option>
+        <option value="AR">Arkansas</option>
+        <option value="CA">California</option>
+        <option value="CO">Colorado</option>
+        <option value="CT">Connecticut</option>
+        <option value="DE">Delaware</option>
+        <option value="FL">Florida</option>
+        <option value="GA">Georgia</option>
+        <option value="HI">Hawaii</option>
+        <option value="ID">Idaho</option>
+        <option value="IL">Illinois</option>
+        <option value="IN">Indiana</option>
+        <option value="IA">Iowa</option>
+        <option value="KS">Kansas</option>
+        <option value="KY">Kentucky</option>
+        <option value="LA">Louisiana</option>
+        <option value="ME">Maine</option>
+        <option value="MD">Maryland</option>
+        <option value="MA">Massachusetts</option>
+        <option value="MI">Michigan</option>
+        <option value="MN">Minnesota</option>
+        <option value="MS">Mississippi</option>
+        <option value="MO">Missouri</option>
+        <option value="MT">Montana</option>
+        <option value="NE">Nebraska</option>
+        <option value="NV">Nevada</option>
+        <option value="NH">New Hampshire</option>
+        <option value="NJ">New Jersey</option>
+        <option value="NM">New Mexico</option>
+        <option value="NY">New York</option>
+        <option value="NC">North Carolina</option>
+        <option value="ND">North Dakota</option>
+        <option value="OH">Ohio</option>
+        <option value="OK">Oklahoma</option>
+        <option value="OR">Oregon</option>
+        <option value="PA">Pennsylvania</option>
+        <option value="RI">Rhode Island</option>
+        <option value="SC">South Carolina</option>
+        <option value="SD">South Dakota</option>
+        <option value="TN">Tennessee</option>
+        <option value="TX">Texas</option>
+        <option value="UT">Utah</option>
+        <option value="VT">Vermont</option>
+        <option value="VA">Virginia</option>
+        <option value="WA">Washington</option>
+        <option value="WV">West Virginia</option>
+        <option value="WI">Wisconsin</option>
+        <option value="WY">Wyoming</option>
+      </select>
+      <input class="four columns required" type="number" name="zip_addr" value="{{client.zip}}">
+    </div>
+    <div class="row ">
+      <label>website(optional): </label>
+      <input class="twelve columns" type="text" name="website" value="{{client.website}}">
+    </div>
+    <input class="twelve columns" type="hidden" name="client_id" value="{{client.client_id}}">
+    <input class="twelve columns" type="hidden" name="business_id" value="{{client.business_id}}">
+    <div class="row jserror">
+      <p>please fill out all of fields</p>
+    </div>
+    <div class="row ">
+      <input class="four columns update" type="submit" value="update client">
+    </div>
+  </form>
+</div>
+<div class="popup jssuccess">
+  <div class="row close_container">
+    <i class="fa fa-times-circle close" aria-hidden="true"></i>
+  </div>
+  <div class="row">
+    user successfully updated in database
+  </div>
+  <div class="row">
+    <button type="button" class="offset-by-three six columns confirm">back to client list</button>
   </div>
 </div>
-<script type="text/javascript" src="{{ url_for('static', filename='js/client.js') }}"></script>
+
+<script type="text/javascript" src="{{ url_for('static', filename='js/clients.js') }}"></script>

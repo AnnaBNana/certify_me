@@ -46,15 +46,6 @@ def logout():
     session.clear()
     return redirect('/')
 #begin partial loading routes
-@app.route('/index/choose_client')
-def client():
-    if 'logged' in session:
-        title = "Choose a Client"
-        all_clients = clients.findAll()
-        return render_template('partials/client.html', title=title, all_clients=all_clients)
-    else:
-        error = {'error': 'redirect'}
-        return jsonify(error)
 @app.route('/index/add_user')
 def add_user():
     if 'logged' in session:
@@ -64,10 +55,31 @@ def add_user():
     else:
         error = {'error': 'redirect'}
         return jsonify(error)
-@app.route('/index/add_biz')
-def add_biz():
+@app.route('/index/users')
+def view_users():
     if 'logged' in session:
-        return render_template('partials/add_business.html')
+        title = "All Users"
+        all_users = users.findAll()
+        return render_template('partials/users.html', title=title, users=all_users)
+    else:
+        error = {'error': 'redirect'}
+        return jsonify(error)
+@app.route('/index/user/<id>')
+def show_user(id):
+    print id
+    if 'logged' in session:
+        user = users.findOne(id)
+        title = "Edit User Info"
+        return render_template('partials/user.html', title=title, user=user)
+    else:
+        error = {'error': 'redirect'}
+        return jsonify(error)
+@app.route('/index/choose_client')
+def choose_client():
+    if 'logged' in session:
+        title = "Choose a Client"
+        all_clients = clients.findAll()
+        return render_template('partials/choose_client.html', title=title, all_clients=all_clients)
     else:
         error = {'error': 'redirect'}
         return jsonify(error)
@@ -81,6 +93,24 @@ def add_client():
         error = {'error': 'redirect'}
         print error
         return jsonify(error)
+@app.route('/index/clients')
+def view_clients():
+    if 'logged' in session:
+        title = "All Clients"
+        allClients = clients.findAll()
+        return render_template('partials/clients.html', title=title, clients=allClients)
+    else:
+        error = {'error': 'redirect'}
+        return jsonify(error)
+@app.route('/index/client/<id>')
+def show_client(id):
+    if 'logged' in session:
+        title = "Edit Client"
+        client = clients.findOne(id)
+        return render_template('partials/client.html', title=title, client=client)
+    else:
+        error = {'error': 'redirect'}
+        return jsonify(error)
 @app.route('/index/add_class')
 def add_class():
     if 'logged' in session:
@@ -89,13 +119,22 @@ def add_class():
         return render_template('partials/add_class.html', title=title, instructors=instructor_list)
     else:
         error = {'error': 'redirect'}
-        print "class adding error:", error
+        return jsonify(error)
+@app.route('/index/classes')
+def view_classes():
+    if 'logged' in session:
+        title = "All Seminars"
+        all_classes = classes.findAll()
+        return render_template('partials/classes.html', title=title, classes=all_classes)
+    else:
+        error = {'error': 'redirect'}
         return jsonify(error)
 @app.route('/index/certificates')
 def pdf():
     if 'logged' in session:
         title = "Generate Certificates"
-        return render_template('partials/choose_pdf.html', title=title)
+        incomplete_classes = classes.findIncomplete()
+        return render_template('partials/choose_pdf.html', title=title, incomplete_classes=incomplete_classes)
     else:
         error = {'error': 'redirect'}
         return jsonify(error)
@@ -104,7 +143,19 @@ def test():
     title = "Test"
     result = classes.findAll()
     return render_template('partials/test.html', title=title, class_list=result)
+@app.route('/index/add_biz')
+def add_biz():
+    if 'logged' in session:
+        return render_template('partials/add_business.html')
+    else:
+        error = {'error': 'redirect'}
+        return jsonify(error)
 #end partial loading routes
+#begin delete routes
+@app.route('/delete/user/<id>')
+def destroy_user(id):
+    users.destroy(id)
+    return redirect('/index/users')
 #begin post routes
 @app.route('/login', methods=['POST'])
 def login():
@@ -133,11 +184,14 @@ def add_client_form():
         error = {'error': 'redirect'}
         return jsonify(error)
 @app.route('/choose_client', methods=['POST'])
-def choose_client():
+def activate_client():
     if 'logged' in session:
         session['client_id'] = request.form['id']
         print "my current session data", session
-        return redirect('/index/add_class')
+        if request.form['source'] == "add":
+            return redirect('/index/add_class')
+        elif request.form['source'] == "gen":
+            return redirect('/index/certificates')
     else:
         error = {'error': 'redirect'}
         return jsonify(error)
@@ -152,6 +206,25 @@ def new_class():
             return redirect('/index/add_class')
         else:
             return redirect('/index/certificates')
+    else:
+        error = {'error': 'redirect'}
+        return jsonify(error)
+@app.route('/update_user', methods=['POST'])
+def update_user():
+    if 'logged' in session:
+        success = users.update(request.form)
+        return success
+    else:
+        error = {'error': 'redirect'}
+        return jsonify(error)
+@app.route('/update_client', methods=['POST'])
+def update_client():
+    if 'logged' in session:
+        print request.form
+        businesses.update(request.form)
+        clients.update(request.form)
+        success = {"success": "success"}
+        return jsonify(success)
     else:
         error = {'error': 'redirect'}
         return jsonify(error)

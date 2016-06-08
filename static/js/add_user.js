@@ -16,8 +16,8 @@ $(document).ready(function() {
     $('.info_window').show(900);
   })
   //close info window
-  $('.close').click(function() {
-    $('.info_window').hide('slow');
+  $('.close_container').click(function() {
+    $('.popup').hide('slow');
   })
   //submit register user form
   $('form').submit(function(){
@@ -35,15 +35,18 @@ $(document).ready(function() {
       //if passwords do not match, show nomatch error
       if ($('.password').val() != $('.confirmpassword').val()) {
         $('.nomatch').show();
+      //otherwise, hide all errors and send form data to backend for additional validation
       } else {
         $('.jserror').hide();
         $('.nomatch').hide();
         var data = $(this).serialize();
         $.post('/add_user', data, function(res){
+          //show popup error message if email is already in the database
           if (res.error) {
             $('.dberror').append('<p>' + res.error + '</p>')
-            $('.jserror').show();
+            $('.dberror').show();
           }
+          //otherwise, show success message
           else if (res.id) {
             $('.success').show();
           }
@@ -54,5 +57,15 @@ $(document).ready(function() {
       }
     }
     return false;
+  })
+  //success message window button redirects to user list
+  $('.user_list').click(function(){
+    $.get('/index/users', function(res){
+      if (res.error) {
+        window.location.assign('/')
+      } else {
+        $('.main_content').html(res)
+      }
+    })
   })
 });

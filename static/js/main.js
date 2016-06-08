@@ -21,10 +21,22 @@ $(document).ready(function() {
       }
     })
   });
+  $('.users').click(function(){
+    $.get('/index/users', function(res){
+      if(res.error) {
+        window.location.assign('/')
+      } else {
+        $('.main_content').html(res);
+      }
+    })
+  })
+  //add update client
+
+  //when choose client is clicked, load choose client partial
   $('.choose_client').click(function() {
     $.get('/index/choose_client', function(res) {
       if (res.error) {
-        window.location.assign('/')
+        window.location.assign('/');
       } else {
         $('.main_content').html(res);
       }
@@ -34,7 +46,28 @@ $(document).ready(function() {
   $('.add_client').click(function() {
     $.get('/index/add_client', function(res) {
       if (res.error) {
-        window.location.assign('/')
+        window.location.assign('/');
+      } else {
+        $('.main_content').html(res);
+      }
+    })
+  });
+  //when view clients is clicked, load view clients partial
+  $('.clients').click(function(){
+    $.get('/index/clients', function(res) {
+      if(res.error) {
+        window.location.assign('/');
+      } else {
+        $('.main_content').html(res);
+      }
+    })
+  });
+  //when user profile is clicked, load user partial
+  $('.show_user').click(function(){
+    var id = $(this).attr('data-user-id')
+    $.get('/index/user/' + id, function(res) {
+      if(res.error) {
+        window.location.assign('/');
       } else {
         $('.main_content').html(res);
       }
@@ -50,6 +83,15 @@ $(document).ready(function() {
       }
     })
   });
+  $('.classes').click(function() {
+    $.get('/index/classes', function(res){
+      if (res.error) {
+        window.location.assign('/')
+      } else {
+        $('.main_content').html(res);
+      }
+    })
+  })
   //when generate pdf is clicked, load choose pdf partial
   $('.generate_certs').click(function() {
     $.get('/index/certificates', function(res) {

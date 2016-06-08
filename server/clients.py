@@ -31,9 +31,26 @@ class Clients(object):
         session['client_id'] = client_id
         print "client id: ", client_id
         return str(client_id)
+    def update(self, form_data):
+        query = "UPDATE clients SET email=:email, name=:name, title=:title, social_media_1=:fb, social_media_2=:twit, social_media_3=:inst, updated_at=NOW() WHERE id=:id"
+        values = {
+            "email": form_data['email'],
+            "name": form_data['name'],
+            "title": form_data['title'],
+            "fb": form_data['facebook'],
+            "twit": form_data['twitter'],
+            "inst": form_data['instagram'],
+            "id": form_data['client_id']
+        }
+        postgresql.query_db(query, values)
     def findAll(self):
-        query = "SELECT id, name FROM clients WHERE id!=7"
+        query = "SELECT c.id AS id, c.name AS client_name, c.email AS email, b.name AS business_name FROM clients c, businesses b WHERE c.id!=7"
         clients = postgresql.query_db(query)
         return clients
-    def findOne(self):
-        return "one client"
+    def findOne(self, id):
+        query = "SELECT c.id AS client_id, email, c.name AS client_name, title, social_media_1, social_media_2, social_media_3, b.id AS business_id, b.name AS business_name, street, city, state, zip, website FROM clients c, businesses b WHERE c.id=:id"
+        values = {
+            "id": id
+        }
+        client = postgresql.query_db(query, values)
+        return client[0]

@@ -59,13 +59,41 @@ class Users(object):
                 else:
                     error = {"error": "email or password did not match an existing user in the database"}
                     return error
+    def update(self, form_data):
+        if 'permission' not in form_data:
+            permission = "super-admin"
+        else:
+            permission = form_data['permission']
+        query = "UPDATE users SET name=:name, email=:email, permission=:permission, updated_at=NOW() WHERE id=:id"
+        values = {
+            "name": form_data['name'],
+            "email": form_data['email'],
+            "permission": permission,
+            "id": form_data['id']
+        }
+        postgresql.query_db(query, values)
+        success = {'success': 'success'}
+        return jsonify(success)
     def findAll(self):
-        return "all users"
-    def findOne(self):
-        return "one user"
+        query = "SELECT * FROM users"
+        users = postgresql.query_db(query)
+        return users
+    def findOne(self, id):
+        query = "SELECT * FROM users WHERE id=:id"
+        values = {
+            "id": id
+        }
+        user = postgresql.query_db(query, values)
+        return user[0]
     def findOneFromEmail(self, email):
         query = "SELECT * FROM users WHERE email=:email"
         value = {
             "email": email
         }
         return postgresql.query_db(query, value)
+    def destroy(self, id):
+        query = "DELETE FROM users WHERE id=:id"
+        values = {
+            "id":id
+        }
+        postgresql.query_db(query, values)

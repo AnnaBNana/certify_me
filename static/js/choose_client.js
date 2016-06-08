@@ -10,8 +10,10 @@ $(document).ready(function() {
     })
   });
   //when next is clicked, load add class partial
-  $('.next').click(function(){
-    client = {"id": $('.existing_client').val()}
+  $('.add,.gen').click(function(){
+    var source = $(this).attr('data-source')
+    console.log(source)
+    client = {"id": $('.existing_client').val(), "source": source}
     // console.log(client)
     $.post('/choose_client', client, function(res) {
       if (res.error) {

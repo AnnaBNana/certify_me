@@ -15,18 +15,19 @@
     <div class="sidebar">
       <p class="expand_icon"><i class="fa fa-bars" aria-hidden="true"></i></p>
       <div class="sidebar_content">
-        <!-- only show if user logged in is admin or super-admin -->
         {% if session['permission'] != "user": %}
           <a href="#" class="add_user">add a user</a>
           <a href="#" class="users">view users</a>
         {% endif %}
-        <!-- only show if user logged in as super-admin -->
+        {% if session['permission'] != "super-admin" %}
+        <a href="#" class="update_client">business profile</a>
+        {% endif %}
         {% if session['permission'] == "super-admin": %}
           <a href="#" class="choose_client">choose a client</a>
           <a href="#" class="add_client">add a client</a>
           <a href="#" class="clients">view clients</a>
         {% endif %}
-        <!-- show for all users -->
+        <a href="#" class="show_user" data-user-id="{{session['user_id']}}">my user info</a>
         <a href="#" class="add_class">add a seminar</a>
         <a href="#" class="classes">view seminars</a>
         <a href="#" class="generate_certs">generate certificates</a>
