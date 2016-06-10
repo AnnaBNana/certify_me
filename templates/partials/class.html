@@ -1,0 +1,75 @@
+<div class="heading">
+  <h1 class="page_title">{{title}}</h1>
+</div>
+<div class="container main_container">
+  <form class="offset-by-one ten columns">
+    <div class="row ">
+      <label>name: </label>
+      <input class="twelve columns required" type="text" name="name" value="{{one_class.name}}">
+    </div>
+    <div class="row ">
+      <label>duration: </label>
+      <input class="twelve columns required" type="text" name="duration" value="{{one_class.duration}}">
+    </div>
+    <div class="row">
+      <label>date:</label>
+      <input class="twelve columns required" type="date" name="date" value="{{one_class.date}}">
+    </div>
+    <label>instructor(s):</label>
+    {% for instructor in instructors %}
+    <div class="row">
+      <input type="text" class="nine columns instructor{{instructor.id}}" name="instructor{{instructor.id}}" value="{{instructor.name}}">
+      <button type="button" class="remove" data-instructor-id="{{instructor.id}}">remove instructor</button>
+    </div>
+    {% endfor %}
+    <div class="row">
+      <button type="button" class="twelve columns add_instructor">add instructor(s)</button>
+    </div>
+    <div class="row add_instructor_target">
+      <div class="row instructor">
+        <select class=" twelve columns" name="existing_instructor">
+          <option value="">no instructor selected</option>
+          {% for instructor_2 in all_instructors %}
+            <option value="{{instructor_2.id}}">{{instructor_2.name}}</option>
+          {% endfor %}
+        </select>
+      </div>
+      <div class="row add_target">
+        <button type="button" class="twelve columns new_instructor">add a new or additional instructor</button>
+      </div>
+    </div>
+    <div class="row">
+      <label>email text:</label>
+      <textarea class="twelve columns required" type="text" name="email_text">{{one_class.email_text}}</textarea>
+    </div>
+    <div class="row">
+      <label>RACE verbiage:</label>
+      <textarea class="twelve columns required" type="text" name="race_verbiage">{{one_class.race_verbiage}}</textarea>
+    </div>
+    <div class="row">
+      <label>CVPM verbiage (optional):</label>
+      <textarea class="twelve columns" type="text" name="cvpm_verbiage">{{one_class.cvpm_verbiage}}</textarea>
+    </div>
+    <input type="hidden" name="id" value="{{one_class.id}}">
+    <div class="row jserror">
+      <p>please fill out all fields</p>
+    </div>
+    <div class="row ">
+      <input class="four columns update" type="submit" value="update seminar">
+      <button type="button" class="u-pull-right four columns cancel">Cancel</button>
+    </div>
+  </form>
+</div>
+<div class="popup jssuccess">
+  <div class="row close_container">
+    <i class="fa fa-times-circle close" aria-hidden="true"></i>
+  </div>
+  <div class="row">
+    seminar successfully updated in database
+  </div>
+  <div class="row">
+    <button type="button" class="offset-by-three six columns confirm">back to seminar list</button>
+  </div>
+</div>
+
+<script type="text/javascript" src="{{ url_for('static', filename='js/classes.js') }}"></script>

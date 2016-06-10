@@ -129,6 +129,17 @@ def view_classes():
     else:
         error = {'error': 'redirect'}
         return jsonify(error)
+@app.route('/index/class/<id>')
+def show_class(id):
+    if 'logged' in session:
+        title = "Edit Seminar"
+        one_class = classes.findOne(id)
+        class_instructors = instructors.find_all_class_instructors(id)
+        all_instructors = instructors.find_all_other(id)
+        return render_template('partials/class.html', title=title, one_class=one_class, instructors=class_instructors, all_instructors=all_instructors)
+    else:
+        error = {'error': 'redirect'}
+        return jsonify(error)
 @app.route('/index/certificates')
 def pdf():
     if 'logged' in session:
@@ -220,11 +231,21 @@ def update_user():
 @app.route('/update_client', methods=['POST'])
 def update_client():
     if 'logged' in session:
-        print request.form
+        # print request.form
         businesses.update(request.form)
         clients.update(request.form)
         success = {"success": "success"}
         return jsonify(success)
+    else:
+        error = {'error': 'redirect'}
+        return jsonify(error)
+@app.route('/update_class', methods=['POST'])
+def update_class():
+    print "form data: ", request.form
+    if 'logged' in session:
+        classes.update(request.form)
+        success = {"success": "success"}
+        return redirect('/index/classes')
     else:
         error = {'error': 'redirect'}
         return jsonify(error)

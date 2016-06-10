@@ -62,4 +62,13 @@ $(document).ready(function() {
     })
   })
   $('#remove').remove();
+  $('.cancel').click(function(){
+    $.get('/index/users', function(res){
+      if(res.error) {
+        window.location.assign('/');
+      } else {
+        $('.main_content').html(res);
+      }
+    })
+  });
 });

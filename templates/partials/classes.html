@@ -17,7 +17,7 @@
             <td>{{class.name}}</td>
             <td>{{class.date}}</td>
             <td>{{class.status}}</td>
-            <td><button type="button" class="edit">edit class</button></td>
+            <td><button type="button" data-class-id={{class.id}} class="edit">edit seminar</button></td>
           </tr>
           {% endfor %}
         </tbody>
@@ -25,4 +25,4 @@
     </div>
   </div>
 </div>
-<script type="text/javascript" src="{{ url_for('static', filename='js/client.js') }}"></script>
+<script type="text/javascript" src="{{ url_for('static', filename='js/classes.js') }}"></script>

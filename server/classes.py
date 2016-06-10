@@ -60,16 +60,46 @@ class Classes(object):
             print class_id
             # add instructor names from list items to db as a group, return ids
             instructor_ids = instructors.add(instructor_list, class_id)
+            if 'existing_instructor' in form_data:
+                instructor_ids.append(form_data['existing_instructor'])
             print "instructor ids: ", instructor_ids
             # with returned ids, we then go and add entries to relational table
-            instructor_query = "INSERT INTO class_instructor (instructor_id, class_id) VALUES (:instructor_id, :class_id) RETURNING instructor_id"
-            for id in instructor_ids:
-                instructor = {
-                    "instructor_id": id,
-                    "class_id": class_id
-                }
-                postgresql.query_db(instructor_query, instructor)
+            instructors.add_class_instructors(class_id, instructor_ids)
             return class_id
+    def update(self, form_data):
+        # update class
+        query = "UPDATE classes SET name=:name, duration=:duration, email_text=:email_text, date=:date, updated_at=NOW(), race_verbiage=:race_verbiage, cvpm_verbiage=cvpm_verbiage WHERE id=:id"
+        values = {
+            "name": form_data['name'],
+            "duration": form_data['duration'],
+            "email_text": form_data['email_text'],
+            "date": form_data['date'],
+            "race_verbiage": form_data['race_verbiage'],
+            "cvpm_verbiage": form_data['cvpm_verbiage'],
+            "id": form_data['id']
+        }
+        postgresql.query_db(query, values)
+        # collect all instructors to be removed, pass to instructors remove function
+        remove_instructors = {}
+        # collect all instructors to be updated, pass to instructors update function
+        update_instructor = {}
+        # collect all instructors to be added, pass to add instructors function
+        add_instructor = []
+        for key in form_data:
+            if key.startswith('remove'):
+                id = key[6:]
+                print id
+                remove_instructors[id] = form_data[key]
+                print remove_instructors
+            elif key.startswith('instructor'):
+                id = key[10:]
+                print id
+                update_instructor[id] = form_data[key]
+                print update_instructor
+            elif key.startswith('new_instructor'):
+                add_instructor.append(form_data[key])
+                print add_instructor
+        # instructors.delete_class_relationship(remove_instructors)
     def findAll(self):
         query = "SELECT * FROM classes";
         classes = postgresql.query_db(query)
@@ -87,4 +117,4 @@ class Classes(object):
             "class_id": class_id
         }
         one_class = postgresql.query_db(query, values)
-        return one_class
+        return one_class[0]

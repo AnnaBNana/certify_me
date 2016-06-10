@@ -49,5 +49,14 @@ $(document).ready(function() {
         $('.main_content').html(res);
       }
     })
-  })
+  });
+  $('.cancel').click(function(){
+    $.get('/index/clients', function(res){
+      if(res.error) {
+        window.location.assign('/');
+      } else {
+        $('.main_content').html(res);
+      }
+    })
+  });
 });

@@ -136,7 +136,8 @@ input[type=file] {
   display: none; }
 
 .pdffilename,
-.csvfilename {
+.csvfilename,
+.add_instructor_target {
   display: none; }
 
 /*# sourceMappingURL=style.css.map */
