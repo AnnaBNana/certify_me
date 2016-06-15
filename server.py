@@ -1,19 +1,34 @@
 from flask import Flask, render_template, request, redirect, jsonify, session, flash
+from werkzeug import secure_filename
 import os
+import dropbox
 from server.users import Users
 from server.clients import Clients
 from server.businesses import Businesses
 from server.classes import Classes
 from server.instructors import Instructors
+from server.certificates import Certificates
 
 app= Flask(__name__)
 
-users = Users()
-clients = Clients()
-businesses = Businesses()
-classes = Classes()
-instructors = Instructors()
+users = Users(app)
+clients = Clients(app)
+businesses = Businesses(app)
+classes = Classes(app)
+instructors = Instructors(app)
+certificates = Certificates(app)
 app.secret_key = os.urandom(24)
+#dropbox settings
+access_token = os.environ.get('ACCESS_TOKEN')
+# app_key = os.environ.get('APP_KEY')
+# app_secret = os.environ.get('APP_SECRET')
+# print app_key, app_secret
+# dbx = dropbox.Dropbox(access_token)
+client = dropbox.client.DropboxClient(access_token)
+# print 'linked account: ', client.account_info()
+# print "user account test: ", dbx.users_get_current_account()
+app.config['UPLOAD_FOLDER'] = 'static/uploads/'
+app.config['ALLOWED_EXTENSIONS'] = set(['pdf', 'csv'])
 #base page loading routes: index, main, permissions check, logout
 @app.route('/')
 def index():
@@ -41,6 +56,20 @@ def permission():
         #returns an error as AJAX response, which is handled in front end as a redirect to the root route
         error = {'error': 'redirect'}
         return jsonify(error)
+@app.route('/check_pdf_url')
+def check_pdf_url():
+    if "logged" in session:
+        client_id = session['client_id']
+        url = businesses.check_pdf_url(client_id)
+        if url == "":
+            nourl = {'nourl': 'not found'}
+            return jsonify(nourl)
+        else:
+            pdf_url = {'url': url}
+            return jsonify(pdf_url)
+    else:
+        error = {'error': 'redirect'}
+        return jsonify(error)
 @app.route('/logout')
 def logout():
     session.clear()
@@ -51,6 +80,7 @@ def add_user():
     if 'logged' in session:
         title = "Add a User"
         all_clients = clients.findAll()
+        print all_clients
         return render_template('partials/add_user.html', title=title, all_clients=all_clients)
     else:
         error = {'error': 'redirect'}
@@ -145,7 +175,7 @@ def pdf():
     if 'logged' in session:
         title = "Generate Certificates"
         incomplete_classes = classes.findIncomplete()
-        return render_template('partials/choose_pdf.html', title=title, incomplete_classes=incomplete_classes)
+        return render_template('partials/certificates.html', title=title, incomplete_classes=incomplete_classes)
     else:
         error = {'error': 'redirect'}
         return jsonify(error)
@@ -167,6 +197,7 @@ def add_biz():
 def destroy_user(id):
     users.destroy(id)
     return redirect('/index/users')
+#end delete routes
 #begin post routes
 @app.route('/login', methods=['POST'])
 def login():
@@ -246,6 +277,31 @@ def update_class():
         classes.update(request.form)
         success = {"success": "success"}
         return redirect('/index/classes')
+    else:
+        error = {'error': 'redirect'}
+        return jsonify(error)
+@app.route('/certificates', methods=['POST'])
+def generate_certificates():
+    if 'logged' in session:
+        print "form data: ", request.form
+        client_id = session['client_id']
+        print "files data: ", request.files
+        filearray = []
+        upload_loc = "./static/uploads/"
+        for file in request.files:
+            new_file = request.files[file]
+            filename = secure_filename(new_file.filename)
+            new_file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+            filearray.append(new_file.filename)
+        #since this takes so long, give client option to upload files to dropbox after the rest of the operations are complete
+        f0 = open(upload_loc + filearray[0], 'r')
+        client.put_file("/" + filearray[0], f0)
+        f1 = open(upload_loc + filearray[1], 'rb')
+        client.put_file("/" + filearray[1], f1)
+        #after all operations complete, remove files from local file storage
+        # something like this: os.remove(os.path.join(app.config['UPLOADED_ITEMS_DEST'], item.filename))
+        success = {'success': 'yay, you win!'}
+        return jsonify(success)
     else:
         error = {'error': 'redirect'}
         return jsonify(error)

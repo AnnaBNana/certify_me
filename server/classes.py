@@ -1,12 +1,12 @@
-from flask import Flask, session, flash
+from flask import session
 from server.psqlconnection import PSQLConnector
 from server.instructors import Instructors
 
-app = Flask(__name__)
-postgresql = PSQLConnector(app, 'CertifyMe')
-instructors = Instructors()
 
 class Classes(object):
+    def __init__(self, app):
+        self.postgresql = PSQLConnector(app, 'CertifyMe')
+        self.instructors = Instructors(app)
     def add(self, form_data):
         print "form data", form_data
         validate = True
@@ -56,15 +56,15 @@ class Classes(object):
                 "status": "incomplete"
             }
             # add class, return id
-            class_id = postgresql.query_db(query, values)
+            class_id = self.postgresql.query_db(query, values)
             print class_id
             # add instructor names from list items to db as a group, return ids
-            instructor_ids = instructors.add(instructor_list, class_id)
-            if 'existing_instructor' in form_data:
+            instructor_ids = self.instructors.add(instructor_list, class_id)
+            if 'existing_instructor' in form_data and len(form_data['existing_instructor']) > 0:
                 instructor_ids.append(form_data['existing_instructor'])
             print "instructor ids: ", instructor_ids
             # with returned ids, we then go and add entries to relational table
-            instructors.add_class_instructors(class_id, instructor_ids)
+            self.instructors.add_class_instructors(class_id, instructor_ids)
             return class_id
     def update(self, form_data):
         # update class
@@ -78,43 +78,50 @@ class Classes(object):
             "cvpm_verbiage": form_data['cvpm_verbiage'],
             "id": form_data['id']
         }
-        postgresql.query_db(query, values)
+        class_id = form_data['id']
+        self.postgresql.query_db(query, values)
         # collect all instructors to be removed, pass to instructors remove function
         remove_instructors = {}
         # collect all instructors to be updated, pass to instructors update function
-        update_instructor = {}
+        update_instructors = {}
         # collect all instructors to be added, pass to add instructors function
         add_instructor = []
         for key in form_data:
             if key.startswith('remove'):
                 id = key[6:]
-                print id
+                # print id
                 remove_instructors[id] = form_data[key]
-                print remove_instructors
-            elif key.startswith('instructor'):
+            elif key.startswith('instructor') and len(form_data[key]) > 0:
                 id = key[10:]
-                print id
-                update_instructor[id] = form_data[key]
-                print update_instructor
-            elif key.startswith('new_instructor'):
+                # print id
+                update_instructors[id] = form_data[key]
+            elif key.startswith('new_instructor') and len(form_data[key]) > 0:
                 add_instructor.append(form_data[key])
-                print add_instructor
-        # instructors.delete_class_relationship(remove_instructors)
+        print "instructors to add: ", add_instructor
+        print "instructors to update: ", update_instructors
+        print "instructors to remove: ", remove_instructors
+        print "existing instructors to add: ", form_data['existing_instructor']
+        self.instructors.delete_class_relationship(class_id, remove_instructors)
+        added_instructors = self.instructors.add(add_instructor, class_id)
+        if len(form_data['existing_instructor']) > 0:
+            added_instructors.append(form_data['existing_instructor'])
+        self.instructors.add_class_instructors(class_id, added_instructors)
+        self.instructors.update(update_instructors)
     def findAll(self):
         query = "SELECT * FROM classes";
-        classes = postgresql.query_db(query)
+        classes = self.postgresql.query_db(query)
         return classes
     def findIncomplete(self):
         query = "SELECT * FROM classes WHERE status=:status"
         values = {
             "status": "incomplete"
         }
-        incomplete_classes = postgresql.query_db(query, values)
+        incomplete_classes = self.postgresql.query_db(query, values)
         return incomplete_classes
     def findOne(self, class_id):
         query = "SELECT * FROM classes WHERE id=:class_id";
         values = {
             "class_id": class_id
         }
-        one_class = postgresql.query_db(query, values)
+        one_class = self.postgresql.query_db(query, values)
         return one_class[0]

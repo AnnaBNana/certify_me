@@ -1,10 +1,8 @@
-from flask import Flask, session
 from server.psqlconnection import PSQLConnector
 
-app = Flask(__name__)
-postgresql = PSQLConnector(app, 'CertifyMe')
-
 class Instructors(object):
+    def __init__(self, app):
+        self.postgresql = PSQLConnector(app, 'CertifyMe')
     def add(self, instructor_list, class_id):
         instructor_query = "INSERT INTO instructors (name, created_at) VALUES (:name, NOW()) RETURNING id"
         #iterate through list of instructor names, running an insert statement for each instructor
@@ -23,17 +21,17 @@ class Instructors(object):
                 "instructor_id": id,
                 "class_id": class_id
             }
-            postgresql.query_db(instructor_query, instructor)
+            self.postgresql.query_db(instructor_query, instructor)
     def findAll(self):
         query = "SELECT * FROM instructors"
-        instructors = postgresql.query_db(query)
+        instructors = self.postgresql.query_db(query)
         return instructors
     def find_all_class_instructors(self, class_id):
         query = "SELECT * FROM class_instructor LEFT JOIN instructors ON class_instructor.instructor_id=instructors.id WHERE class_instructor.class_id=:id"
         values = {
             "id": class_id
         }
-        class_instructors = postgresql.query_db(query, values)
+        class_instructors = self.postgresql.query_db(query, values)
         # print class_instructors
         return class_instructors
     def find_all_other(self, class_id):
@@ -42,6 +40,22 @@ class Instructors(object):
         values = {
             "id": class_id
         }
-        all_other_instructors = postgresql.query_db(query, values)
+        all_other_instructors = self.postgresql.query_db(query, values)
         # print "all other instructors: ", all_other_instructors
         return all_other_instructors
+    def delete_class_relationship(self, class_id, instructor_ids):
+        query = "DELETE FROM class_instructor WHERE instructor_id=:instructor_id AND class_id=:class_id"
+        for id in instructor_ids:
+            instructor = {
+                "instructor_id": id,
+                "class_id": class_id
+            }
+            self.postgresql.query_db(query, instructor)
+    def update(self, instructors):
+        query = "UPDATE instructors SET name=:name WHERE id=:id"
+        for id in instructors:
+            values = {
+                "id": id,
+                "name": instructors[id]
+            }
+            self.postgresql.query_db(query, values)

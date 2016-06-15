@@ -1,0 +1,65 @@
+<div class="heading">
+  <h1 class="page_title">{{title}}</h1>
+</div>
+<div class="container main_container">
+  <form class="offset-by-one ten columns" id="form_data" method="post" enctype="multipart/form-data">
+    <div class="row">
+      <label>select a seminar:</label>
+      <select class="twelve columns class_name required" name="class">
+        <option value="">no class selected</option>
+        {% for class in incomplete_classes %}
+        <option value="{{class.id}}">{{class.name}}</option>
+        {% endfor %}
+      </select>
+    </div>
+    <div class="row">
+      <input class="twelve columns default_pdf" type="button" value="use existing client PDF">
+    </div>
+    <div class="row">
+      <input class="twelve columns old_pdf_file_name" type="text" value="" name="test1" disabled>
+    </div>
+    <div class="row">
+      <input type="button" class="twelve columns change_pdf" value="or replace with new PDF">
+      <input type="text" class="twelve columns pdffilename" value="" name="new_pdf" disabled>
+      <input type="file" class="pdfupload" accept=".pdf">
+    </div>
+    <div class="row">
+      <input type="button" class="twelve columns add_csv required" value="upload CSV file">
+      <input type="text" class="twelve columns csvfilename required" value="" disabled name="csv_file">
+      <input type="file" class="csvupload" accept=".csv">
+    </div>
+    <div class="row jserror">
+      <p>please fill out all required fields</p>
+    </div>
+    <div class="row">
+      <input class="four columns make" type="submit" value="Generate Certificates">
+    </div>
+  </form>
+</div>
+{% if session['permission'] == "super-admin" and session['client_id'] == 7 %}
+<div class="popup client_alert">
+  <div class="row">
+    <p>you haven't chosen a client yet!</p>
+    <button type="button" name="button" class="client_alert_button">ok</button>
+  </div>
+</div>
+{% endif %}
+<div class="popup no_pdf">
+  <div class="row close_container">
+    <i class="fa fa-times-circle close" aria-hidden="true"></i>
+  </div>
+  <div class="row">
+    <p>there is no pdf in the database, please upload a new one</p>
+    <button type="button" name="button" class="no_pdf_button">ok</button>
+  </div>
+</div>
+<div class="popup success">
+  <div class="row close_container">
+    <i class="fa fa-times-circle close" aria-hidden="true"></i>
+  </div>
+  <div class="row">
+    <p>file has been uploaded!</p>
+    <button type="button" name="button" class="success_button">ok</button>
+  </div>
+</div>
+<script type="text/javascript" src="{{ url_for('static', filename='js/certificates.js') }}"></script>

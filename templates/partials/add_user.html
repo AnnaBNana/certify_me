@@ -36,7 +36,7 @@
         <select name="client" class="twelve columns client">
           <option value="">select client</option>
           {% for client in all_clients %}
-            <option value="{{client.id}}">{{client.name}}</option>
+            <option value="{{client.id}}">{{client.client_name}}</option>
           {% endfor %}
         </select>
       </div>
