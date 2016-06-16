@@ -2,6 +2,7 @@ from flask import Flask, render_template, request, redirect, jsonify, session, f
 from werkzeug import secure_filename
 import os
 import dropbox
+#import models
 from server.users import Users
 from server.clients import Clients
 from server.businesses import Businesses
@@ -9,8 +10,11 @@ from server.classes import Classes
 from server.instructors import Instructors
 from server.certificates import Certificates
 
+
 app= Flask(__name__)
 
+
+# assign model classes to variables
 users = Users(app)
 clients = Clients(app)
 businesses = Businesses(app)
@@ -18,17 +22,15 @@ classes = Classes(app)
 instructors = Instructors(app)
 certificates = Certificates(app)
 app.secret_key = os.urandom(24)
+
+
 #dropbox settings
 access_token = os.environ.get('ACCESS_TOKEN')
-# app_key = os.environ.get('APP_KEY')
-# app_secret = os.environ.get('APP_SECRET')
-# print app_key, app_secret
-# dbx = dropbox.Dropbox(access_token)
 client = dropbox.client.DropboxClient(access_token)
-# print 'linked account: ', client.account_info()
-# print "user account test: ", dbx.users_get_current_account()
 app.config['UPLOAD_FOLDER'] = 'static/uploads/'
 app.config['ALLOWED_EXTENSIONS'] = set(['pdf', 'csv'])
+
+certificates.parse('./static/uploads/Attendance_Results.csv')
 #base page loading routes: index, main, permissions check, logout
 @app.route('/')
 def index():
@@ -38,12 +40,16 @@ def index():
         print session
         title = "Certify Me!"
         return render_template('index.html', title=title)
+
+
 @app.route('/main')
 def main():
     if 'logged' in session:
         return render_template('main.html')
     else:
         return redirect('/')
+
+
 @app.route('/permission_partial')
 def permission():
     print session
@@ -56,6 +62,8 @@ def permission():
         #returns an error as AJAX response, which is handled in front end as a redirect to the root route
         error = {'error': 'redirect'}
         return jsonify(error)
+
+
 @app.route('/check_pdf_url')
 def check_pdf_url():
     if "logged" in session:
@@ -70,10 +78,14 @@ def check_pdf_url():
     else:
         error = {'error': 'redirect'}
         return jsonify(error)
+
+
 @app.route('/logout')
 def logout():
     session.clear()
     return redirect('/')
+
+
 #begin partial loading routes
 @app.route('/index/add_user')
 def add_user():
@@ -85,6 +97,8 @@ def add_user():
     else:
         error = {'error': 'redirect'}
         return jsonify(error)
+
+
 @app.route('/index/users')
 def view_users():
     if 'logged' in session:
@@ -94,6 +108,8 @@ def view_users():
     else:
         error = {'error': 'redirect'}
         return jsonify(error)
+
+
 @app.route('/index/user/<id>')
 def show_user(id):
     print id
@@ -104,6 +120,8 @@ def show_user(id):
     else:
         error = {'error': 'redirect'}
         return jsonify(error)
+
+
 @app.route('/index/choose_client')
 def choose_client():
     if 'logged' in session:
@@ -113,6 +131,8 @@ def choose_client():
     else:
         error = {'error': 'redirect'}
         return jsonify(error)
+
+
 @app.route('/index/add_client')
 def add_client():
     if 'logged' in session:
@@ -123,6 +143,8 @@ def add_client():
         error = {'error': 'redirect'}
         print error
         return jsonify(error)
+
+
 @app.route('/index/clients')
 def view_clients():
     if 'logged' in session:
@@ -132,6 +154,8 @@ def view_clients():
     else:
         error = {'error': 'redirect'}
         return jsonify(error)
+
+
 @app.route('/index/client/<id>')
 def show_client(id):
     if 'logged' in session:
@@ -141,6 +165,8 @@ def show_client(id):
     else:
         error = {'error': 'redirect'}
         return jsonify(error)
+
+
 @app.route('/index/add_class')
 def add_class():
     if 'logged' in session:
@@ -150,6 +176,8 @@ def add_class():
     else:
         error = {'error': 'redirect'}
         return jsonify(error)
+
+
 @app.route('/index/classes')
 def view_classes():
     if 'logged' in session:
@@ -159,6 +187,8 @@ def view_classes():
     else:
         error = {'error': 'redirect'}
         return jsonify(error)
+
+
 @app.route('/index/class/<id>')
 def show_class(id):
     if 'logged' in session:
@@ -170,6 +200,8 @@ def show_class(id):
     else:
         error = {'error': 'redirect'}
         return jsonify(error)
+
+
 @app.route('/index/certificates')
 def pdf():
     if 'logged' in session:
@@ -179,11 +211,15 @@ def pdf():
     else:
         error = {'error': 'redirect'}
         return jsonify(error)
+
+
 @app.route('/index/test')
 def test():
     title = "Test"
     result = classes.findAll()
     return render_template('partials/test.html', title=title, class_list=result)
+
+
 @app.route('/index/add_biz')
 def add_biz():
     if 'logged' in session:
@@ -192,12 +228,16 @@ def add_biz():
         error = {'error': 'redirect'}
         return jsonify(error)
 #end partial loading routes
+
+
 #begin delete routes
 @app.route('/delete/user/<id>')
 def destroy_user(id):
     users.destroy(id)
     return redirect('/index/users')
 #end delete routes
+
+
 #begin post routes
 @app.route('/login', methods=['POST'])
 def login():
@@ -211,6 +251,8 @@ def login():
         print "error", logged['error']
         flash(logged['error'])
         return redirect('/')
+
+
 @app.route('/add_user', methods=['POST'])
 def add_user_form():
     if 'logged' in session:
@@ -218,6 +260,8 @@ def add_user_form():
     else:
         error = {'error': 'redirect'}
         return jsonify(error)
+
+
 @app.route('/add_client', methods=['POST'])
 def add_client_form():
     if 'logged' in session:
@@ -225,6 +269,8 @@ def add_client_form():
     else:
         error = {'error': 'redirect'}
         return jsonify(error)
+
+
 @app.route('/choose_client', methods=['POST'])
 def activate_client():
     if 'logged' in session:
@@ -237,6 +283,8 @@ def activate_client():
     else:
         error = {'error': 'redirect'}
         return jsonify(error)
+
+
 @app.route('/add_class', methods=['POST'])
 def new_class():
     if 'logged' in session:
@@ -251,6 +299,8 @@ def new_class():
     else:
         error = {'error': 'redirect'}
         return jsonify(error)
+
+
 @app.route('/update_user', methods=['POST'])
 def update_user():
     if 'logged' in session:
@@ -259,6 +309,8 @@ def update_user():
     else:
         error = {'error': 'redirect'}
         return jsonify(error)
+
+
 @app.route('/update_client', methods=['POST'])
 def update_client():
     if 'logged' in session:
@@ -270,6 +322,8 @@ def update_client():
     else:
         error = {'error': 'redirect'}
         return jsonify(error)
+
+
 @app.route('/update_class', methods=['POST'])
 def update_class():
     print "form data: ", request.form
@@ -280,12 +334,15 @@ def update_class():
     else:
         error = {'error': 'redirect'}
         return jsonify(error)
+
+
 @app.route('/certificates', methods=['POST'])
 def generate_certificates():
     if 'logged' in session:
         print "form data: ", request.form
         client_id = session['client_id']
         print "files data: ", request.files
+        # could be done with list comprehension?
         filearray = []
         upload_loc = "./static/uploads/"
         for file in request.files:
@@ -293,16 +350,21 @@ def generate_certificates():
             filename = secure_filename(new_file.filename)
             new_file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
             filearray.append(new_file.filename)
+        certificates.parse(os.path.join(app.config['UPLOAD_FOLDER'], filearray[0]))
         #since this takes so long, give client option to upload files to dropbox after the rest of the operations are complete
-        f0 = open(upload_loc + filearray[0], 'r')
-        client.put_file("/" + filearray[0], f0)
-        f1 = open(upload_loc + filearray[1], 'rb')
-        client.put_file("/" + filearray[1], f1)
+
+        # f0 = open(upload_loc + filearray[0], 'r')
+        # client.put_file("/" + filearray[0], f0)
+        # f1 = open(upload_loc + filearray[1], 'rb')
+        # client.put_file("/" + filearray[1], f1)
         #after all operations complete, remove files from local file storage
-        # something like this: os.remove(os.path.join(app.config['UPLOADED_ITEMS_DEST'], item.filename))
+
+        # something like this: os.remove(os.path.join(app.config['UPLOAD_FOLDER'], item.filename))
         success = {'success': 'yay, you win!'}
         return jsonify(success)
     else:
         error = {'error': 'redirect'}
         return jsonify(error)
+
+
 app.run(debug=True)
