@@ -1,4 +1,5 @@
 from flask import session
+import re
 from server.psqlconnection import PSQLConnector
 from server.instructors import Instructors
 
@@ -7,9 +8,13 @@ class Classes(object):
     def __init__(self, app):
         self.postgresql = PSQLConnector(app, 'CertifyMe')
         self.instructors = Instructors(app)
+
+
     def add(self, form_data):
         print "form data", form_data
         validate = True
+        course_regex = re.compile(r'^(\d+)-(\d+)')
+        match_obj = re.match(course_regex, form_data['course_num'])
         instructor_list = []
         for k, v in form_data.iteritems():
             #check every key to see if it begins with new instructor
@@ -19,6 +24,8 @@ class Classes(object):
         if len(form_data['name']) < 6:
             flash("Name should be at lease 6 characters long", "name_error")
             validate = False
+        if not match_obj:
+            flash("Expected digits-digits format, please check course number", "course_num_error")
         if not form_data['duration'].isdigit():
             flash("Please enter a whole number", "duration_error")
             validate = False
@@ -44,7 +51,7 @@ class Classes(object):
         else:
             print "validation pass"
             print instructor_list
-            query = "INSERT INTO classes (name, duration, client_id, email_text, date, created_at, race_verbiage, cvpm_verbiage, status) VALUES (:name, :duration, :client_id, :email_text, :date, NOW(), :race_verbiage, :cvpm_verbiage, :status) RETURNING id"
+            query = "INSERT INTO classes (name, duration, client_id, email_text, date, created_at, race_verbiage, cvpm_verbiage, status, race_course_num) VALUES (:name, :duration, :client_id, :email_text, :date, NOW(), :race_verbiage, :cvpm_verbiage, :status, :race_course_num) RETURNING id"
             values = {
                 "name": form_data['name'],
                 "duration": form_data['duration'],
@@ -53,7 +60,8 @@ class Classes(object):
                 "date": form_data['date'],
                 "race_verbiage": form_data['race_verbiage'],
                 "cvpm_verbiage": form_data['cvpm_verbiage'],
-                "status": "incomplete"
+                "status": "incomplete",
+                "race_course_num": form_data['course_num']
             }
             # add class, return id
             class_id = self.postgresql.query_db(query, values)
@@ -66,6 +74,8 @@ class Classes(object):
             # with returned ids, we then go and add entries to relational table
             self.instructors.add_class_instructors(class_id, instructor_ids)
             return class_id
+
+
     def update(self, form_data):
         # update class
         query = "UPDATE classes SET name=:name, duration=:duration, email_text=:email_text, date=:date, updated_at=NOW(), race_verbiage=:race_verbiage, cvpm_verbiage=cvpm_verbiage WHERE id=:id"
@@ -107,10 +117,14 @@ class Classes(object):
             added_instructors.append(form_data['existing_instructor'])
         self.instructors.add_class_instructors(class_id, added_instructors)
         self.instructors.update(update_instructors)
+
+
     def findAll(self):
         query = "SELECT * FROM classes";
         classes = self.postgresql.query_db(query)
         return classes
+
+
     def findIncomplete(self):
         query = "SELECT * FROM classes WHERE status=:status"
         values = {
@@ -118,6 +132,8 @@ class Classes(object):
         }
         incomplete_classes = self.postgresql.query_db(query, values)
         return incomplete_classes
+
+
     def findOne(self, class_id):
         query = "SELECT * FROM classes WHERE id=:class_id";
         values = {
@@ -125,3 +141,11 @@ class Classes(object):
         }
         one_class = self.postgresql.query_db(query, values)
         return one_class[0]
+
+    def required_miutes(self, class_id):
+        query = "SELECT duration FROM classes WHERE id=:id"
+        values = {
+            "id": class_id
+        }
+        duration = self.postgresql.query_db(query, values)
+        return duration

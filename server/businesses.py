@@ -3,6 +3,8 @@ from server.psqlconnection import PSQLConnector
 class Businesses(object):
     def __init__(self, app):
         self.postgresql = PSQLConnector(app, 'CertifyMe')
+
+
     def add(self, form_data):
         biz_query = "INSERT INTO businesses (name, street, city, state, zip, website, created_at) VALUES (:name, :street, :city, :state, :zip, :website, NOW()) RETURNING id;"
         biz_values = {
@@ -15,6 +17,8 @@ class Businesses(object):
         }
         biz_id = self.postgresql.query_db(biz_query, biz_values)
         return biz_id
+
+
     def update(self, form_data):
         print form_data
         query = "UPDATE businesses SET name=:name, street=:street, city=:city, state=:state, zip=:zip, website=:website, updated_at=NOW() WHERE id=:id"
@@ -28,6 +32,8 @@ class Businesses(object):
             "id": form_data['business_id']
         }
         self.postgresql.query_db(query, values)
+
+
     def findOne(self, biz_id):
         query = "SELECT * FROM businesses WHERE id=:id"
         values = {
@@ -35,10 +41,23 @@ class Businesses(object):
         }
         biz_info = self.postgresql.query_db(query, values)
         return biz_info
+
+
     def findAll(self):
         query = "SELECT * FROM businesses"
         businesses = self.postgresql.query_db(query)
         return businesses
+
+
+    def add_pdf_url(self, client_data):
+        query = "UPDATE businesses SET pdf_url=:pdf_url, updated_at=NOW() WHERE id=:id"
+        values = {
+            "pdf_url": client_data['pdf_file'],
+            "id": client_data['business_id']
+        }
+        self.postgresql.query_db(query, values)
+
+
     def check_pdf_url(self, client_id):
         query = "SELECT pdf_url FROM businesses LEFT JOIN clients ON businesses.id=clients.business_id WHERE clients.id=:id;"
         values = {

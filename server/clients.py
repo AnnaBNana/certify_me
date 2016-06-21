@@ -6,6 +6,8 @@ class Clients(object):
     def __init__(self, app):
         self.postgresql = PSQLConnector(app, 'CertifyMe')
         self.businesses = Businesses(app)
+
+
     def add(self, form_data):
         print "form data", form_data
         if 'existing_biz' in form_data:
@@ -30,6 +32,8 @@ class Clients(object):
         session['client_id'] = client_id
         print "client id: ", client_id
         return str(client_id)
+
+
     def update(self, form_data):
         query = "UPDATE clients SET email=:email, name=:name, title=:title, social_media_1=:fb, social_media_2=:twit, social_media_3=:inst, updated_at=NOW() WHERE id=:id"
         values = {
@@ -42,10 +46,14 @@ class Clients(object):
             "id": form_data['client_id']
         }
         self.postgresql.query_db(query, values)
+
+
     def findAll(self):
         query = "SELECT clients.id AS id, clients.name AS client_name, clients.email AS email, businesses.name AS business_name FROM clients LEFT JOIN businesses ON clients.business_id=businesses.id WHERE clients.id!=7"
         clients = self.postgresql.query_db(query)
         return clients
+
+
     def findOne(self, id):
         query = "SELECT c.id AS client_id, email, c.name AS client_name, title, social_media_1, social_media_2, social_media_3, b.id AS business_id, b.name AS business_name, street, city, state, zip, website FROM clients c, businesses b WHERE c.id=:id"
         values = {

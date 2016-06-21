@@ -10,7 +10,7 @@ class Instructors(object):
         all_instructor_ids = []
         for name in instructor_list:
             instructor = {"name": name}
-            instructor_id = postgresql.query_db(instructor_query, instructor)
+            instructor_id = self.postgresql.query_db(instructor_query, instructor)
             all_instructor_ids.append(instructor_id)
         print all_instructor_ids
         return all_instructor_ids

@@ -16,6 +16,17 @@
         {% endwith %}
       </div>
       <div class="row">
+        <label>race course number:</label>
+        <input class="twelve columns required" type="text" name="course_num" placeholder="race course number">
+        {% with name_error = get_flashed_messages(category_filter=['course_num_error'])%}
+          {% if name_error %}
+            {% for msg in name_error %}
+              <div class="error">{{ msg }}</div>
+            {% endfor %}
+          {% endif %}
+        {% endwith %}
+      </div>
+      <div class="row">
         <label>duration:</label>
         <input class="twelve columns required" type="number" name="duration" placeholder="required duration for attendees in minutes">
         {% with duration_error = get_flashed_messages(category_filter=['duration_error'])%}

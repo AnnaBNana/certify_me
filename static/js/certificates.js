@@ -33,8 +33,8 @@ $(document).ready(function() {
       }
       else if (res.url[0].pdf_url) {
         console.log(res)
-        $('.old_pdf_file_name').val(res.url[0].pdf_url)
-        $('.old_pdf_file_name').show()
+        $('.existing_pdf').val(res.url[0].pdf_url)
+        $('.existing_pdf').show()
       } else {
         $('.no_pdf').show();
         $('.no_pdf_button').click(function(){
@@ -47,7 +47,7 @@ $(document).ready(function() {
     // e.preventDefault();
     var valid = true;
     //if no old pdf is selected, new pdf is required
-    if ($('.old_pdf_file_name').val() == "") {
+    if ($('.existing_pdf').val() == "") {
       $('.pdffilename').addClass('required')
     }
     $('.required').each(function() {
@@ -74,7 +74,7 @@ $(document).ready(function() {
           $('input:not(:submit,:button),select').each(function(){
             $(this).val("");
           })
-          $('.old_pdf_file_name').hide('slow');
+          $('.existing_pdf').hide('slow');
           $('.pdffilename').hide('slow');
           $('.csvfilename').hide('slow');
           $('.success').show('slow');

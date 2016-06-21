@@ -1,7 +1,6 @@
 from flask import Flask, render_template, request, redirect, jsonify, session, flash
-from werkzeug import secure_filename
 import os
-import dropbox
+
 #import models
 from server.users import Users
 from server.clients import Clients
@@ -9,9 +8,11 @@ from server.businesses import Businesses
 from server.classes import Classes
 from server.instructors import Instructors
 from server.certificates import Certificates
+from server.dropboxconnection import Dropbox
 
 
 app= Flask(__name__)
+app.secret_key = os.urandom(24)
 
 
 # assign model classes to variables
@@ -21,16 +22,12 @@ businesses = Businesses(app)
 classes = Classes(app)
 instructors = Instructors(app)
 certificates = Certificates(app)
-app.secret_key = os.urandom(24)
+dropbox = Dropbox(app)
 
 
-#dropbox settings
-access_token = os.environ.get('ACCESS_TOKEN')
-client = dropbox.client.DropboxClient(access_token)
-app.config['UPLOAD_FOLDER'] = 'static/uploads/'
-app.config['ALLOWED_EXTENSIONS'] = set(['pdf', 'csv'])
+certificates.handle_pdfs()
 
-certificates.parse('./static/uploads/Attendance_Results.csv')
+
 #base page loading routes: index, main, permissions check, logout
 @app.route('/')
 def index():
@@ -339,27 +336,25 @@ def update_class():
 @app.route('/certificates', methods=['POST'])
 def generate_certificates():
     if 'logged' in session:
-        print "form data: ", request.form
         client_id = session['client_id']
-        print "files data: ", request.files
-        # could be done with list comprehension?
-        filearray = []
-        upload_loc = "./static/uploads/"
-        for file in request.files:
-            new_file = request.files[file]
-            filename = secure_filename(new_file.filename)
-            new_file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
-            filearray.append(new_file.filename)
-        certificates.parse(os.path.join(app.config['UPLOAD_FOLDER'], filearray[0]))
-        #since this takes so long, give client option to upload files to dropbox after the rest of the operations are complete
-
-        # f0 = open(upload_loc + filearray[0], 'r')
-        # client.put_file("/" + filearray[0], f0)
-        # f1 = open(upload_loc + filearray[1], 'rb')
-        # client.put_file("/" + filearray[1], f1)
-        #after all operations complete, remove files from local file storage
-
-        # something like this: os.remove(os.path.join(app.config['UPLOAD_FOLDER'], item.filename))
+        class_id = request.form['class']
+        # dropbox.upload(request.file, request.form)
+        file_names = certificates.upload_files(request.files)
+        for file_name in file_names:
+            if file_name.endswith('.csv'):
+                class_data = {
+                    "csv_file": file_name,
+                    "class_id": class_id
+                }
+                certificates.parseCSV(class_data)
+            elif file_name.endswith('.pdf'):
+                client_data = {
+                    "pdf_file": file_name,
+                    "client_id": session['client_id']
+                }
+                client_info = clients.findOne(client_data['client_id'])
+                client_data['business_id'] = client_info['business_id']
+                businesses.add_pdf_url(client_data)
         success = {'success': 'yay, you win!'}
         return jsonify(success)
     else:
