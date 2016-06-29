@@ -3,3 +3,9 @@ venv
 .sass_cache
 
 static/uploads
+
+dependencies.txt
+
+liss_template.docx
+
+certifyme62916.sql
