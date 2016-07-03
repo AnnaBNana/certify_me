@@ -1,6 +1,7 @@
 import csv
 import os
 from server.psqlconnection import PSQLConnector
+from server.attendees import Attendees
 from werkzeug import secure_filename
 from PyPDF2 import PdfFileWriter, PdfFileReader
 import StringIO
@@ -28,73 +29,36 @@ class Certificates(object):
         self.postgresql = PSQLConnector(app, 'CertifyMe')
         self.app.config['UPLOAD_FOLDER'] = 'static/uploads/'
         self.stylesheet = getSampleStyleSheet()
+        self.attendees = Attendees(app)
 
 
-    def upload_files(self, files):
+    def save_files(self, files):
         filearray = []
-        upload_loc = "./static/uploads/"
         for all_file in files:
             new_file = files[all_file]
             filename = secure_filename(new_file.filename)
             new_file.save(os.path.join(self.app.config['UPLOAD_FOLDER'], filename))
-            filearray.append(upload_loc + new_file.filename)
+            filearray.append(new_file.filename)
         return filearray
 
     def parseCSV(self, class_data):
-        with open(class_data['csv_file'], 'rU') as csvfile:
-            dialect = csv.Sniffer().sniff(csvfile.read(1024))
+        with open(self.app.config['UPLOAD_FOLDER'] + class_data['csv_file'], 'rU') as csvfile:
+            dialect = csv.Sniffer().sniff(csvfile.read())
             csvfile.seek(0)
-            reader = csv.reader(csvfile, dialect)
-            attendee_info = self.add_attendees(reader, class_data['class_id'])
+            reader = csv.reader(csvfile)
+            attendee_info = self.attendees.add_attendees(reader, class_data['class_id'])
         return attendee_info
 
 
-    def add_attendees(self, contents, class_id):
-        # we are missing validation for csv files to ensure they are formatted as expected
-        print contents
-        query = "INSERT INTO attendees (name, email, created_at) VALUES (:name, :email, NOW()) RETURNING id"
-        attendee_info = []
-        i = 0
-        for row in contents:
-            if i == 2:
-                header = row
-            elif i > 2:
-                if row:
-                    #handle some errors, row[0] should be alpha only, row[1] should be email, return error otherwise
-                    values = {
-                        'name': row[0],
-                        'email': row[1]
-                    }
-                    at_id = self.postgresql.query_db(query, values)
-                    # we can validate minutes here. generate PDF only if we pass time limit.  we will have to query the class table to get req'd mins
-                    info = {
-                        "id": at_id,
-                        "minutes": row[2]
-                    }
-                    attendee_info.append(info)
-            i += 1
-        print attendee_info, class_id
-        self.add_attended_classes(attendee_info, class_id)
-        return attendee_info
-
-
-    def add_attended_classes(self, attendee_info, class_id):
-        query = "INSERT INTO attended_classes (attendee_id, class_id, minutes) VALUES (:attendee_id, :class_id, :minutes) RETURNING attendee_id"
-        for info in attendee_info:
-            #handle errors if data given is not an integer, should be esp. careful w/ minutes
-            values = {
-                "attendee_id": info['id'],
-                "class_id": class_id,
-                "minutes": info['minutes']
-            }
-            self.postgresql.query_db(query, values)
-
-
-    def handle_pdfs(self):
+    def generate(self):
         layout = self.read_layout()
         layout_data = self.parse_layout(layout)
         pdf = self.make_pdf(layout_data)
         self.merge_pdfs()
+
+
+    def get_pdf_data(self, class_id):
+        pass
 
 
     def read_layout(self):

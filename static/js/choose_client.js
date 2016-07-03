@@ -15,7 +15,7 @@ $(document).ready(function() {
     console.log(source)
     client = {"id": $('.existing_client').val(), "source": source}
     // console.log(client)
-    $.post('/choose_client', client, function(res) {
+    $.post('/choose_business', client, function(res) {
       if (res.error) {
         window.location.assign('/')
       } else {

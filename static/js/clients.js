@@ -59,4 +59,14 @@ $(document).ready(function() {
       }
     })
   });
+  $('.delete_owner').click(function(){
+    var id = $(this).attr('data-client-id')
+    $.get('/delete/client/' + id, function(res){
+      if(res.error) {
+        window.location.assign('/');
+      } else {
+        $('.main_content').html(res);
+      }
+    })
+  });
 });

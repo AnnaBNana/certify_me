@@ -1,23 +1,20 @@
 $(document).ready(function() {
   $('.change_pdf').click(function(){
-    $('.pdfupload').click()
+    $('.pdfupload').click();
+    $('.existing_pdf').val("").hide();
   })
 
   $('.pdfupload').change(function(){
-    $('.pdffilename').show()
-    console.log($(this).val())
-    $('.pdffilename').val($(this).val())
+    $('.pdffilename').show().val($(this).val());
   })
   $('.add_csv').click(function(){
     $('.csvupload').click()
   })
   $('.csvupload').change(function(){
-    $('.csvfilename').show()
-    console.log($(this).val())
-    $('.csvfilename').val($(this).val())
+    $('.csvfilename').show().val($(this).val());
   });
   $('.client_alert_button').click(function(){
-    $.get('/index/choose_client', function(res){
+    $.get('/index/choose_business', function(res){
       if (res.error) {
         window.location.assign('/')
       } else {
@@ -33,8 +30,7 @@ $(document).ready(function() {
       }
       else if (res.url[0].pdf_url) {
         console.log(res)
-        $('.existing_pdf').val(res.url[0].pdf_url)
-        $('.existing_pdf').show()
+        $('.existing_pdf').val(res.url[0].pdf_url).show()
       } else {
         $('.no_pdf').show();
         $('.no_pdf_button').click(function(){
@@ -60,6 +56,7 @@ $(document).ready(function() {
     } else {
       $('.jserror').hide();
       var data = new FormData($('#form_data')[0])
+      data.append("existing_pdf", $(".existing_pdf").val())
       data.append("pdf_file", $(".pdfupload")[0].files[0])
       data.append("csv_file", $(".csvupload")[0].files[0])
       $.ajax({

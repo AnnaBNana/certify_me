@@ -5,19 +5,19 @@
   <div class="offset-by-one ten columns">
       <table class="u-full-width">
         <thead>
-          <th>client name</th>
+          <th>client business name</th>
           <th>client email</th>
-          <th>business name</th>
+          <th>client website</th>
           <th class="u-pull-right">action</th>
         </thead>
         <tbody>
-          {% for client in clients %}
+          {% for business in businesses %}
           <tr>
-            <td>{{client.client_name}}</td>
-            <td>{{client.email}}</td>
-            <td>{{client.business_name}}</td>
+            <td>{{business.name}}</td>
+            <td>{{business.email}}</td>
+            <td>{{business.website}}</td>
             <td>
-              <button type="button" data-client-id="{{client.id}}" name="button" class="u-pull-right edit">edit client info</button>
+              <button type="button" data-client-id="{{business.id}}" name="button" class="u-pull-right edit">edit client info</button>
             </td>
           </tr>
           {% endfor %}

@@ -3,41 +3,53 @@
 </div>
 <div class="container main_container">
   <form class="offset-by-one ten columns">
+    {% for client in clients %}
+      <p>Edit details for business owner {{client.name}}:</p>
+      <div class="row ">
+        <label>name: </label>
+        <input class="twelve columns required" type="text" name="name{{client.id}}" value="{{client.name}}">
+      </div>
+      <div class="row ">
+        <label>title(optional): </label>
+        <input class="twelve columns required" type="text" name="title{{client.id}}" value="{{client.title}}">
+      </div>
+      <div class="row ">
+        <input class="twelve columns required" type="hidden" name="id{{client.id}}" value="{{client.id}}">
+      </div>
+      {% if session['permission'] != "user" %}
+        <div class="row">
+          <button type="button" class="delete_owner" data-client-id="{{client.id}}">Remove Business Owner</button>
+        </div>
+      {% endif %}
+    {% endfor %}
+    <p>Edit business details:</p>
     <div class="row ">
-      <label>name: </label>
-      <input class="twelve columns required" type="text" name="name" value="{{client.client_name}}">
+      <label>business name: </label>
+      <input class="twelve columns required" type="text" name="business_name" value="{{business.name}}">
     </div>
     <div class="row ">
       <label>email: </label>
-      <input class="twelve columns required" type="text" name="email" value="{{client.email}}">
-    </div>
-    <div class="row ">
-      <label>title(optional): </label>
-      <input class="twelve columns required" type="text" name="title" value="{{client.title}}">
+      <input class="twelve columns required" type="text" name="email" value="{{business.email}}">
     </div>
     <div class="row ">
       <label>facebook(optional): </label>
-      <input class="twelve columns" type="text" name="facebook" value="{{client.social_media_1}}">
+      <input class="twelve columns" type="text" name="facebook" value="{{business.facebook}}">
     </div>
     <div class="row ">
       <label>twitter handle(optional): </label>
-      <input class="twelve columns" type="text" name="twitter" value="{{client.social_media_2}}">
+      <input class="twelve columns" type="text" name="twitter" value="{{business.twitter}}">
     </div>
     <div class="row ">
       <label>instagram(optional): </label>
-      <input class="twelve columns" type="text" name="instagram" value="{{client.social_media_3}}">
-    </div>
-    <div class="row ">
-      <label>business name: </label>
-      <input class="twelve columns required" type="text" name="business_name" value="{{client.business_name}}">
+      <input class="twelve columns" type="text" name="instagram" value="{{business.instagram}}">
     </div>
     <div class="row">
       <label>business address: </label>
-      <input class="twelve columns required" type="text" name="street_addr" value="{{client.street}}">
+      <input class="twelve columns required" type="text" name="street_addr" value="{{business.street}}">
     </div>
     <div class="row">
-      <input class="four columns required" type="text" name="city_addr" value="{{client.city}}">
-      <select name="state_addr" class="four columns state required" data-client-state="{{client.state}}">
+      <input class="four columns required" type="text" name="city_addr" value="{{business.city}}">
+      <select name="state_addr" class="four columns state required" data-client-state="{{business.state}}">
         <option value="AL">Alabama</option>
         <option value="AK">Alaska</option>
         <option value="AZ">Arizona</option>
@@ -89,21 +101,23 @@
         <option value="WI">Wisconsin</option>
         <option value="WY">Wyoming</option>
       </select>
-      <input class="four columns required" type="number" name="zip_addr" value="{{client.zip}}">
+      <input class="four columns required" type="number" name="zip_addr" value="{{business.zip}}">
     </div>
     <div class="row ">
       <label>website(optional): </label>
-      <input class="twelve columns" type="text" name="website" value="{{client.website}}">
+      <input class="twelve columns" type="text" name="website" value="{{business.website}}">
     </div>
-    <input class="twelve columns" type="hidden" name="client_id" value="{{client.client_id}}">
-    <input class="twelve columns" type="hidden" name="business_id" value="{{client.business_id}}">
+    <input class="twelve columns" type="hidden" name="client_id" value="{{business.client_id}}">
+    <input class="twelve columns" type="hidden" name="business_id" value="{{business.id}}">
     <div class="row jserror">
       <p>please fill out all of fields</p>
     </div>
     <div class="row ">
       <input class="four columns update" type="submit" value="update client">
+      {% if session['permission'] == "super-admin" %}
       <button type="button" class="u-pull-right four columns cancel">Cancel</button>
     </div>
+    {% endif %}
   </form>
 </div>
 <div class="popup jssuccess">

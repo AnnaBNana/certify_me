@@ -32,7 +32,7 @@ $(document).ready(function() {
     // console.log($('.instructor').html())
   })
   $('.client_alert_button').click(function(){
-    $.get('/index/choose_client', function(res){
+    $.get('/index/choose_business', function(res){
       if (res.error) {
         window.location.assign('/')
       } else {

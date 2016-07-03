@@ -13,7 +13,7 @@
       </select>
     </div>
     <div class="row">
-      <input class="twelve columns default_pdf" type="button" value="use existing client PDF">
+      <input class="twelve columns default_pdf" type="button" value="use existing business PDF">
     </div>
     <div class="row">
       <input class="twelve columns existing_pdf" type="text" value="" name="existing_pdf" disabled>
@@ -36,7 +36,7 @@
     </div>
   </form>
 </div>
-{% if session['permission'] == "super-admin" and session['client_id'] == 7 %}
+{% if session['permission'] == "super-admin" and session['business_id'] == 23 %}
 <div class="popup client_alert">
   <div class="row">
     <p>you haven't chosen a client yet!</p>

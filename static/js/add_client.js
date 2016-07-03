@@ -1,6 +1,6 @@
 $(document).ready(function() {
   $('.client').click(function(){
-    $.get('/index/choose_client', function(res) {
+    $.get('/index/choose_business', function(res) {
       if (res.error) {
         window.location.assign('/')
       } else {
@@ -49,7 +49,7 @@ $(document).ready(function() {
     })
   });
   $('.choose').click(function(){
-    $.get('/index/choose_client', function(res) {
+    $.get('/index/choose_business', function(res) {
       $('.popup').hide()
       if (res.error) {
         window.location.assign('/')

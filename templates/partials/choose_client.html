@@ -5,10 +5,10 @@
   <div class="offset-by-one ten columns">
     <div class="select_client">
       <div class="row">
-        <label>select client:</label>
+        <label>select businesses:</label>
         <select class="twelve columns existing_client" name="existing_client">
-          {% for client in all_clients %}
-          <option value="{{client.id}}">{{client.client_name}}</option>
+          {% for business in all_businesses %}
+          <option value="{{business.id}}">{{business.name}}</option>
           {% endfor %}
         </select>
       </div>

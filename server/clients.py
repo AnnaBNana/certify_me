@@ -15,18 +15,11 @@ class Clients(object):
         else:
             biz_id = self.businesses.add(form_data)
         print "biz id: ", biz_id
-        # social_media_1 : facebook
-        # social_media_2 : twitter
-        # social_media_3 : instagram
-        client_query = "INSERT INTO clients (email, name, title, business_id, social_media_1, social_media_2, social_media_3, created_at) VALUES (:email, :name, :title, :business_id, :facebook, :twitter, :instagram, NOW()) RETURNING id;"
+        client_query = "INSERT INTO clients (name, title, business_id, created_at) VALUES (:name, :title, :business_id, NOW()) RETURNING id;"
         client_values = {
-            "email": form_data['email'],
             "name": form_data['name'],
             "title": form_data['title'],
-            "business_id": biz_id,
-            "facebook": form_data['facebook'],
-            "twitter": form_data['twitter'],
-            "instagram": form_data['instagram']
+            "business_id": biz_id
         }
         client_id = self.postgresql.query_db(client_query, client_values)
         session['client_id'] = client_id
@@ -35,29 +28,41 @@ class Clients(object):
 
 
     def update(self, form_data):
-        query = "UPDATE clients SET email=:email, name=:name, title=:title, social_media_1=:fb, social_media_2=:twit, social_media_3=:inst, updated_at=NOW() WHERE id=:id"
-        values = {
-            "email": form_data['email'],
-            "name": form_data['name'],
-            "title": form_data['title'],
-            "fb": form_data['facebook'],
-            "twit": form_data['twitter'],
-            "inst": form_data['instagram'],
-            "id": form_data['client_id']
-        }
-        self.postgresql.query_db(query, values)
+        # print form_data
+        query = "UPDATE clients SET name=:name, title=:title, updated_at=NOW() WHERE id=:id"
+        client_ids = []
+        for client_info in form_data:
+            # print client_info
+            if client_info.startswith('id'):
+                client_ids.append(form_data[client_info])
+        print client_ids
+        for id in client_ids:
+            values = {
+                "name": form_data['name' + id],
+                "title": form_data['title' + id],
+                "id": id
+            }
+            print "values: ", values
+            self.postgresql.query_db(query, values)
 
 
     def findAll(self):
-        query = "SELECT clients.id AS id, clients.name AS client_name, clients.email AS email, businesses.name AS business_name FROM clients LEFT JOIN businesses ON clients.business_id=businesses.id WHERE clients.id!=7"
+        query = "SELECT * FROM clients"
         clients = self.postgresql.query_db(query)
         return clients
 
+    def find_biz_owners(self, biz_id):
+        query = "SELECT * FROM clients WHERE business_id=:biz_id"
+        values = {
+            "biz_id": biz_id
+        }
+        clients = self.postgresql.query_db(query, values)
+        return clients
 
-    def findOne(self, id):
-        query = "SELECT c.id AS client_id, email, c.name AS client_name, title, social_media_1, social_media_2, social_media_3, b.id AS business_id, b.name AS business_name, street, city, state, zip, website FROM clients c, businesses b WHERE c.id=:id"
+
+    def destroy(self, id):
+        query = "DELETE FROM clients WHERE id=:id"
         values = {
             "id": id
         }
-        client = self.postgresql.query_db(query, values)
-        return client[0]
+        self.postgresql.query_db(query, values)

@@ -31,10 +31,21 @@ $(document).ready(function() {
     })
   })
   //add update client
+  $('.update_client').click(function(){
+    var business_id = $(this).attr('data-client-id')
+    console.log(business_id);
+    $.get('/index/client/' + business_id, function(res){
+      if(res.error) {
+        window.location.assign('/')
+      } else {
+        $('.main_content').html(res)
+      }
+    })
+  })
 
   //when choose client is clicked, load choose client partial
-  $('.choose_client').click(function() {
-    $.get('/index/choose_client', function(res) {
+  $('.choose_business').click(function() {
+    $.get('/index/choose_business', function(res) {
       if (res.error) {
         window.location.assign('/');
       } else {

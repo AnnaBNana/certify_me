@@ -20,10 +20,10 @@
           <a href="#" class="users">view users</a>
         {% endif %}
         {% if session['permission'] != "super-admin" %}
-        <a href="#" class="update_client">business profile</a>
+        <a href="#" class="update_client" data-client-id="{{user.business_id}}">business profile</a>
         {% endif %}
         {% if session['permission'] == "super-admin": %}
-          <a href="#" class="choose_client">choose a client</a>
+          <a href="#" class="choose_business">choose a client</a>
           <a href="#" class="add_client">add a client</a>
           <a href="#" class="clients">view clients</a>
         {% endif %}

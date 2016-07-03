@@ -8,17 +8,21 @@ class Dropbox(object):
         access_token = os.environ.get('ACCESS_TOKEN')
         self.client = dropbox.client.DropboxClient(access_token)
         self.app.config['ALLOWED_EXTENSIONS'] = set(['pdf', 'csv'])
-    def upload(self, files_data):
+        self.app.config['UPLOAD_FOLDER'] = 'static/uploads/'
+    def upload(self, filearray):
         # since this takes so long, give client option to upload files to dropbox after the rest of the operations are complete
-        upload_loc = "./static/uploads/"
-        f0 = open(upload_loc + filearray[0], 'r')
-        self.client.put_file("/" + filearray[0], f0)
-        f1 = open(upload_loc + filearray[1], 'rb')
-        self.client.put_file("/" + filearray[1], f1)
+        for f in filearray:
+            if f.endswith('.csv'):
+                fo = open(self.app.config['UPLOAD_FOLDER'] + filearray[0], 'r')
+            elif f.endswith('.pdf'):
+                fo = open(self.app.config['UPLOAD_FOLDER'] + filearray[1], 'rb')
+            self.client.put_file("/" + f, fo)
         # after all operations complete, remove files from local file storage
-
         # something like this: os.remove(os.path.join(app.config['UPLOAD_FOLDER'], item.filename))
+
+
     def get_file(self, file_name):
-        out = open(file_name, 'wb')
-        with self.client.get_file(file_name) as f:
-            out.write(f.read())
+        myfile = self.client.get_file(file_name)
+        out = open(self.app.config['UPLOAD_FOLDER'] + file_name, 'wb')
+        out.write(myfile.read())
+        out.close()

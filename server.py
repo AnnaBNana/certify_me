@@ -25,7 +25,7 @@ certificates = Certificates(app)
 dropbox = Dropbox(app)
 
 
-certificates.handle_pdfs()
+# businesses.add_dropbox_api_key('somestring', 12)
 
 
 #base page loading routes: index, main, permissions check, logout
@@ -42,7 +42,11 @@ def index():
 @app.route('/main')
 def main():
     if 'logged' in session:
-        return render_template('main.html')
+        user_id = session['user_id']
+        print "this is my user id: ", user_id
+        user = users.findOne(user_id)
+        print "this is my user info: ", user
+        return render_template('main.html', user=user)
     else:
         return redirect('/')
 
@@ -52,7 +56,7 @@ def permission():
     print session
     if 'logged' in session:
         if session['permission'] == "super-admin":
-            return redirect('/index/choose_client')
+            return redirect('/index/choose_business')
         else:
             return redirect('/index/add_class')
     else:
@@ -64,8 +68,8 @@ def permission():
 @app.route('/check_pdf_url')
 def check_pdf_url():
     if "logged" in session:
-        client_id = session['client_id']
-        url = businesses.check_pdf_url(client_id)
+        business_id = session['business_id']
+        url = businesses.check_pdf_url(business_id)
         if url == "":
             nourl = {'nourl': 'not found'}
             return jsonify(nourl)
@@ -119,12 +123,13 @@ def show_user(id):
         return jsonify(error)
 
 
-@app.route('/index/choose_client')
-def choose_client():
+@app.route('/index/choose_business')
+def choose_business():
     if 'logged' in session:
-        title = "Choose a Client"
-        all_clients = clients.findAll()
-        return render_template('partials/choose_client.html', title=title, all_clients=all_clients)
+        title = "Choose a Business"
+        all_businesses = businesses.findAll()
+        print "businesses: ", all_businesses
+        return render_template('partials/choose_client.html', title=title, all_businesses=all_businesses)
     else:
         error = {'error': 'redirect'}
         return jsonify(error)
@@ -133,7 +138,7 @@ def choose_client():
 @app.route('/index/add_client')
 def add_client():
     if 'logged' in session:
-        title = "Add a Client"
+        title = "Add a Business"
         all_businesses = businesses.findAll()
         return render_template('partials/add_client.html', title=title, businesses=all_businesses)
     else:
@@ -145,9 +150,9 @@ def add_client():
 @app.route('/index/clients')
 def view_clients():
     if 'logged' in session:
-        title = "All Clients"
-        allClients = clients.findAll()
-        return render_template('partials/clients.html', title=title, clients=allClients)
+        title = "All Businesses"
+        all_businesses = businesses.findAll()
+        return render_template('partials/clients.html', title=title, businesses=all_businesses)
     else:
         error = {'error': 'redirect'}
         return jsonify(error)
@@ -156,9 +161,10 @@ def view_clients():
 @app.route('/index/client/<id>')
 def show_client(id):
     if 'logged' in session:
-        title = "Edit Client"
-        client = clients.findOne(id)
-        return render_template('partials/client.html', title=title, client=client)
+        title = "Edit Business"
+        owners = clients.find_biz_owners(id)
+        business = businesses.findOne(id)
+        return render_template('partials/client.html', title=title, business=business, clients=owners)
     else:
         error = {'error': 'redirect'}
         return jsonify(error)
@@ -168,7 +174,8 @@ def show_client(id):
 def add_class():
     if 'logged' in session:
         title = "Add a Seminar"
-        instructor_list = instructors.findAll()
+        business_id = session['business_id']
+        instructor_list = instructors.findAll(business_id)
         return render_template('partials/add_class.html', title=title, instructors=instructor_list)
     else:
         error = {'error': 'redirect'}
@@ -203,18 +210,12 @@ def show_class(id):
 def pdf():
     if 'logged' in session:
         title = "Generate Certificates"
-        incomplete_classes = classes.findIncomplete()
+        business_id = session['business_id']
+        incomplete_classes = classes.findIncomplete(business_id)
         return render_template('partials/certificates.html', title=title, incomplete_classes=incomplete_classes)
     else:
         error = {'error': 'redirect'}
         return jsonify(error)
-
-
-@app.route('/index/test')
-def test():
-    title = "Test"
-    result = classes.findAll()
-    return render_template('partials/test.html', title=title, class_list=result)
 
 
 @app.route('/index/add_biz')
@@ -232,6 +233,11 @@ def add_biz():
 def destroy_user(id):
     users.destroy(id)
     return redirect('/index/users')
+
+@app.route('/delete/client/<id>')
+def destroy_owner(id):
+    clients.destroy(id)
+    return redirect('/index/clients')
 #end delete routes
 
 
@@ -268,10 +274,10 @@ def add_client_form():
         return jsonify(error)
 
 
-@app.route('/choose_client', methods=['POST'])
+@app.route('/choose_business', methods=['POST'])
 def activate_client():
     if 'logged' in session:
-        session['client_id'] = request.form['id']
+        session['business_id'] = request.form['id']
         print "my current session data", session
         if request.form['source'] == "add":
             return redirect('/index/add_class')
@@ -286,6 +292,7 @@ def activate_client():
 def new_class():
     if 'logged' in session:
         print "server file: ", request.form
+
         class_id = classes.add(request.form)
         session['class_id'] = class_id
         print "operation complete, id is: ", class_id
@@ -312,7 +319,7 @@ def update_user():
 def update_client():
     if 'logged' in session:
         # print request.form
-        businesses.update(request.form)
+        # businesses.update(request.form)
         clients.update(request.form)
         success = {"success": "success"}
         return jsonify(success)
@@ -336,25 +343,29 @@ def update_class():
 @app.route('/certificates', methods=['POST'])
 def generate_certificates():
     if 'logged' in session:
-        client_id = session['client_id']
+        business_id = session['business_id']
         class_id = request.form['class']
-        # dropbox.upload(request.file, request.form)
-        file_names = certificates.upload_files(request.files)
+        # files = certificates.save_files(request.files)
+        # dropbox.upload(files)
+        if 'existing_pdf' in request.form:
+            existing_pdf = request.form['existing_pdf']
+            # dropbox.get_file(request.form['existing_pdf'])
+        file_names = certificates.save_files(request.files)
         for file_name in file_names:
             if file_name.endswith('.csv'):
                 class_data = {
                     "csv_file": file_name,
                     "class_id": class_id
                 }
+                #parses csv file, then adds each attendee to database
                 certificates.parseCSV(class_data)
             elif file_name.endswith('.pdf'):
-                client_data = {
-                    "pdf_file": file_name,
-                    "client_id": session['client_id']
+                business_data = {
+                    "pdf": file_name,
+                    "id": business_id
                 }
-                client_info = clients.findOne(client_data['client_id'])
-                client_data['business_id'] = client_info['business_id']
-                businesses.add_pdf_url(client_data)
+                businesses.add_pdf_url(business_data)
+        # class_data = certificates.get_pdf_data(client_id, class_id)
         success = {'success': 'yay, you win!'}
         return jsonify(success)
     else:

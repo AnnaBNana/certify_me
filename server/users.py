@@ -50,7 +50,7 @@ class Users(object):
             else:
                 if self.bcrypt.check_password_hash(user[0]['password'], form_data['password']):
                     session['user_id'] = user[0]['id']
-                    session['client_id'] = user[0]['client_id']
+                    session['business_id'] = user[0]['business_id']
                     session['permission'] = user[0]['permission']
                     session['logged'] = True
                     success = {"success": user[0]['id'], "permission": user[0]['permission']}
