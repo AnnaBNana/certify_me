@@ -108,10 +108,6 @@ class Classes(object):
                 update_instructors[id] = form_data[key]
             elif key.startswith('new_instructor') and len(form_data[key]) > 0:
                 add_instructor.append(form_data[key])
-        print "instructors to add: ", add_instructor
-        print "instructors to update: ", update_instructors
-        print "instructors to remove: ", remove_instructors
-        print "existing instructors to add: ", form_data['existing_instructor']
         self.instructors.delete_class_relationship(class_id, remove_instructors)
         added_instructors = self.instructors.add(add_instructor, class_id)
         if len(form_data['existing_instructor']) > 0:
@@ -164,3 +160,12 @@ class Classes(object):
         }
         duration = self.postgresql.query_db(query, values)
         return duration
+
+
+    def add_csv_url(self, class_data):
+        query = "UPDATE classes SET csv_url=:csv, updated_at=NOW() WHERE id=:id"
+        values = {
+            "csv": class_data['csv_file'],
+            "id": class_data['class_id']
+        }
+        self.postgresql.query_db(query, values)

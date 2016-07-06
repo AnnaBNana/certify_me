@@ -5,8 +5,8 @@ class Dropbox(object):
     def __init__(self, app):
         #dropbox settings
         self.app = app
-        access_token = os.environ.get('ACCESS_TOKEN')
-        self.client = dropbox.client.DropboxClient(access_token)
+        self.access_token = os.environ.get('DROPBOX_ACCESS_TOKEN')
+        self.client = dropbox.client.DropboxClient(self.access_token)
         self.app.config['ALLOWED_EXTENSIONS'] = set(['pdf', 'csv'])
         self.app.config['UPLOAD_FOLDER'] = 'static/uploads/'
     def upload(self, filearray):

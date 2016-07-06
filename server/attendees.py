@@ -34,7 +34,6 @@ class Attendees(object):
                         min_check[row[1]] = int(row[2])
             i += 1
         for info in attendee_info:
-            print i
             if info['email'] in min_check:
                 info['min'] = min_check[info['email']]
             values = {
@@ -48,7 +47,6 @@ class Attendees(object):
             }
             rel_info.append(info)
         self.add_attended_classes(rel_info, class_id)
-        print "check attendee_info ", attendee_info
         return attendee_info
 
 
@@ -62,3 +60,11 @@ class Attendees(object):
                 "minutes": info['minutes']
             }
             self.postgresql.query_db(query, values)
+    def get_cert_data(self, class_id):
+        query = "SELECT a.name AS name, a.email AS email, ac.minutes AS minutes, c.name AS class_name, c.duration AS duration, c.email_text AS email_text, c.date AS class_date, c.race_verbiage AS race_verbiage, c.cvpm_verbiage AS cvpm_verbiage, c.race_course_num AS course_num FROM attendees AS a LEFT JOIN  attended_classes AS ac ON a.id=ac.attendee_id LEFT JOIN classes AS c ON ac.class_id=c.id WHERE c.id=:class_id"
+        values = {
+            "class_id": class_id
+        }
+        cert_data = self.postgresql.query_db(query, values)
+        print cert_data
+        return cert_data

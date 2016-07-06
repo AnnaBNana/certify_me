@@ -9,6 +9,7 @@ from server.classes import Classes
 from server.instructors import Instructors
 from server.certificates import Certificates
 from server.dropboxconnection import Dropbox
+from server.sendgridconnection import SendgridConnection
 
 
 app= Flask(__name__)
@@ -23,6 +24,7 @@ classes = Classes(app)
 instructors = Instructors(app)
 certificates = Certificates(app)
 dropbox = Dropbox(app)
+sendgrid = SendgridConnection(app)
 
 
 # businesses.add_dropbox_api_key('somestring', 12)
@@ -345,20 +347,22 @@ def generate_certificates():
     if 'logged' in session:
         business_id = session['business_id']
         class_id = request.form['class']
-        # files = certificates.save_files(request.files)
-        # dropbox.upload(files)
+        # save files to temp local storage, return file names array
+        files = certificates.save_files(request.files)
+        dropbox.upload(files)
         if 'existing_pdf' in request.form:
             existing_pdf = request.form['existing_pdf']
-            # dropbox.get_file(request.form['existing_pdf'])
-        file_names = certificates.save_files(request.files)
-        for file_name in file_names:
+            dropbox.get_file(request.form['existing_pdf'])
+        for file_name in files:
             if file_name.endswith('.csv'):
                 class_data = {
                     "csv_file": file_name,
                     "class_id": class_id
                 }
                 #parses csv file, then adds each attendee to database
+                classes.add_csv_url(class_data)
                 certificates.parseCSV(class_data)
+                certificates.generate(class_id)
             elif file_name.endswith('.pdf'):
                 business_data = {
                     "pdf": file_name,

@@ -43,22 +43,18 @@ class Certificates(object):
 
     def parseCSV(self, class_data):
         with open(self.app.config['UPLOAD_FOLDER'] + class_data['csv_file'], 'rU') as csvfile:
-            dialect = csv.Sniffer().sniff(csvfile.read())
             csvfile.seek(0)
             reader = csv.reader(csvfile)
             attendee_info = self.attendees.add_attendees(reader, class_data['class_id'])
         return attendee_info
 
 
-    def generate(self):
+    def generate(self, class_id):
         layout = self.read_layout()
         layout_data = self.parse_layout(layout)
+        cert_data = self.attendees.get_cert_data(class_id)
         pdf = self.make_pdf(layout_data)
         self.merge_pdfs()
-
-
-    def get_pdf_data(self, class_id):
-        pass
 
 
     def read_layout(self):
@@ -145,6 +141,8 @@ class Certificates(object):
 
 
     def make_pdf(self, layout_data):
+        # get attendees based on class id
+
         style = self.stylesheet['BodyText']
         style.alignment = TA_CENTER
         coords = layout_data['coords']
