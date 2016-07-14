@@ -13,18 +13,21 @@
       </select>
     </div>
     <div class="row">
-      <input class="twelve columns default_pdf" type="button" value="use existing business PDF">
+      <input class="eleven columns default_pdf" type="button" value="use existing business PDF">
+      <i class="fa fa-info-circle fa-2x info one column epdf" aria-hidden="true"></i>
     </div>
     <div class="row">
       <input class="twelve columns existing_pdf" type="text" value="" name="existing_pdf" disabled>
     </div>
     <div class="row">
-      <input type="button" class="twelve columns change_pdf" value="or replace with new PDF">
+      <input type="button" class="eleven columns change_pdf" value="or replace with new PDF">
+      <i class="fa fa-info-circle fa-2x info one column npdf" aria-hidden="true"></i>
       <input type="text" class="twelve columns pdffilename" value="" name="new_pdf" disabled>
       <input type="file" class="pdfupload" accept=".pdf">
     </div>
     <div class="row">
-      <input type="button" class="twelve columns add_csv required" value="upload CSV file">
+      <input type="button" class="eleven columns add_csv required" value="upload CSV file">
+      <i class="fa fa-info-circle fa-2x info one column csv" aria-hidden="true"></i>
       <input type="text" class="twelve columns csvfilename required" value="" disabled name="csv_file">
       <input type="file" class="csvupload" accept=".csv">
     </div>
@@ -53,13 +56,76 @@
     <button type="button" name="button" class="no_pdf_button">ok</button>
   </div>
 </div>
-<div class="popup success">
+<div class="popup jssuccess">
   <div class="row close_container">
     <i class="fa fa-times-circle close" aria-hidden="true"></i>
   </div>
   <div class="row">
-    <p>file has been uploaded!</p>
-    <button type="button" name="button" class="success_button">ok</button>
+    <p>certificates generated</p>
+    <button type="button" name="button" class="stay">stay on page</button>
+    <button type="button" name="button" class="continue">view and send emails</button>
+  </div>
+</div>
+<div class="popup info_window pdf1_info">
+  <div class="row close_container">
+    <i class="fa fa-times-circle close" aria-hidden="true"></i>
+  </div>
+  <div class="row">
+    <h5 class="centered">What is existing business PDF?</h5>
+    <p>Existing business pdf refers to the pdf template most recently uplaoded.  This template is uploaded to dropbox and stored in the database for future use.  You may re-use this template as often as necessary.  If a new template is required for your business, upload a new template pdf document with a different file name from the previous one.</p>
+  </div>
+</div>
+<div class="popup info_window pdf2_info">
+  <div class="row close_container">
+    <i class="fa fa-times-circle close" aria-hidden="true"></i>
+  </div>
+  <div class="row">
+    <h5 class="centered">PDF guidelines</h5>
+    <p>
+      PDF templates must contain certain keywords, and these keywords must exist only in the row you want replaced.  Any text blocks containing the following key words will be replaced by class data.  All fields are optional.  If you do not wish to include these fields in the certificate, please be sure the keywords do not exist anywhere in the document.
+    </p>
+    <table>
+      <thead>
+        <th>keyword to include</th>
+        <th>corresponding data that will be inserted</th>
+      </thead>
+      <tbody>
+        <tr>
+          <td>student</td>
+          <td>name of attendee</td>
+        </tr>
+        <tr>
+          <td>instructor</td>
+          <td>all instructor names.  if classes may have multiple instructors, leave empty rows below keyword for each potential instructor.</td>
+        </tr>
+        <tr>
+          <td>class_id</td>
+          <td>RACE course number</td>
+        </tr>
+        <tr>
+          <td>race_verbiage</td>
+          <td>RACE verbiage, unique to each webinar</td>
+        </tr>
+        <tr>
+          <td>cvpm_verbiage</td>
+          <td>CVPM text, unique to each webinar</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+<div class="popup info_window csv_info">
+  <div class="row close_container">
+    <i class="fa fa-times-circle close" aria-hidden="true"></i>
+  </div>
+  <div class="row">
+    <h5 class="centered">CSV guidelines</h5>
+    <p class="centered">CSV's should be formatted as follows:</p>
+    <ul>
+      <li>Headers should be in the third row.</li>
+      <li>This program expects three columns per row: atttendee name, attendee email, and minutes attended, in this order.</li>
+      <li>This program will identify duplicate attendees according to email, and consolidate minutes for those duplicates, and ignore rows that are blank or do not contain an email.</li>
+    </ul>
   </div>
 </div>
 <script type="text/javascript" src="{{ url_for('static', filename='js/certificates.js') }}"></script>

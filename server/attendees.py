@@ -7,7 +7,6 @@ class Attendees(object):
         self.classes = Classes(app)
         self.postgresql = PSQLConnector(app, 'CertifyMe')
 
-
     def add_attendees(self, contents, class_id):
         # we are missing validation for csv files to ensure they are formatted as expected
         query = "INSERT INTO attendees (name, email, created_at) VALUES (:name, :email, NOW()) RETURNING id"
@@ -49,7 +48,6 @@ class Attendees(object):
         self.add_attended_classes(rel_info, class_id)
         return attendee_info
 
-
     def add_attended_classes(self, attendee_info, class_id):
         query = "INSERT INTO attended_classes (attendee_id, class_id, minutes) VALUES (:attendee_id, :class_id, :minutes) RETURNING attendee_id"
         for info in attendee_info:
@@ -60,11 +58,19 @@ class Attendees(object):
                 "minutes": info['minutes']
             }
             self.postgresql.query_db(query, values)
+
     def get_cert_data(self, class_id):
         query = "SELECT a.name AS name, a.email AS email, ac.minutes AS minutes, c.name AS class_name, c.duration AS duration, c.email_text AS email_text, c.date AS class_date, c.race_verbiage AS race_verbiage, c.cvpm_verbiage AS cvpm_verbiage, c.race_course_num AS course_num FROM attendees AS a LEFT JOIN  attended_classes AS ac ON a.id=ac.attendee_id LEFT JOIN classes AS c ON ac.class_id=c.id WHERE c.id=:class_id"
         values = {
             "class_id": class_id
         }
         cert_data = self.postgresql.query_db(query, values)
-        print cert_data
         return cert_data
+
+    def find_all_in_class(self, class_id):
+        query = "SELECT a.id AS attendee_id, a.name AS name, a.email AS email, ac.minutes AS minutes, c.duration AS duration, c.email_text AS email_text FROM attendees AS a LEFT JOIN attended_classes AS ac ON a.id=ac.attendee_id LEFT JOIN classes AS c ON ac.class_id=c.id WHERE c.id=:class_id AND ac.minutes >= c.duration"
+        values = {
+            "class_id": class_id
+        }
+        students = self.postgresql.query_db(query, values)
+        return students

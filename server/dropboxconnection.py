@@ -9,6 +9,7 @@ class Dropbox(object):
         self.client = dropbox.client.DropboxClient(self.access_token)
         self.app.config['ALLOWED_EXTENSIONS'] = set(['pdf', 'csv'])
         self.app.config['UPLOAD_FOLDER'] = 'static/uploads/'
+
     def upload(self, filearray):
         # since this takes so long, give client option to upload files to dropbox after the rest of the operations are complete
         for f in filearray:
@@ -19,7 +20,6 @@ class Dropbox(object):
             self.client.put_file("/" + f, fo)
         # after all operations complete, remove files from local file storage
         # something like this: os.remove(os.path.join(app.config['UPLOAD_FOLDER'], item.filename))
-
 
     def get_file(self, file_name):
         myfile = self.client.get_file(file_name)

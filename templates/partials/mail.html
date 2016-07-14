@@ -1,0 +1,50 @@
+<div class="heading">
+  <h1 class="page_title">{{title}}</h1>
+</div>
+<div class="container main_container">
+  <div class="offset-by-one ten columns">
+    <textarea class="twelve columns email_text" name="email_text">{{students[0]['email_text']}}</textarea>
+    <button class="change_text" type="button" name="button">Save Changes to Email Text</button>
+  </div>
+
+  <table class="offset-by-one ten columns">
+    <thead>
+      <th>checked</th>
+      <th>attendee name</th>
+      <th>attendee email</th>
+      <th>attendee minutes</th>
+    </thead>
+    <tbody>
+      {% for student in students %}
+      <tr>
+        <td><input type="checkbox" name="status" checked value="{{student.attendee_id}}"></td>
+        <td>{{student.name}}</td>
+        <td>{{student.email}}</td>
+        <td>{{student.minutes}}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  <div class="offset-by-one ten columns">
+    <button type="button" class="send">Send Emails</button>
+  </div>
+</div>
+<div class="popup jssuccess text">
+  <div class="row close_container">
+    <i class="fa fa-times-circle close" aria-hidden="true"></i>
+  </div>
+  <div class="row">
+    <p>email updated</p>
+    <button type="button" name="button" class="done">ok</button>
+  </div>
+</div>
+<div class="popup jssuccess sent">
+  <div class="row close_container">
+    <i class="fa fa-times-circle close" aria-hidden="true"></i>
+  </div>
+  <div class="row">
+    <p>emails sent</p>
+    <button type="button" name="button" class="savedb">save all files to dropbox</button>
+  </div>
+</div>
+<script type="text/javascript" src="{{ url_for('static', filename='js/mail.js') }}"></script>

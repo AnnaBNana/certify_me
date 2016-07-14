@@ -1,17 +1,7 @@
 import csv
+import datetime
 import os
-from server.psqlconnection import PSQLConnector
-from server.attendees import Attendees
-from werkzeug import secure_filename
-from PyPDF2 import PdfFileWriter, PdfFileReader
-import StringIO
-from reportlab.pdfgen.canvas import Canvas
-from reportlab.lib.pagesizes import letter
-from reportlab.lib.units import inch
-from reportlab.lib.styles import getSampleStyleSheet
-from reportlab.platypus import Paragraph
-from reportlab.lib.styles import ParagraphStyle
-from reportlab.lib.enums import TA_JUSTIFY, TA_LEFT, TA_CENTER
+
 from pdfminer.pdfparser import PDFParser
 from pdfminer.pdfdocument import PDFDocument
 from pdfminer.pdfpage import PDFPage
@@ -21,7 +11,19 @@ from pdfminer.pdfinterp import PDFPageInterpreter
 from pdfminer.pdfdevice import PDFDevice
 from pdfminer.layout import LAParams, LTTextBox, LTTextLine, LTFigure
 from pdfminer.converter import PDFPageAggregator
+from PyPDF2 import PdfFileWriter, PdfFileReader
+from reportlab.pdfgen.canvas import Canvas
+from reportlab.lib.pagesizes import letter
+from reportlab.lib.units import inch
+from reportlab.lib.styles import getSampleStyleSheet
+from reportlab.platypus import Paragraph
+from reportlab.lib.styles import ParagraphStyle
+from reportlab.lib.enums import TA_JUSTIFY, TA_LEFT, TA_CENTER
+import StringIO
+from werkzeug import secure_filename
 
+from server.attendees import Attendees
+from server.psqlconnection import PSQLConnector
 
 class Certificates(object):
     def __init__(self, app):
@@ -30,7 +32,6 @@ class Certificates(object):
         self.app.config['UPLOAD_FOLDER'] = 'static/uploads/'
         self.stylesheet = getSampleStyleSheet()
         self.attendees = Attendees(app)
-
 
     def save_files(self, files):
         filearray = []
@@ -48,18 +49,19 @@ class Certificates(object):
             attendee_info = self.attendees.add_attendees(reader, class_data['class_id'])
         return attendee_info
 
-
-    def generate(self, class_id):
-        layout = self.read_layout()
+    def generate(self, pdf_data):
+        layout = self.read_layout(pdf_data['template_pdf'])
         layout_data = self.parse_layout(layout)
-        cert_data = self.attendees.get_cert_data(class_id)
-        pdf = self.make_pdf(layout_data)
-        self.merge_pdfs()
+        #get student data, execute the next two functions for each person in class
+        students = pdf_data['students']
+        for student in students:
+            if student['email']:
+                pdf = self.make_pdf(layout_data, student, pdf_data['inst'])
+                self.merge_pdfs(student, pdf_data['template_pdf'])
 
-
-    def read_layout(self):
+    def read_layout(self, template_pdf):
         #put pdf miner code for preping layout for parsing
-        fp = open(self.app.config['UPLOAD_FOLDER'] + 'template.pdf', 'rb')
+        fp = open(self.app.config['UPLOAD_FOLDER'] + template_pdf, 'rb')
         parser = PDFParser(fp)
         document = PDFDocument(parser)
         if not document.is_extractable:
@@ -86,7 +88,7 @@ class Certificates(object):
         flowable_dict = {}
         found = flag = False
         layout_bounds = layout.bbox
-        keywords = ['student', 'seminar', 'instructor', 'race_verbiage', 'date', 'cvmp_verbiage']
+        keywords = ['student', 'seminar', 'instructor', 'race_verbiage', 'date', 'cvmp_verbiage', 'class_id']
         for lt_obj in layout:
             # print "object: ", lt_obj
             # print "lt obj object name: ", lt_obj.__class__.__name__
@@ -139,10 +141,7 @@ class Certificates(object):
             'layout_bounds': layout_bounds}
         return layout_data
 
-
-    def make_pdf(self, layout_data):
-        # get attendees based on class id
-
+    def make_pdf(self, layout_data, student, instructors):
         style = self.stylesheet['BodyText']
         style.alignment = TA_CENTER
         coords = layout_data['coords']
@@ -161,26 +160,32 @@ class Certificates(object):
             h1 = topy1 - bottomy2
             style.fontName = "Helvetica"
             if key == 'instructor':
-                s = "God"
+                s = str()
+                for i in instructors:
+                    s += i['name'] + "\n"
                 style.fontSize = 18
             elif key =='student':
-                s = "Anna Propas"
+                s = student['name']
                 style.fontSize = 36
                 style.fontName = 'Helvetica-BoldOblique'
             elif key == 'seminar':
-                s = "Anna Propas Is Awesome"
+                s = student['class_name']
                 style.fontSize = 18
+            elif key == 'class_id':
+                s = student['course_num']
+                style.fontSize = 14
             elif key == "race_verbiage":
-                s = "some RACE text that is really long so that word wrap will have to start working.  let's see how this looks is it long enough, should have done some lorem ipsum or something, this sucks."
+                s = student['race_verbiage']
                 style.fontSize = 8
                 style.fontName = 'Helvetica-Oblique'
             elif key == "cvmp_verbiage":
-                s = "some CVMP text"
+                s = student['cvpm_verbiage']
                 style.fontSize = 8
                 style.fontName = 'Helvetica-Oblique'
             elif key == "date":
-                new = "June 20, 2016"
-                s = "has attended the following webinar on " + new
+                d = datetime.datetime.strptime(student['class_date'], '%Y-%m-%d')
+                d = d.strftime('%b %d,%Y')
+                s = "has attended the following webinar on " + str(d)
                 style.fontSize = 14
             cv.setFillColor("white")
             white_out_w = coords[key][2] - coords[key][0]
@@ -198,19 +203,20 @@ class Certificates(object):
         with open(new_file,'wb') as fp:
             fp.write(packet.getvalue())
 
-
-    def merge_pdfs(self):
+    def merge_pdfs(self, student, template_pdf):
+        name = student['name']
+        name = name.replace(" ", "")
         # basic merge of two docs
-        pdf1 = PdfFileReader(file(self.app.config['UPLOAD_FOLDER'] + 'template.pdf', "rb"))
+        pdf1 = PdfFileReader(file(self.app.config['UPLOAD_FOLDER'] + template_pdf, "rb"))
         # create new doc for each attendee, merge this doc into base
         pdf2 = PdfFileReader(file(self.app.config['UPLOAD_FOLDER'] + 'temp.pdf', "rb"))
         output = PdfFileWriter()
         page = pdf1.getPage(0)
         page.mergePage(pdf2.getPage(0))
         output.addPage(page)
-        student_name = "placeholder"
+        student_name = name
         #3rd pdf is final version
-        outputStream = file(self.app.config['UPLOAD_FOLDER'] + student_name + '.pdf', 'wb')
+        outputStream = file(self.app.config['UPLOAD_FOLDER'] + name + '.pdf', 'wb')
         output.write(outputStream)
         outputStream.close()
         os.remove(self.app.config['UPLOAD_FOLDER'] + 'temp.pdf')

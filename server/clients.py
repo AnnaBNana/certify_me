@@ -9,6 +9,8 @@ class Clients(object):
 
 
     def add(self, form_data):
+        # name should be greater than 6 chars
+        # title should be greater than 2 chars
         print "form data", form_data
         if 'existing_biz' in form_data:
             biz_id = form_data['existing_biz']

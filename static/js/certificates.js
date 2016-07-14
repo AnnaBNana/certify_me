@@ -1,18 +1,22 @@
 $(document).ready(function() {
+
   $('.change_pdf').click(function(){
     $('.pdfupload').click();
     $('.existing_pdf').val("").hide();
-  })
+  });
 
   $('.pdfupload').change(function(){
     $('.pdffilename').show().val($(this).val());
-  })
+  });
+
   $('.add_csv').click(function(){
     $('.csvupload').click()
-  })
+  });
+
   $('.csvupload').change(function(){
     $('.csvfilename').show().val($(this).val());
   });
+
   $('.client_alert_button').click(function(){
     $.get('/index/choose_business', function(res){
       if (res.error) {
@@ -23,6 +27,7 @@ $(document).ready(function() {
       $('.client_alert').hide();
     })
   });
+
   $('.default_pdf').click(function(){
     $.get('/check_pdf_url', function(res){
       if (res.error) {
@@ -35,10 +40,11 @@ $(document).ready(function() {
         $('.no_pdf').show();
         $('.no_pdf_button').click(function(){
           $('.no_pdf').hide();
-        })
+        });
       }
-    })
-  })
+    });
+  });
+
   $('form').submit(function(e){
     // e.preventDefault();
     var valid = true;
@@ -74,16 +80,38 @@ $(document).ready(function() {
           $('.existing_pdf').hide('slow');
           $('.pdffilename').hide('slow');
           $('.csvfilename').hide('slow');
-          $('.success').show('slow');
-          $('.success_button').click(function(){
-            $('.success').hide('slow')
-          })
+          $('.jssuccess').show('slow');
         }
       })
     }
     return false;
-  })
-  $('.close_container').click(function(){
+  });
+
+  $('.continue').click(function(){
+    $.get("/index/mail", function(res){
+      if (res.error) {
+        window.location.assign('/')
+      } else {
+        $('.main_content').html(res);
+      }
+    })
+  });
+
+  $('.close_container,.stay').click(function(){
     $('.popup').hide('slow')
-  })
+  });
+
+  $('.epdf').click(function(){
+    $('.pdf1_info').show('slow');
+  });
+
+  $('.npdf').click(function(){
+    $('.pdf2_info').show('slow');
+  });
+
+  $('.csv').click(function(){
+    $('.csv_info').show('slow');
+  });
+
+
 });

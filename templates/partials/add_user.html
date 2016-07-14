@@ -8,9 +8,15 @@
       <label>name:</label>
       <input class="twelve columns" type="text" name="name" placeholder="name">
     </div>
+    <div class="row jserror namerr">
+
+    </div>
     <div class="row ">
       <label>email:</label>
       <input class="twelve columns" type="text" name="email" placeholder="email">
+    </div>
+    <div class="row jserror emailerr">
+
     </div>
     <div class="row">
       <label>password:</label>
@@ -20,8 +26,11 @@
       <label>confirm password:</label>
       <input class="twelve columns confirmpassword" type="password" name="confirmpassword" placeholder="password">
     </div>
+    <div class="row jserror pwerr">
+
+    </div>
     <div class="row">
-      <label>permissions <i class="fa fa-question-circle info" aria-hidden="true"></i></label>
+      <label>permissions <i class="fa fa-question-circle question" aria-hidden="true"></i></label>
       <select name="permission" class="twelve columns permissions">
         {% if session['permission'] == "super-admin" %}
           <option value="super-admin">super-admin</option>
@@ -33,19 +42,16 @@
     {% if session['permission'] == "super-admin" %}
       <div class="row client_select">
         <label>access</label>
-        <select name="client" class="twelve columns client">
+        <select name="business" class="twelve columns client">
           <option value="">select client</option>
           {% for client in all_clients %}
-            <option value="{{client.id}}">{{client.client_name}}</option>
+            <option value="{{client.id}}">{{client.name}}</option>
           {% endfor %}
         </select>
       </div>
     {% endif %}
-    <div class="row jserror">
+    <div class="row jserror all">
       <p>please fill out all fields</p>
-    </div>
-    <div class="row jserror nomatch">
-      <p>password and confirmation do not match</p>
     </div>
     <div class="row btn-center">
       <input class="register" type="submit" value="Register a New User">
@@ -77,11 +83,6 @@
   <div class="row">User has been successfully added to the database.</div>
   <div class="row">
     <button type="button" class="user_list">view user list</button>
-  </div>
-</div>
-<div class="popup dberror">
-  <div class="row close_container">
-    <i class="fa fa-times-circle close" aria-hidden="true"></i>
   </div>
 </div>
 

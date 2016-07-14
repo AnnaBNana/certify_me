@@ -9,7 +9,6 @@ class Classes(object):
         self.postgresql = PSQLConnector(app, 'CertifyMe')
         self.instructors = Instructors(app)
 
-
     def add(self, form_data):
         session
         print "form data", form_data
@@ -52,7 +51,7 @@ class Classes(object):
         else:
             print "validation pass"
             print instructor_list
-            query = "INSERT INTO classes (name, duration, business_id, email_text, date, created_at, race_verbiage, cvpm_verbiage, status, race_course_num) VALUES (:name, :duration, :business_id, :email_text, :date, NOW(), :race_verbiage, :cvpm_verbiage, :status, :race_course_num) RETURNING id"
+            query = "INSERT INTO classes (name, duration, business_id, email_text, date, created_at, race_verbiage, cvpm_verbiage, race_course_num) VALUES (:name, :duration, :business_id, :email_text, :date, NOW(), :race_verbiage, :cvpm_verbiage, :race_course_num) RETURNING id"
             values = {
                 "name": form_data['name'],
                 "duration": form_data['duration'],
@@ -61,7 +60,6 @@ class Classes(object):
                 "date": form_data['date'],
                 "race_verbiage": form_data['race_verbiage'],
                 "cvpm_verbiage": form_data['cvpm_verbiage'],
-                "status": "incomplete",
                 "race_course_num": form_data['course_num']
             }
             # add class, return id
@@ -75,7 +73,6 @@ class Classes(object):
             # with returned ids, we then go and add entries to relational table
             self.instructors.add_class_instructors(class_id, instructor_ids)
             return class_id
-
 
     def update(self, form_data):
         # update class
@@ -115,35 +112,17 @@ class Classes(object):
         self.instructors.add_class_instructors(class_id, added_instructors)
         self.instructors.update(update_instructors)
 
-
-    def findAll(self):
+    def findAll(self, business_id):
         if session['permission'] == "super-admin":
             query = "SELECT * FROM classes";
             classes = self.postgresql.query_db(query)
         else:
             query = "SELECT * FROM classes WHERE business_id=:biz_id"
             values = {
-                "biz_id": session['business_id']
+                "biz_id": business_id
             }
             classes = self.postgresql.query_db(query, values)
         return classes
-
-
-    def findIncomplete(self, business_id):
-        if business_id == 23:
-            query = "SELECT * FROM classes WHERE status=:status"
-            values = {
-                "status": "incomplete"
-            }
-        else:
-            query = "SELECT * FROM classes WHERE status=:status AND business_id=:business_id"
-            values = {
-                "status": "incomplete",
-                "business_id": business_id
-            }
-        incomplete_classes = self.postgresql.query_db(query, values)
-        return incomplete_classes
-
 
     def findOne(self, class_id):
         query = "SELECT * FROM classes WHERE id=:class_id";
@@ -161,11 +140,10 @@ class Classes(object):
         duration = self.postgresql.query_db(query, values)
         return duration
 
-
-    def add_csv_url(self, class_data):
-        query = "UPDATE classes SET csv_url=:csv, updated_at=NOW() WHERE id=:id"
+    def update_email(self, email_text, class_id):
+        query = "UPDATE classes SET email_text=:email_text WHERE id=:class_id"
         values = {
-            "csv": class_data['csv_file'],
-            "id": class_data['class_id']
+            "email_text": email_text,
+            "class_id": class_id
         }
         self.postgresql.query_db(query, values)

@@ -2,14 +2,14 @@
   <h1 class="page_title">Edit {{user.name}}'s User Info</h1>
 </div>
 <div class="container main_container">
-  <form class="offset-by-one ten columns">
+  <form class="offset-by-one ten columns" id="user">
     <div class="row ">
       <label>name: </label>
-      <input class="twelve columns required" type="text" name="name" value="{{user.name}}">
+      <input class="twelve columns requiredu" type="text" name="name" value="{{user.name}}">
     </div>
     <div class="row ">
       <label>email: </label>
-      <input class="twelve columns required" type="text" name="email" value="{{user.email}}">
+      <input class="twelve columns requiredu" type="text" name="email" value="{{user.email}}">
       <input type="hidden" name="id" value="{{user.id}}">
     </div>
     <div class="row"
@@ -27,7 +27,7 @@
         <option value="user" class="">user</option>
       </select>
     </div>
-    <div class="row jserror">
+    <div class="row jserror usererr">
       <p>please fill out all fields</p>
     </div>
     <div class="row ">
@@ -35,6 +35,21 @@
       <button type="button" class="u-pull-right four columns cancel">Cancel</button>
     </div>
   </form>
+  {% if user.id == session['user_id'] %}
+    <h5 class="centered">Change Password</h5>
+    <form class="offset-by-one ten columns" id="password">
+      <label>old password:</label>
+      <input class="twelve columns requiredp oldp" type="password" name="oldpword" placeholder="old password">
+      <label>new password:</label>
+      <input class="twelve columns requiredp newp" type="password" name="newpword" placeholder="enter new password">
+      <label>confirm new password:</label>
+      <input class="twelve columns requiredp confp" type="password" name="confirmnew" placeholder="confirm new password">
+      <div class="row jserror pworderr">
+        <p>please fill out all fields</p>
+      </div>
+      <input type="submit" value="change password">
+    </form>
+  {% endif %}
 </div>
 <div class="popup info_window">
   <div class="row close_container">
@@ -54,12 +69,23 @@
     <span>User:</span> has access to {% if session['permission'] == "super-admin" %} only one {% endif %} client's data, but can not edit, add or remove other users.
   </div>
 </div>
-<div class="popup jssuccess">
+<div class="popup jssuccess user">
   <div class="row close_container">
     <i class="fa fa-times-circle close" aria-hidden="true"></i>
   </div>
   <div class="row">
     user successfully updated in database
+  </div>
+  <div class="row">
+    <button type="button" class="offset-by-three six columns confirm">back to user list</button>
+  </div>
+</div>
+<div class="popup jssuccess password">
+  <div class="row close_container">
+    <i class="fa fa-times-circle close" aria-hidden="true"></i>
+  </div>
+  <div class="row">
+    user password successfully updated in database
   </div>
   <div class="row">
     <button type="button" class="offset-by-three six columns confirm">back to user list</button>

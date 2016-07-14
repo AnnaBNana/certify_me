@@ -1,7 +1,7 @@
 $barely_yellow: #fffef4;
 $light_yellow: #e7e0ad;
 $teal: #052633;
-$links: #287ea1;
+$links: #50AB9F;
 $purple: #23032a;
 $shadow: #b4b2b2;
 $warn: #ec795b;
@@ -18,6 +18,7 @@ $warn: #ec795b;
   width: $width;
 }
 body {
+  font-weight: 400;
   background: linear-gradient(135deg, $purple, $teal);
   min-height: 100vh;
 }
@@ -57,10 +58,10 @@ a {
 .sidebar {
   @include inline-block(17%);
   margin-left: 10px;
-  // z-index: 99;
+  font-weight: 100;
   .expand_icon {
     padding: 10px 0 0 10px;
-    color: $barely_yellow;
+    color: $links;
     font-size: 2em;
   }
   .sidebar_content {
@@ -70,8 +71,11 @@ a {
     margin-top: 5em;
     a {
       display: block;
-      font-size: 1.7em;
+      font-size: 1.3em;
       border-bottom: 1px solid $links;
+    }
+    a:hover {
+      color: $barely_yellow;
     }
   }
 }
@@ -102,11 +106,22 @@ a {
   }
 }
 //any place that requires pop-up window can use this style
+.question,
 .info {
   color: $warn;
 }
+.pdf1_info,
+.pdf2_info,
+.csv_info {
+  h5 {
+    border-bottom: 1px solid $shadow;
+  }
+}
 .centered {
   text-align: center;
+}
+th {
+  font-weight: 400;
 }
 .popup {
   display: none;
@@ -165,6 +180,7 @@ input[type=file] {
 .pdffilename,
 .csvfilename,
 .existing_pdf,
-.add_instructor_target {
+.add_instructor_target,
+.sent {
   display: none;
 }

@@ -4,7 +4,6 @@ class Businesses(object):
     def __init__(self, app):
         self.postgresql = PSQLConnector(app, 'CertifyMe')
 
-
     def add(self, form_data):
         biz_query = "INSERT INTO businesses (name, street, city, state, zip, website, email, social_media_1, social_media_2, social_media_3, created_at) VALUES (:name, :street, :city, :state, :zip, :website, :email, :facebook, :twitter, :instagram, NOW()) RETURNING id;"
         biz_values = {
@@ -21,7 +20,6 @@ class Businesses(object):
         }
         biz_id = self.postgresql.query_db(biz_query, biz_values)
         return biz_id
-
 
     def update(self, form_data):
         print form_data
@@ -40,7 +38,6 @@ class Businesses(object):
         }
         self.postgresql.query_db(query, values)
 
-
     def findOne(self, biz_id):
         query = "SELECT * FROM businesses WHERE id=:biz_id"
         values = {
@@ -48,7 +45,6 @@ class Businesses(object):
         }
         biz_info = self.postgresql.query_db(query, values)
         return biz_info[0]
-
 
     def findAll(self):
         query = "SELECT * FROM businesses WHERE name!=:name"
@@ -58,7 +54,6 @@ class Businesses(object):
         businesses = self.postgresql.query_db(query, values)
         return businesses
 
-
     def add_pdf_url(self, business_data):
         query = "UPDATE businesses SET pdf_url=:pdf_url, updated_at=NOW() WHERE id=:id"
         values = {
@@ -67,7 +62,6 @@ class Businesses(object):
         }
         self.postgresql.query_db(query, values)
 
-
     def check_pdf_url(self, business_id):
         query = "SELECT pdf_url FROM businesses WHERE id=:business_id"
         values = {
@@ -75,7 +69,6 @@ class Businesses(object):
         }
         url = self.postgresql.query_db(query, values)
         return url
-
 
     def add_dropbox_api_key(self, key, client_id):
         with open('venv/bin/activate', 'a') as file:

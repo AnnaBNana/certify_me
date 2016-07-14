@@ -30,24 +30,38 @@ $(document).ready(function() {
     });
     //if some fields are empty, show empty error
     if (!valid) {
-      $('.jserror').show();
+      $('.all').show('slow');
     } else {
       //if passwords do not match, show nomatch error
-      if ($('.password').val() != $('.confirmpassword').val()) {
-        $('.nomatch').show();
+      pword = $('.password').val();
+      cpword = $('.confirmpassword').val();
+      if (pword != cpword) {
+        $('.pwerr').append("password and confirmation do not match");
+        $('.pwerr').show();
       //otherwise, hide all errors and send form data to backend for additional validation
       } else {
         $('.jserror').hide();
-        $('.nomatch').hide();
         var data = $(this).serialize();
         $.post('/add_user', data, function(res){
-          //show popup error message if email is already in the database
-          if (res.error) {
-            $('.dberror').append('<p>' + res.error + '</p>')
-            $('.dberror').show();
+          //show inline error message if any server side validations failed
+          if (res.dupe_error) {
+            $('.emailerr').append(res.dupe_error)
+            $('.emailerr').show();
+          }
+          if (res.name_error) {
+            $('.namerr').append(res.name_error)
+            $('.namerr').show();
+          }
+          if (res.email_error) {
+            $('.emailerr').append(res.email_error)
+            $('.emailerr').show();
+          }
+          if (res.password_error) {
+            $('.pwerr').append(res.password_error)
+            $('.pwerr').show();
           }
           //otherwise, show success message
-          else if (res.id) {
+          if (res.id) {
             $('.success').show();
           }
           $('input:not(:submit)').each(function(){
