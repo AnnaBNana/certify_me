@@ -12,8 +12,8 @@ $(document).ready(function() {
     }
   });
   //show info window when client clicks question mark next to permissions label
-  $('.info').click(function(){
-    $('.info_window').show(900);
+  $('.question').click(function(){
+    $('.info_window').show('slow');
   })
   //close info window
   $('.close_container').click(function() {
@@ -43,6 +43,9 @@ $(document).ready(function() {
         $('.jserror').hide();
         var data = $(this).serialize();
         $.post('/add_user', data, function(res){
+          if (res.error) {
+            window.location.assign('/')
+          }
           //show inline error message if any server side validations failed
           if (res.dupe_error) {
             $('.emailerr').append(res.dupe_error)
@@ -60,7 +63,6 @@ $(document).ready(function() {
             $('.pwerr').append(res.password_error)
             $('.pwerr').show();
           }
-          //otherwise, show success message
           if (res.id) {
             $('.success').show();
           }

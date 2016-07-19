@@ -1,3 +1,16 @@
+input[type=file],
+.pdffilename,
+.csvfilename,
+.existing_pdf,
+.add_instructor_target,
+.sent,
+.jssuccess,
+.jserror,
+.popup,
+.sidebar_content,
+.client_select {
+  display: none; }
+
 body {
   font-weight: 400;
   background: linear-gradient(135deg, #23032a, #052633);
@@ -13,12 +26,15 @@ label {
 input[type=button]:hover,
 input[type=submit]:hover,
 button:hover {
-  border: 1px solid #ec795b;
-  color: #ec795b; }
+  border: 1px solid #B60065;
+  color: #B60065; }
 
 a {
-  color: #50AB9F;
+  color: #a0d6cf;
   text-decoration: none; }
+
+a:hover {
+  color: #d3e9e6; }
 
 .main_content {
   display: inline-block;
@@ -26,14 +42,14 @@ a {
   width: 75%;
   margin: 0 0 50px 20px; }
   .main_content .heading {
-    color: #fffef4;
+    color: #d3e9e6;
     text-align: center;
     margin-top: 50px; }
   .main_content .main_container {
-    border: 1px solid #b4b2b2;
+    border: 1px solid #bbb;
     border-radius: 4px;
-    background: linear-gradient(135deg, #ffffff, #e7e0ad);
-    background-color: #fffef4;
+    background: linear-gradient(135deg, #d3e9e6, #a0d6cf);
+    background-color: #d3e9e6;
     width: 100%;
     padding: 50px 0;
     margin-top: 50px; }
@@ -46,22 +62,16 @@ a {
   font-weight: 100; }
   .sidebar .expand_icon {
     padding: 10px 0 0 10px;
-    color: #50AB9F;
+    color: #a0d6cf;
     font-size: 2em; }
   .sidebar .sidebar_content {
-    display: none;
     padding: 10px;
     box-sizing: border-box;
     margin-top: 5em; }
     .sidebar .sidebar_content a {
       display: block;
       font-size: 1.3em;
-      border-bottom: 1px solid #50AB9F; }
-    .sidebar .sidebar_content a:hover {
-      color: #fffef4; }
-
-.client_select {
-  display: none; }
+      border-bottom: 1px solid #a0d6cf; }
 
 .logo {
   display: inline-block;
@@ -69,7 +79,7 @@ a {
   width: 0;
   visibility: visible; }
   .logo .badge {
-    color: #fffef4;
+    color: #d3e9e6;
     position: absolute;
     top: 35px;
     left: 30px;
@@ -86,12 +96,12 @@ a {
 
 .question,
 .info {
-  color: #ec795b; }
+  color: #B60065; }
 
 .pdf1_info h5,
 .pdf2_info h5,
 .csv_info h5 {
-  border-bottom: 1px solid #b4b2b2; }
+  border-bottom: 1px solid #bbb; }
 
 .centered {
   text-align: center; }
@@ -100,7 +110,6 @@ th {
   font-weight: 400; }
 
 .popup {
-  display: none;
   width: 60%;
   margin: 0 auto;
   background-color: #fff;
@@ -110,34 +119,28 @@ th {
   position: absolute;
   top: 30vh;
   left: 25%;
-  box-shadow: 2px 2px 10px #b4b2b2; }
+  box-shadow: 2px 2px 10px #bbb; }
   .popup span {
     font-weight: 700;
-    color: #50AB9F; }
+    color: #B60065; }
   .popup .close_container {
     text-align: right; }
     .popup .close_container .close {
       font-size: 1.4em;
-      color: #ec795b; }
-
-.client_alert {
-  display: block;
-  text-align: center; }
+      color: #B60065; }
 
 .error {
-  color: #ec795b;
+  color: #B60065;
   font-weight: bold;
   padding-bottom: 10px; }
 
 .jserror {
-  display: none;
-  color: #ec795b;
+  color: #B60065;
   font-weight: bold;
   padding-bottom: 10px; }
 
 .jssuccess {
   text-align: center;
-  display: none;
   font-weight: bold;
   padding-bottom: 10px; }
 
@@ -145,14 +148,8 @@ th {
   padding: 4px;
   text-align: right; }
 
-input[type=file] {
-  display: none; }
-
-.pdffilename,
-.csvfilename,
-.existing_pdf,
-.add_instructor_target,
-.sent {
-  display: none; }
+.client_alert {
+  display: block;
+  text-align: center; }
 
 /*# sourceMappingURL=style.css.map */

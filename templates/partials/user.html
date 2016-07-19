@@ -1,4 +1,4 @@
-3<div class="heading">
+question3<div class="heading">
   <h1 class="page_title">Edit {{user.name}}'s User Info</h1>
 </div>
 <div class="container main_container">
@@ -7,16 +7,18 @@
       <label>name: </label>
       <input class="twelve columns requiredu" type="text" name="name" value="{{user.name}}">
     </div>
+    <div class="row jserror namerr"></div>
     <div class="row ">
       <label>email: </label>
       <input class="twelve columns requiredu" type="text" name="email" value="{{user.email}}">
       <input type="hidden" name="id" value="{{user.id}}">
     </div>
+    <div class="row jserror emailerr"></div>
     <div class="row"
     {% if session['permission'] != "super-admin" and user.permission == "super-admin"%}
       id="remove"
     {% endif %}>
-      <label>permissions <i class="fa fa-question-circle info" aria-hidden="true"></i></label>
+      <label>permission: <i class="fa fa-question-circle question" aria-hidden="true"></i></label>
       <select name="permission" class="twelve columns permissions required">
         {% if session['permission'] == "super-admin" %}
           <option value="super-admin">super-admin</option>
@@ -32,11 +34,13 @@
     </div>
     <div class="row ">
       <input class="four columns update" type="submit" value="update user">
-      <button type="button" class="u-pull-right four columns cancel">Cancel</button>
+      {% if user.id != session['user_id']%}
+        <button type="button" class="u-pull-right four columns cancel">Cancel</button>
+      {% endif %}
     </div>
   </form>
   {% if user.id == session['user_id'] %}
-    <h5 class="centered">Change Password</h5>
+    <h5 class="centered twelve columns">Change Password</h5>
     <form class="offset-by-one ten columns" id="password">
       <label>old password:</label>
       <input class="twelve columns requiredp oldp" type="password" name="oldpword" placeholder="old password">

@@ -22,11 +22,39 @@ $(document).ready(function() {
       $('.jserror').hide();
       var data = $(this).serialize();
       $.post('/add_client', data, function(res) {
-        // console.log(res);
-        $('input:not(:submit),select').each(function(){
-          $(this).val("");
-        })
-        $('.popup').show('slow');
+        if (res.error) {
+          window.location.assign('/')
+        }
+        if (res.name_error) {
+          $('.namerr').html(res.name_error).show('slow');
+        }
+        if (res.title_error) {
+          $('.titlerr').html(res.title_error).show('slow');
+        }
+        if (res.biz_name_error) {
+          $('.biznamerr').html(res.biz_name_error).show('slow');
+        }
+        if (res.street_addr_error) {
+          $('.streeterr').html(res.street_addr_error).show('slow');
+        }
+        if (res.city_addr_error) {
+          $('.cityerr').html(res.city_addr_error).show('slow');
+        }
+        if (res.state_addr_error) {
+          $('.staterr').html(res.state_addr_error).show('slow');
+        }
+        if (res.zip_addr_error) {
+          $('.ziperr').html(res.zip_addr_error).show('slow');
+        }
+        if (res.email_error) {
+          $('.emailerr').html(res.email_error).show('slow');
+        }
+        if (res.success) {
+          $('.popup').show('slow');
+          $('input:not(:submit),select').each(function(){
+            $(this).val("");
+          });
+        }
       })
     }
     return false;

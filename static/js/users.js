@@ -2,7 +2,6 @@ $(document).ready(function() {
 
   $('.edit').click(function(){
     id = $(this).attr('data-user-id');
-    console.log(id);
     $.get('/index/user/' + id, function(res){
       if (res.error) {
         window.location.assign('/')
@@ -29,7 +28,7 @@ $(document).ready(function() {
   });
 
   //show info window when client clicks question mark next to permissions label
-  $('.info').click(function(){
+  $('.question').click(function(){
     $('.info_window').show('slow');
   });
 
@@ -43,7 +42,6 @@ $(document).ready(function() {
     var valid = true;
     // check each input to see if it is empty
     $('input.requiredu').each(function(){
-      console.log("confirmed");
       if(!$(this).val()) {
         valid = false;
       }
@@ -53,11 +51,19 @@ $(document).ready(function() {
       $('.usererr').show('slow');
     } else {
       user = $(this).serialize();
-      console.log(user)
       $.post('/update_user', user, function(res){
         if (res.error) {
           window.location.assign('/')
-        } else {
+        }
+        else if (res.name_error) {
+          $('.namerr').html(res.name_error);
+          $('.namerr').show('slow');
+        }
+        else if (res.email_error) {
+          $('.emailerr').html(res.email_error);
+          $('.emailerr').show('slow');
+        }
+        else {
           $('.user').show('slow')
         }
       })

@@ -1,5 +1,7 @@
 $(document).ready(function() {
 
+  $('.client_alert').css('display', 'block');
+
   $('.change_pdf').click(function(){
     $('.pdfupload').click();
     $('.existing_pdf').val("").hide();

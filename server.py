@@ -216,7 +216,7 @@ def pdf():
     if 'logged' in session:
         title = "Generate Certificates"
         business_id = session['business_id']
-        incomplete_classes = classes.findAll(business_id)
+        incomplete_classes = classes.find_all_for_biz(business_id)
         return render_template('partials/certificates.html', title=title, incomplete_classes=incomplete_classes)
     else:
         error = {'error': 'redirect'}
@@ -239,6 +239,23 @@ def mail():
 def add_biz():
     if 'logged' in session:
         return render_template('partials/add_business.html')
+    else:
+        error = {'error': 'redirect'}
+        return jsonify(error)
+
+
+@app.route('/index/dropbox_upload')
+def dropbox_upload():
+    if 'logged' in session:
+        class_id = session['class_id']
+        business_id = session['business_id']
+        biz_data = businesses.findOne(business_id)
+        class_data = classes.findOne(class_id)
+        if dropbox.save_all(biz_data, class_data):
+            message = {'success': 'All files uploaded'}
+        else:
+            message = {'upload_error': "files not uploaded"}
+        return jsonify(message)
     else:
         error = {'error': 'redirect'}
         return jsonify(error)
@@ -286,7 +303,20 @@ def add_user_form():
 @app.route('/add_client', methods=['POST'])
 def add_client_form():
     if 'logged' in session:
-        return clients.add(request.form)
+        message = {}
+        #handle case of existing biz
+        if 'existing_biz' in request.form:
+            biz_id = request.form['existing_biz']
+        else:
+            biz_data = businesses.add(request.form)
+            if 'message' in biz_data:
+                message = biz['message']
+            elif 'biz_id' in biz_data:
+                biz_id = biz_data['biz_id']
+        if biz_id:
+            client_msg = clients.add(biz_id, request.form)
+            message = client_msg
+        return jsonify(message)
     else:
         error = {'error': 'redirect'}
         return jsonify(error)
@@ -309,7 +339,6 @@ def activate_client():
 @app.route('/add_class', methods=['POST'])
 def new_class():
     if 'logged' in session:
-        # print "server file: ", request.form
         class_id = classes.add(request.form)
         session['class_id'] = class_id
         print "operation complete, id is: ", class_id
@@ -325,9 +354,8 @@ def new_class():
 @app.route('/update_user', methods=['POST'])
 def update_user():
     if 'logged' in session:
-        users.update(request.form)
-        success = {'success': 'success'}
-        return jsonify(success)
+        message = users.update(request.form)
+        return jsonify(message)
     else:
         error = {'error': 'redirect'}
         return jsonify(error)
@@ -377,9 +405,12 @@ def generate_certificates():
         session['class_id'] = class_id
         # save files to temp local storage, return file names array
         files = certificates.save_files(request.files)
-        dropbox.upload(files)
-        if 'existing_pdf' in request.form:
+        #don't save to dropbox, yet.  save at end of process
+        # dropbox.upload(files)
+        print request.form
+        if request.form['existing_pdf']:
             pdf = request.form['existing_pdf']
+            # print "existing pdf in server file line 420:", pdf
             dropbox.get_file(pdf)
         for file_name in files:
             if file_name.endswith('.csv'):
@@ -387,6 +418,8 @@ def generate_certificates():
                     "csv_file": file_name,
                     "class_id": class_id
                 }
+                certificates.parseCSV(csv_data)
+                # classes.update_csv_url(file_name, class_id)
             elif file_name.endswith('.pdf'):
                 pdf = file_name
                 business_data = {
@@ -394,8 +427,6 @@ def generate_certificates():
                     "id": business_id
                 }
                 businesses.add_pdf_url(business_data)
-        #parses csv file, then adds each attendee to database
-        certificates.parseCSV(csv_data)
         students = attendees.get_cert_data(class_id)
         inst = instructors.find_all_class_instructors(class_id)
         pdf_data = {
@@ -405,9 +436,8 @@ def generate_certificates():
             "students": students,
             "inst": inst
         }
-        certificates.generate(pdf_data)
-        success = {'success': 'yay, you win!'}
-        return jsonify(success)
+        message = certificates.generate(pdf_data)
+        return jsonify(message)
     else:
         error = {'error': 'redirect'}
         return jsonify(error)
@@ -429,9 +459,20 @@ def update_email():
 @app.route('/send_mail', methods=['POST'])
 def send_mail():
     if 'logged' in session:
-        sendgrid.send(request.form)
-        success = {'success': 'yay, you win!'}
-        return jsonify(success)
+        # request.form is a dict containing all student id's
+        # key and value are the id
+        print request.form
+        class_id = session['class_id']
+        business_id = session['business_id']
+        business_data = businesses.findOne(business_id)
+        class_data = classes.findOne(class_id)
+        for id in request.form:
+            student_data = attendees.findOne(id)
+            if sendgrid.send(business_data, class_data, student_data):
+                message = {'success': 'mail sent'}
+            else:
+                message = {'send_error': 'mail not sent'}
+        return jsonify(message)
     else:
         error = {'error': 'redirect'}
         return jsonify(error)

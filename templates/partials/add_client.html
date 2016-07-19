@@ -8,10 +8,12 @@
         <label>name: </label>
         <input class="twelve columns required" type="text" name="name" placeholder="client name, including degrees">
       </div>
+      <div class="row jserror namerr"></div>
       <div class="row ">
         <label>client title (optional):</label>
         <input class="twelve columns" type="text" name="title" placeholder="business title, ex: CEO">
       </div>
+      <div class="row jserror titlerr"></div>
       <!-- get all businesses, populate select on page load -->
       <div class="biz_opts">
         <label>choose client business name:</label>
@@ -21,7 +23,7 @@
             <option value="{{business.id}}">{{business.name}}</option>
             {% endfor %}
           </select>
-          <!-- if user clicks this button new partial will be loaded, but this row will be removed using .remove() as well -->
+          <!-- if user clicks this button new partial will be loaded, and row will be removed to avoid conflicting data-->
           <button type="button" class="six columns add_biz">or add new business</button>
         </div>
       </div>
@@ -33,9 +35,7 @@
       </div>
       <div class="row">
         <input type="submit" name="action" value="add new client">
-      </div>
-      <div class="row">
-        <a href="#" class="client">back to choose client</a>
+        <a href="#" class="u-pull-right four columns client"><button type="button">back to choose business</button></a>
       </div>
     </div>
   </form>

@@ -72,19 +72,31 @@ class Users(object):
                 else:
                     error = {"error": "email or password did not match an existing user in the database"}
                     return error
+
     def update(self, form_data):
+        valid = True
+        message = {}
+        if len(form_data['name']) < 5:
+            message['name_error'] = 'name must be 4 characters or more'
+            valid = False
+        if not self.email_regex.match(form_data['email']):
+            message['email_error'] = 'email entered is not a valid email format'
+            valid = False
         if 'permission' not in form_data:
             permission = "super-admin"
         else:
             permission = form_data['permission']
-        query = "UPDATE users SET name=:name, email=:email, permission=:permission, updated_at=NOW() WHERE id=:id"
-        values = {
-            "name": form_data['name'],
-            "email": form_data['email'],
-            "permission": permission,
-            "id": form_data['id']
-        }
-        self.postgresql.query_db(query, values)
+        if valid:
+            query = "UPDATE users SET name=:name, email=:email, permission=:permission, updated_at=NOW() WHERE id=:id"
+            values = {
+                "name": form_data['name'],
+                "email": form_data['email'],
+                "permission": permission,
+                "id": form_data['id']
+            }
+            self.postgresql.query_db(query, values)
+            message['success'] = "user updated in database"
+        return message
 
     def update_password(self, form_data, user_id):
         message = {}

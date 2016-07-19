@@ -124,6 +124,15 @@ class Classes(object):
             classes = self.postgresql.query_db(query, values)
         return classes
 
+    def find_all_for_biz(self, business_id):
+        query = "SELECT * FROM classes WHERE business_id=:biz_id"
+        values = {
+            "biz_id": business_id
+        }
+        classes = self.postgresql.query_db(query, values)
+        return classes
+
+
     def findOne(self, class_id):
         query = "SELECT * FROM classes WHERE id=:class_id";
         values = {
@@ -147,3 +156,11 @@ class Classes(object):
             "class_id": class_id
         }
         self.postgresql.query_db(query, values)
+
+    # def update_csv_url(self, csv, id):
+    #     query = "UPDATE classes SET csv_url=:csv_url WHERE id=:id"
+    #     values = {
+    #         "csv_url": csv_url,
+    #         "id": id
+    #     }
+    #     self.postgresql.query_db(query, values)

@@ -2,10 +2,12 @@
   <label>business name: </label>
   <input class="twelve columns required" type="text" name="business_name" placeholder="business name">
 </div>
+<div class="row jserror biznamerr"></div>
 <div class="row">
   <label>business address: </label>
   <input class="twelve columns required" type="text" name="street_addr" placeholder="street address">
 </div>
+<div class="row jserror streeterr"></div>
 <div class="row">
   <input class="four columns required" type="text" name="city_addr" placeholder="city">
   <select name="state_addr" class="four columns required">
@@ -63,6 +65,9 @@
   </select>
   <input class="four columns required" type="number" name="zip_addr" placeholder="zip code">
 </div>
+<div class="row jserror cityerr"></div>
+<div class="row jserror staterr"></div>
+<div class="row jserror ziperr"></div>
 <div class="row">
   <label>website (optional):</label>
   <input class="twelve columns" type="text" name="url" placeholder="website url">
@@ -71,6 +76,7 @@
   <label>business email: </label>
   <input class="twelve columns required" type="text" name="email" placeholder="client email">
 </div>
+<div class="row jserror emailerr"></div>
 <div class="row ">
   <label>twitter handle (optional):</label>
   <input class="twelve columns" type="text" name="twitter" placeholder="@clientname">

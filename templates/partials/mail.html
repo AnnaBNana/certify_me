@@ -47,4 +47,14 @@
     <button type="button" name="button" class="savedb">save all files to dropbox</button>
   </div>
 </div>
+<div class="popup jssuccess uploaded">
+  <div class="row close_container">
+    <i class="fa fa-times-circle close" aria-hidden="true"></i>
+  </div>
+  <div class="row">
+    <p>files uploaded</p>
+    <a href="/logout"><button type="button" class="four columns logout">logout</button></a>
+    <button type="button" name="button" class="four columns offset-by-four restart">return to generate certificates</button>
+  </div>
+</div>
 <script type="text/javascript" src="{{ url_for('static', filename='js/mail.js') }}"></script>

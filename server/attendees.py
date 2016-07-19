@@ -15,7 +15,7 @@ class Attendees(object):
         min_check = {}
         rel_info = []
         for row in contents:
-            print "row: ", row
+            # print "row: ", row
             if i == 2:
                 header = row
             elif i > 2:
@@ -67,8 +67,16 @@ class Attendees(object):
         cert_data = self.postgresql.query_db(query, values)
         return cert_data
 
+    def findOne(self, id):
+        query = "SELECT * FROM attendees WHERE id=:id"
+        values = {
+            "id": id
+        }
+        student = self.postgresql.query_db(query, values)
+        return student[0]
+
     def find_all_in_class(self, class_id):
-        query = "SELECT a.id AS attendee_id, a.name AS name, a.email AS email, ac.minutes AS minutes, c.duration AS duration, c.email_text AS email_text FROM attendees AS a LEFT JOIN attended_classes AS ac ON a.id=ac.attendee_id LEFT JOIN classes AS c ON ac.class_id=c.id WHERE c.id=:class_id AND ac.minutes >= c.duration"
+        query = "SELECT a.id AS attendee_id, a.name AS name, a.email AS email, ac.minutes AS minutes, c.duration AS duration, c.email_text AS email_text FROM attendees AS a LEFT JOIN attended_classes AS ac ON a.id=ac.attendee_id LEFT JOIN classes AS c ON ac.class_id=c.id WHERE c.id=:class_id AND ac.minutes >= c.duration AND a.email!= '' ORDER BY a.name"
         values = {
             "class_id": class_id
         }

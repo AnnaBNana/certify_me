@@ -1,10 +1,10 @@
-$barely_yellow: #fffef4;
-$light_yellow: #e7e0ad;
+$pale_teal: #d3e9e6;
+$light_teal: #a0d6cf;
 $teal: #052633;
-$links: #50AB9F;
+// $links: #50AB9F;
 $purple: #23032a;
-$shadow: #b4b2b2;
-$warn: #ec795b;
+$shadow: #bbb;
+$warn: #B60065;
 @mixin inline-block($width) {
   display: inline-block;
   vertical-align: top;
@@ -13,9 +13,22 @@ $warn: #ec795b;
 @mixin container($width) {
   border: 1px solid $shadow;
   border-radius: 4px;
-  background: linear-gradient(135deg, #ffffff, $light_yellow);
-  background-color: $barely_yellow;
+  background: linear-gradient(135deg, $pale_teal, $light_teal);
+  background-color: $pale_teal;
   width: $width;
+}
+input[type=file],
+.pdffilename,
+.csvfilename,
+.existing_pdf,
+.add_instructor_target,
+.sent,
+.jssuccess,
+.jserror,
+.popup,
+.sidebar_content,
+.client_select {
+  display: none;
 }
 body {
   font-weight: 400;
@@ -36,15 +49,18 @@ button:hover {
   color: $warn;
 }
 a {
-  color: $links;
+  color: $light_teal;
   text-decoration: none;
+}
+a:hover {
+  color: $pale_teal;
 }
 //all pages content and background
 .main_content {
   @include inline-block(75%);
   margin: 0 0 50px 20px;
   .heading {
-    color: $barely_yellow;
+    color: $pale_teal;
     text-align: center;
     margin-top: 50px;
   }
@@ -61,34 +77,26 @@ a {
   font-weight: 100;
   .expand_icon {
     padding: 10px 0 0 10px;
-    color: $links;
+    color: $light_teal;
     font-size: 2em;
   }
   .sidebar_content {
-    display: none;
     padding: 10px;
     box-sizing: border-box;
     margin-top: 5em;
     a {
       display: block;
       font-size: 1.3em;
-      border-bottom: 1px solid $links;
-    }
-    a:hover {
-      color: $barely_yellow;
+      border-bottom: 1px solid $light_teal;
     }
   }
-}
-//on add user page
-.client_select {
-  display: none;
 }
 //bg paw certificate logo as seen on every page
 .logo {
   @include inline-block(0);
   visibility: visible;
   .badge {
-    color: $barely_yellow;
+    color: $pale_teal;
     position: absolute;
     top: 35px;
     left: 30px;
@@ -124,7 +132,6 @@ th {
   font-weight: 400;
 }
 .popup {
-  display: none;
   width: 60%;
   margin: 0 auto;
   background-color: #fff;
@@ -137,7 +144,7 @@ th {
   box-shadow: 2px 2px 10px $shadow;
   span {
     font-weight: 700;
-    color: $links;
+    color: $warn;
   }
   .close_container {
     text-align: right;
@@ -147,10 +154,6 @@ th {
     }
   }
 }
-.client_alert {
-  display: block;
-  text-align: center;
-}
 //pyhton flash error display for all forms
 .error {
   color: $warn;
@@ -159,14 +162,12 @@ th {
 }
 //javascript toggle error display for all forms
 .jserror {
-  display: none;
   color: $warn;
   font-weight: bold;
   padding-bottom: 10px;
 }
 .jssuccess {
   text-align: center;
-  display: none;
   font-weight: bold;
   padding-bottom: 10px;
 }
@@ -174,13 +175,7 @@ th {
   padding: 4px;
   text-align: right;
 }
-input[type=file] {
-  display: none;
-}
-.pdffilename,
-.csvfilename,
-.existing_pdf,
-.add_instructor_target,
-.sent {
-  display: none;
+.client_alert {
+  display: block;
+  text-align: center;
 }

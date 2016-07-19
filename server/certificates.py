@@ -1,6 +1,7 @@
 import csv
 import datetime
 import os
+import re
 
 from pdfminer.pdfparser import PDFParser
 from pdfminer.pdfdocument import PDFDocument
@@ -32,6 +33,7 @@ class Certificates(object):
         self.app.config['UPLOAD_FOLDER'] = 'static/uploads/'
         self.stylesheet = getSampleStyleSheet()
         self.attendees = Attendees(app)
+        self.alphanum_regex = re.compile(r'\w+')
 
     def save_files(self, files):
         filearray = []
@@ -56,8 +58,11 @@ class Certificates(object):
         students = pdf_data['students']
         for student in students:
             if student['email']:
-                pdf = self.make_pdf(layout_data, student, pdf_data['inst'])
-                self.merge_pdfs(student, pdf_data['template_pdf'])
+                # print "students with email in certificates.py line 61:", student
+                message = self.make_pdf(layout_data, student, pdf_data['inst'])
+                if 'success' in message:
+                    self.merge_pdfs(student, pdf_data['template_pdf'])
+        return message
 
     def read_layout(self, template_pdf):
         #put pdf miner code for preping layout for parsing
@@ -88,7 +93,7 @@ class Certificates(object):
         flowable_dict = {}
         found = flag = False
         layout_bounds = layout.bbox
-        keywords = ['student', 'seminar', 'instructor', 'race_verbiage', 'date', 'cvmp_verbiage', 'class_id']
+        keywords = ['student', 'seminar', 'instructor', 'race_verbiage', 'date', 'cvpm_verbiage', 'class_id']
         for lt_obj in layout:
             # print "object: ", lt_obj
             # print "lt obj object name: ", lt_obj.__class__.__name__
@@ -96,18 +101,20 @@ class Certificates(object):
             if isinstance(lt_obj, LTTextBox) or isinstance(lt_obj, LTTextLine):
                 # print "lt obj text: ", lt_obj.get_text()
                 # if any of the keywords from above list are found, save coords in key value pair and save keyword, set found bool to true for use in setting bounding boxes
-                for k in keywords:
-                    if k in lt_obj.get_text().lower():
-                        coords[k] = lt_obj.bbox
-                        found = True
-                        keyword = k
+                if self.alphanum_regex.search(lt_obj.get_text()):
+                    for k in keywords:
+                        if k in lt_obj.get_text().lower():
+                            # print "cert py line 106 text of object box where keyword present: ", lt_obj.get_text().lower()
+                            coords[k] = lt_obj.bbox
+                            found = True
+                            keyword = k
                 # algorithm to set bounding boxes for report lab flowables:
                 # if the line is not blank and we have not yet found a keyword
-                if lt_obj.get_text() != "\t\n" and found == False:
+                if self.alphanum_regex.search(lt_obj.get_text()) and not found:
                     # create a top set of coords that include the bounding box of the most recent text containing line
                     top_coords = lt_obj.bbox
                 # if our keyword has been found and line is not blank, end bounding box, add new item to our dict of coords, and reset booleans and start looking for next keyword
-                if lt_obj.get_text() != "\t\n" and flag == True:
+                if self.alphanum_regex.search(lt_obj.get_text()) and flag:
                     bottom_coords = lt_obj.bbox
                     flowable_dict[prev_keyword] = {
                         'top': prev_top_coords,
@@ -119,7 +126,7 @@ class Certificates(object):
                     else:
                         top_coords = lt_obj.bbox
                 # this means we have found a keyword and we now should track keyword, and mark that item is found, and we are still looking for our bottom bound
-                if found == True:
+                if found:
                     flag = True
                     found = False
                     prev_top_coords = top_coords
@@ -129,10 +136,11 @@ class Certificates(object):
             elif isinstance(lt_obj, LTFigure):
                 self.parse_layout(lt_obj)
         # if the last line contains a keyword, our flag boolean will be left open.  close it using arbitrary params based on doc dimensions, which will always be letter size
-        if flag == True:
+        if flag:
+            layoutx2 = layout_bounds[2]
             flowable_dict[keyword] = {
                 'top': prev_top_coords,
-                'bottom': (0,0,0,70)
+                'bottom': (0,0,layoutx2,0)
             }
         # package data we will need to use later in the process
         layout_data = {
@@ -153,11 +161,10 @@ class Certificates(object):
         cv = Canvas(packet, pagesize=letter)
         font = "Helvetica"
         for key in coords:
-            topx1 = flowable_bounds[key]['top'][0]
             topy1 = flowable_bounds[key]['top'][1]
-            bottomx2 = flowable_bounds[key]['bottom'][2]
             bottomy2 = flowable_bounds[key]['bottom'][3]
             h1 = topy1 - bottomy2
+            w = layout_bounds[2] - layout_bounds[0]
             style.fontName = "Helvetica"
             if key == 'instructor':
                 s = str()
@@ -166,7 +173,7 @@ class Certificates(object):
                 style.fontSize = 18
             elif key =='student':
                 s = student['name']
-                style.fontSize = 36
+                style.fontSize = 28
                 style.fontName = 'Helvetica-BoldOblique'
             elif key == 'seminar':
                 s = student['class_name']
@@ -178,7 +185,7 @@ class Certificates(object):
                 s = student['race_verbiage']
                 style.fontSize = 8
                 style.fontName = 'Helvetica-Oblique'
-            elif key == "cvmp_verbiage":
+            elif key == "cvpm_verbiage":
                 s = student['cvpm_verbiage']
                 style.fontSize = 8
                 style.fontName = 'Helvetica-Oblique'
@@ -188,20 +195,25 @@ class Certificates(object):
                 s = "has attended the following webinar on " + str(d)
                 style.fontSize = 14
             cv.setFillColor("white")
+            # cover up keyword
             white_out_w = coords[key][2] - coords[key][0]
             white_out_h = coords[key][3] - coords[key][1]
             cv.rect(coords[key][0], coords[key][1], white_out_w, white_out_h, stroke=0, fill=1)
             cv.setFillColor("black")
+            # alot space for wrapable text and add text to that space
             p = Paragraph(s, style)
             w2,h2 = p.wrap(layout_bounds[2] - 160, h1)
             if w2<=w1 and h2<=h1:
                 p.drawOn(cv, 80, topy1 - (h1/2))
+                message = {'success': 'everything is good'}
             else:
-                raise ValueError, "not enough room"
+                message = {'error': 'there is not enough room for ' + str(key) + '. Increase space available for ' + str(key) + ' and try again.'}
         cv.save()
         packet.seek(0)
         with open(new_file,'wb') as fp:
             fp.write(packet.getvalue())
+        return message
+
 
     def merge_pdfs(self, student, template_pdf):
         name = student['name']

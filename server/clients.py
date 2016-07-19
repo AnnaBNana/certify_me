@@ -2,32 +2,31 @@ from flask import session
 from server.psqlconnection import PSQLConnector
 from server.businesses import Businesses
 
+
 class Clients(object):
     def __init__(self, app):
         self.postgresql = PSQLConnector(app, 'CertifyMe')
         self.businesses = Businesses(app)
 
-
-    def add(self, form_data):
-        # name should be greater than 6 chars
-        # title should be greater than 2 chars
-        print "form data", form_data
-        if 'existing_biz' in form_data:
-            biz_id = form_data['existing_biz']
-        else:
-            biz_id = self.businesses.add(form_data)
-        print "biz id: ", biz_id
-        client_query = "INSERT INTO clients (name, title, business_id, created_at) VALUES (:name, :title, :business_id, NOW()) RETURNING id;"
-        client_values = {
-            "name": form_data['name'],
-            "title": form_data['title'],
-            "business_id": biz_id
-        }
-        client_id = self.postgresql.query_db(client_query, client_values)
-        session['client_id'] = client_id
-        print "client id: ", client_id
-        return str(client_id)
-
+    def add(self, id, form_data):
+        valid = True
+        message = {}
+        if len(form_data['name']) < 5:
+            message['name_error'] = "name must be 4 characters or more"
+            valid = False
+        if len(form_data['title']) < 3:
+            message['title_error'] = "title must be 2 characters or more"
+            valid = False
+        if valid:
+            client_query = "INSERT INTO clients (name, title, business_id, created_at) VALUES (:name, :title, :business_id, NOW()) RETURNING id;"
+            client_values = {
+                "name": form_data['name'],
+                "title": form_data['title'],
+                "business_id": id
+            }
+            self.postgresql.query_db(client_query, client_values)
+            message['success'] = "client added to database"
+        return message
 
     def update(self, form_data):
         # print form_data
@@ -47,7 +46,6 @@ class Clients(object):
             print "values: ", values
             self.postgresql.query_db(query, values)
 
-
     def findAll(self):
         query = "SELECT * FROM clients"
         clients = self.postgresql.query_db(query)
@@ -60,7 +58,6 @@ class Clients(object):
         }
         clients = self.postgresql.query_db(query, values)
         return clients
-
 
     def destroy(self, id):
         query = "DELETE FROM clients WHERE id=:id"
