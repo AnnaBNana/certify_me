@@ -16,7 +16,6 @@ from server.users import Users
 app= Flask(__name__)
 app.secret_key = os.urandom(24)
 
-
 # assign model classes to variables
 attendees = Attendees(app)
 businesses = Businesses(app)
@@ -28,6 +27,8 @@ instructors = Instructors(app)
 sendgrid = SendgridConnection(app)
 users = Users(app)
 
+# try the save all in dropbox
+# dropbox.save_all()
 
 # sendgrid.send()
 
@@ -403,15 +404,14 @@ def generate_certificates():
         business_id = session['business_id']
         class_id = request.form['class']
         session['class_id'] = class_id
+        business = businesses.findOne(business_id)
         # save files to temp local storage, return file names array
         files = certificates.save_files(request.files)
-        #don't save to dropbox, yet.  save at end of process
-        # dropbox.upload(files)
         print request.form
         if request.form['existing_pdf']:
             pdf = request.form['existing_pdf']
             # print "existing pdf in server file line 420:", pdf
-            dropbox.get_file(pdf)
+            dropbox.get_file(pdf, business)
         for file_name in files:
             if file_name.endswith('.csv'):
                 csv_data = {

@@ -11,8 +11,11 @@ $(document).ready(function() {
         window.location.assign('/');
       }
       else if (res.send_error) {
-        $('.popup').html('there was an error sending your emails, please try again later');
+        $('.popup').html("<div class='row close_container'><i class='fa fa-times-circle close' aria-hidden='true'></i></div>there was an error sending your emails, please try again later");
         $('.sent').show('slow');
+        $('.close').click(function(){
+          $(".popup").hide('slow')
+        })
       } else {
         console.log(res);
         var placement = $(document).height() - ($('.popup').height() * 2)
@@ -29,6 +32,7 @@ $(document).ready(function() {
       }
       else if (res.upload_error) {
         $('.uploaded').html('there was an error uploading to dropbox, please try again later');
+        $('.popup').hide('slow')
         $('.uploaded').show('slow');
       } else {
         var placement = $(document).height() - ($('.popup').height() * 2);

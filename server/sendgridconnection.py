@@ -31,3 +31,5 @@ class SendgridConnection(object):
         attachment.set_content_id("Certificate")
         mail.add_attachment(attachment)
         response = self.sg.client.mail.send.post(request_body=mail.get())
+        # print "(sendgrid line 34)email response:", vars(response), dir(response)
+        return response
