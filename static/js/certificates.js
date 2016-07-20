@@ -1,4 +1,8 @@
 $(document).ready(function() {
+  //set up loading animation position based on size of window
+  var x = ($(window).width() / 2);
+  var y = ($(window).height() / 2);
+  $('.dizzy-gillespie').css({'position': 'absolute', 'top': y/2 + "px", 'left': x + "px", 'z-index': 5});
 
   $('.client_alert').css('display', 'block');
 
@@ -62,6 +66,10 @@ $(document).ready(function() {
     if (!valid) {
       $('.jserror').show();
     } else {
+      $('.dizzy-gillespie').show();
+      var height = $(document).height();
+      $('.dim').css({'min-height': height});
+      $('.dim').show();
       $('.jserror').hide();
       var data = new FormData($('#form_data')[0])
       data.append("existing_pdf", $(".existing_pdf").val())
@@ -75,14 +83,33 @@ $(document).ready(function() {
         processData: false,
         dataType: 'json',
         success: function(res){
-          console.log(res);
-          $('input:not(:submit,:button),select').each(function(){
-            $(this).val("");
-          })
-          $('.existing_pdf').hide('slow');
-          $('.pdffilename').hide('slow');
-          $('.csvfilename').hide('slow');
-          $('.jssuccess').show('slow');
+          // console.log(res)
+          if (res.error) {
+            window.location.assign('/')
+          }
+          else if (res.file_error) {
+            hide_loader();
+            $('.file_error').show();
+          } else {
+            var valid = true;
+            for (var i = 0; i < res.messages.length; i++) {
+              if ("placement_error" in res.messages[i]) {
+                $('.pdf_gen_error').append(res.messages[i].placement_error);
+                valid = false;
+              }
+            }
+            if (!valid) {
+              hide_loader();
+              $('.pdf_gen_error').show('slow');
+            } else {
+              $('input:not(:submit,:button),select').each(function(){
+                $(this).val("");
+              })
+              hide_loader();
+              hide_inputs();
+              $('.jssuccess').show('slow');
+            }
+          }
         }
       })
     }
@@ -114,6 +141,14 @@ $(document).ready(function() {
   $('.csv').click(function(){
     $('.csv_info').show('slow');
   });
-
+  function hide_loader(){
+    $('.dizzy-gillespie').hide();
+    $('.dim').hide();
+  }
+  function hide_inputs() {
+    $('.existing_pdf').hide();
+    $('.pdffilename').hide();
+    $('.csvfilename').hide();
+  }
 
 });

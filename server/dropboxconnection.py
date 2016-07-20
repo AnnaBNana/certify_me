@@ -40,7 +40,12 @@ class Dropbox(object):
     def get_file(self, file_name, business):
         name = business['name'].replace(" ", "")
         file_path = "/" + name + "/" + file_name
-        myfile = self.client.get_file(file_path)
-        out = open(self.app.config['UPLOAD_FOLDER'] + file_name, 'wb')
-        out.write(myfile.read())
-        out.close()
+        try:
+            myfile = self.client.get_file(file_path)
+            out = open(self.app.config['UPLOAD_FOLDER'] + file_name, 'wb')
+            out.write(myfile.read())
+            out.close()
+            message = {'success': 'success'}
+        except:
+            message = {'file_error': 'file was not found in your dropbox folder, please upload a new template'}
+        return message

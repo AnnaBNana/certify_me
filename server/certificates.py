@@ -59,10 +59,10 @@ class Certificates(object):
         for student in students:
             if student['email']:
                 # print "students with email in certificates.py line 61:", student
-                message = self.make_pdf(layout_data, student, pdf_data['inst'])
-                if 'success' in message:
-                    self.merge_pdfs(student, pdf_data['template_pdf'])
-        return message
+                messages = self.make_pdf(layout_data, student, pdf_data['inst'])
+                # if 'success' in message:
+                self.merge_pdfs(student, pdf_data['template_pdf'])
+        return messages
 
     def read_layout(self, template_pdf):
         #put pdf miner code for preping layout for parsing
@@ -95,16 +95,17 @@ class Certificates(object):
         layout_bounds = layout.bbox
         keywords = ['student', 'seminar', 'instructor', 'race_verbiage', 'date', 'cvpm_verbiage', 'class_id']
         for lt_obj in layout:
-            # print "object: ", lt_obj
-            # print "lt obj object name: ", lt_obj.__class__.__name__
-            # print "lt obj bbox: ", lt_obj.bbox
+            print "object: ", lt_obj
+            print "lt obj object name: ", lt_obj.__class__.__name__
+            print "lt obj bbox: ", lt_obj.bbox
             if isinstance(lt_obj, LTTextBox) or isinstance(lt_obj, LTTextLine):
-                # print "lt obj text: ", lt_obj.get_text()
+                print "lt obj text: ", lt_obj.get_text()
                 # if any of the keywords from above list are found, save coords in key value pair and save keyword, set found bool to true for use in setting bounding boxes
+                if self.alphanum_regex.search(lt_obj.get_text()):
+                    print "this line evaluates to true: ", lt_obj.get_text()
                 if self.alphanum_regex.search(lt_obj.get_text()):
                     for k in keywords:
                         if k in lt_obj.get_text().lower():
-                            # print "cert py line 106 text of object box where keyword present: ", lt_obj.get_text().lower()
                             coords[k] = lt_obj.bbox
                             found = True
                             keyword = k
@@ -120,6 +121,7 @@ class Certificates(object):
                         'top': prev_top_coords,
                         'bottom': bottom_coords
                     }
+                    print "coords dict in order found:", flowable_dict
                     found = flag = False
                     if keyword != prev_keyword:
                         found = True
@@ -138,9 +140,10 @@ class Certificates(object):
         # if the last line contains a keyword, our flag boolean will be left open.  close it using arbitrary params based on doc dimensions, which will always be letter size
         if flag:
             layoutx2 = layout_bounds[2]
+            print "layout x2:", layoutx2
             flowable_dict[keyword] = {
                 'top': prev_top_coords,
-                'bottom': (0,0,layoutx2,0)
+                'bottom': (0,0,layoutx2,80)
             }
         # package data we will need to use later in the process
         layout_data = {
@@ -150,6 +153,7 @@ class Certificates(object):
         return layout_data
 
     def make_pdf(self, layout_data, student, instructors):
+        messages = []
         style = self.stylesheet['BodyText']
         style.alignment = TA_CENTER
         coords = layout_data['coords']
@@ -187,7 +191,7 @@ class Certificates(object):
                 style.fontName = 'Helvetica-Oblique'
             elif key == "cvpm_verbiage":
                 s = student['cvpm_verbiage']
-                style.fontSize = 8
+                style.fontSize = 6
                 style.fontName = 'Helvetica-Oblique'
             elif key == "date":
                 d = datetime.datetime.strptime(student['class_date'], '%Y-%m-%d')
@@ -204,15 +208,18 @@ class Certificates(object):
             p = Paragraph(s, style)
             w2,h2 = p.wrap(layout_bounds[2] - 160, h1)
             if w2<=w1 and h2<=h1:
-                p.drawOn(cv, 80, topy1 - (h1/2))
-                message = {'success': 'everything is good'}
+                if key == 'race_verbiage' or key == 'cvpm_verbiage':
+                    p.drawOn(cv, 80, bottomy2)
+                else:
+                    p.drawOn(cv, 80, topy1 - (h1/2))
+                messages.append({'success': 'everything is good'})
             else:
-                message = {'error': 'there is not enough room for ' + str(key) + '. Increase space available for ' + str(key) + ' and try again.'}
+                messages.append({'placement_error': 'there is not enough room for ' + str(key) + '. Increase space available for ' + str(key) + ' and try again.'})
         cv.save()
         packet.seek(0)
         with open(new_file,'wb') as fp:
             fp.write(packet.getvalue())
-        return message
+        return messages
 
 
     def merge_pdfs(self, student, template_pdf):

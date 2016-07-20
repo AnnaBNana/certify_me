@@ -410,8 +410,11 @@ def generate_certificates():
         print request.form
         if request.form['existing_pdf']:
             pdf = request.form['existing_pdf']
-            # print "existing pdf in server file line 420:", pdf
-            dropbox.get_file(pdf, business)
+            # will return error if doc not found in client's dropbox folder
+            message = dropbox.get_file(pdf, business);
+            # if file can't be found, terminate the rest of the process, prompt user to uplaod new file
+            if 'file_error' in message:
+                return jsonify(message)
         for file_name in files:
             if file_name.endswith('.csv'):
                 csv_data = {
@@ -419,7 +422,6 @@ def generate_certificates():
                     "class_id": class_id
                 }
                 certificates.parseCSV(csv_data)
-                # classes.update_csv_url(file_name, class_id)
             elif file_name.endswith('.pdf'):
                 pdf = file_name
                 business_data = {
@@ -436,8 +438,9 @@ def generate_certificates():
             "students": students,
             "inst": inst
         }
-        message = certificates.generate(pdf_data)
-        return jsonify(message)
+        messages_array = certificates.generate(pdf_data)
+        messages = {'messages': messages_array}
+        return jsonify(messages)
     else:
         error = {'error': 'redirect'}
         return jsonify(error)

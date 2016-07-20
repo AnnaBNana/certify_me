@@ -1,3 +1,5 @@
+<div class="dizzy-gillespie"></div>
+<div class="dim"></div>
 <div class="heading">
   <h1 class="page_title">{{title}}</h1>
 </div>
@@ -132,4 +134,21 @@
     </ul>
   </div>
 </div>
+<div class="popup info_window file_error">
+  <div class="row close_container">
+    <i class="fa fa-times-circle close" aria-hidden="true"></i>
+  </div>
+  <div class="row">
+    <p>file was not found in your dropbox folder, please upload a new template</p>
+    <button type="button" class="close_container">OK</button>
+  </div>
+</div>
+<div class="popup info_window pdf_gen_error">
+  <div class="row close_container">
+    <i class="fa fa-times-circle close" aria-hidden="true"></i>
+  </div>
+  <div class="row">
+  </div>
+</div>
+
 <script type="text/javascript" src="{{ url_for('static', filename='js/certificates.js') }}"></script>

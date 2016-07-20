@@ -1,4 +1,9 @@
 $(document).ready(function() {
+  //set up loading animation position based on size of window
+  var x = ($(window).width() / 2);
+  var y = ($(window).height() / 2);
+  $('.dizzy-gillespie').css({'position': 'absolute', 'top': y/2 + "px", 'left': x + "px", 'z-index': 5});
+
   $('.send').click(function(){
     var students = {};
     //grab attendee id from each row where box is checked
@@ -6,7 +11,13 @@ $(document).ready(function() {
       var student = $(this).val();
       students[student] = student
     });
+    $('.dizzy-gillespie').show();
+    var height = $(document).height();
+    $('.dim').css({'min-height': height});
+    $('.dim').show();
     $.post('/send_mail', students, function(res){
+      $('.dizzy-gillespie').hide();
+      $('.dim').hide();
       if (res.error) {
         window.location.assign('/');
       }
@@ -26,7 +37,14 @@ $(document).ready(function() {
   });
 
   $('.savedb').click(function(){
+    $('.popup').hide('slow');
+    $('.dizzy-gillespie').show();
+    var height = $(document).height();
+    $('.dim').css({'min-height': height});
+    $('.dim').show();
     $.get('/index/dropbox_upload', function(res){
+      $('.dizzy-gillespie').hide();
+      $('.dim').hide();
       if (res.error) {
         window.location.assign('/');
       }
