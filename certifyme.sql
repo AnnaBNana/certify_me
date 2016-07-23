@@ -14,14 +14,14 @@ SET client_min_messages = warning;
 SET row_security = off;
 
 --
--- Name: plpgsql; Type: EXTENSION; Schema: -; Owner: 
+-- Name: plpgsql; Type: EXTENSION; Schema: -; Owner:
 --
 
 CREATE EXTENSION IF NOT EXISTS plpgsql WITH SCHEMA pg_catalog;
 
 
 --
--- Name: EXTENSION plpgsql; Type: COMMENT; Schema: -; Owner: 
+-- Name: EXTENSION plpgsql; Type: COMMENT; Schema: -; Owner:
 --
 
 COMMENT ON EXTENSION plpgsql IS 'PL/pgSQL procedural language';
@@ -34,7 +34,7 @@ SET default_tablespace = '';
 SET default_with_oids = false;
 
 --
--- Name: attended_classes; Type: TABLE; Schema: public; Owner: apropas
+-- Name: attended_classes; Type: TABLE; Schema: public; Owner: ubuntu
 --
 
 CREATE TABLE attended_classes (
@@ -44,10 +44,10 @@ CREATE TABLE attended_classes (
 );
 
 
-ALTER TABLE attended_classes OWNER TO apropas;
+ALTER TABLE attended_classes OWNER TO ubuntu;
 
 --
--- Name: attendees; Type: TABLE; Schema: public; Owner: apropas
+-- Name: attendees; Type: TABLE; Schema: public; Owner: ubuntu
 --
 
 CREATE TABLE attendees (
@@ -59,10 +59,10 @@ CREATE TABLE attendees (
 );
 
 
-ALTER TABLE attendees OWNER TO apropas;
+ALTER TABLE attendees OWNER TO ubuntu;
 
 --
--- Name: attendees_id_seq; Type: SEQUENCE; Schema: public; Owner: apropas
+-- Name: attendees_id_seq; Type: SEQUENCE; Schema: public; Owner: ubuntu
 --
 
 CREATE SEQUENCE attendees_id_seq
@@ -73,17 +73,17 @@ CREATE SEQUENCE attendees_id_seq
     CACHE 1;
 
 
-ALTER TABLE attendees_id_seq OWNER TO apropas;
+ALTER TABLE attendees_id_seq OWNER TO ubuntu;
 
 --
--- Name: attendees_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: apropas
+-- Name: attendees_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: ubuntu
 --
 
 ALTER SEQUENCE attendees_id_seq OWNED BY attendees.id;
 
 
 --
--- Name: businesses; Type: TABLE; Schema: public; Owner: apropas
+-- Name: businesses; Type: TABLE; Schema: public; Owner: ubuntu
 --
 
 CREATE TABLE businesses (
@@ -104,10 +104,10 @@ CREATE TABLE businesses (
 );
 
 
-ALTER TABLE businesses OWNER TO apropas;
+ALTER TABLE businesses OWNER TO ubuntu;
 
 --
--- Name: businesses_id_seq; Type: SEQUENCE; Schema: public; Owner: apropas
+-- Name: businesses_id_seq; Type: SEQUENCE; Schema: public; Owner: ubuntu
 --
 
 CREATE SEQUENCE businesses_id_seq
@@ -118,17 +118,17 @@ CREATE SEQUENCE businesses_id_seq
     CACHE 1;
 
 
-ALTER TABLE businesses_id_seq OWNER TO apropas;
+ALTER TABLE businesses_id_seq OWNER TO ubuntu;
 
 --
--- Name: businesses_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: apropas
+-- Name: businesses_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: ubuntu
 --
 
 ALTER SEQUENCE businesses_id_seq OWNED BY businesses.id;
 
 
 --
--- Name: class_instructor; Type: TABLE; Schema: public; Owner: apropas
+-- Name: class_instructor; Type: TABLE; Schema: public; Owner: ubuntu
 --
 
 CREATE TABLE class_instructor (
@@ -137,10 +137,10 @@ CREATE TABLE class_instructor (
 );
 
 
-ALTER TABLE class_instructor OWNER TO apropas;
+ALTER TABLE class_instructor OWNER TO ubuntu;
 
 --
--- Name: classes; Type: TABLE; Schema: public; Owner: apropas
+-- Name: classes; Type: TABLE; Schema: public; Owner: ubuntu
 --
 
 CREATE TABLE classes (
@@ -158,10 +158,10 @@ CREATE TABLE classes (
 );
 
 
-ALTER TABLE classes OWNER TO apropas;
+ALTER TABLE classes OWNER TO ubuntu;
 
 --
--- Name: classes_id_seq; Type: SEQUENCE; Schema: public; Owner: apropas
+-- Name: classes_id_seq; Type: SEQUENCE; Schema: public; Owner: ubuntu
 --
 
 CREATE SEQUENCE classes_id_seq
@@ -172,17 +172,17 @@ CREATE SEQUENCE classes_id_seq
     CACHE 1;
 
 
-ALTER TABLE classes_id_seq OWNER TO apropas;
+ALTER TABLE classes_id_seq OWNER TO ubuntu;
 
 --
--- Name: classes_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: apropas
+-- Name: classes_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: ubuntu
 --
 
 ALTER SEQUENCE classes_id_seq OWNED BY classes.id;
 
 
 --
--- Name: clients; Type: TABLE; Schema: public; Owner: apropas
+-- Name: clients; Type: TABLE; Schema: public; Owner: ubuntu
 --
 
 CREATE TABLE clients (
@@ -195,10 +195,10 @@ CREATE TABLE clients (
 );
 
 
-ALTER TABLE clients OWNER TO apropas;
+ALTER TABLE clients OWNER TO ubuntu;
 
 --
--- Name: clients_id_seq; Type: SEQUENCE; Schema: public; Owner: apropas
+-- Name: clients_id_seq; Type: SEQUENCE; Schema: public; Owner: ubuntu
 --
 
 CREATE SEQUENCE clients_id_seq
@@ -209,17 +209,17 @@ CREATE SEQUENCE clients_id_seq
     CACHE 1;
 
 
-ALTER TABLE clients_id_seq OWNER TO apropas;
+ALTER TABLE clients_id_seq OWNER TO ubuntu;
 
 --
--- Name: clients_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: apropas
+-- Name: clients_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: ubuntu
 --
 
 ALTER SEQUENCE clients_id_seq OWNED BY clients.id;
 
 
 --
--- Name: instructors; Type: TABLE; Schema: public; Owner: apropas
+-- Name: instructors; Type: TABLE; Schema: public; Owner: ubuntu
 --
 
 CREATE TABLE instructors (
@@ -230,10 +230,10 @@ CREATE TABLE instructors (
 );
 
 
-ALTER TABLE instructors OWNER TO apropas;
+ALTER TABLE instructors OWNER TO ubuntu;
 
 --
--- Name: instructors_id_seq; Type: SEQUENCE; Schema: public; Owner: apropas
+-- Name: instructors_id_seq; Type: SEQUENCE; Schema: public; Owner: ubuntu
 --
 
 CREATE SEQUENCE instructors_id_seq
@@ -244,17 +244,17 @@ CREATE SEQUENCE instructors_id_seq
     CACHE 1;
 
 
-ALTER TABLE instructors_id_seq OWNER TO apropas;
+ALTER TABLE instructors_id_seq OWNER TO ubuntu;
 
 --
--- Name: instructors_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: apropas
+-- Name: instructors_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: ubuntu
 --
 
 ALTER SEQUENCE instructors_id_seq OWNED BY instructors.id;
 
 
 --
--- Name: users; Type: TABLE; Schema: public; Owner: apropas
+-- Name: users; Type: TABLE; Schema: public; Owner: ubuntu
 --
 
 CREATE TABLE users (
@@ -269,10 +269,10 @@ CREATE TABLE users (
 );
 
 
-ALTER TABLE users OWNER TO apropas;
+ALTER TABLE users OWNER TO ubuntu;
 
 --
--- Name: users_id_seq; Type: SEQUENCE; Schema: public; Owner: apropas
+-- Name: users_id_seq; Type: SEQUENCE; Schema: public; Owner: ubuntu
 --
 
 CREATE SEQUENCE users_id_seq
@@ -283,59 +283,59 @@ CREATE SEQUENCE users_id_seq
     CACHE 1;
 
 
-ALTER TABLE users_id_seq OWNER TO apropas;
+ALTER TABLE users_id_seq OWNER TO ubuntu;
 
 --
--- Name: users_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: apropas
+-- Name: users_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: ubuntu
 --
 
 ALTER SEQUENCE users_id_seq OWNED BY users.id;
 
 
 --
--- Name: id; Type: DEFAULT; Schema: public; Owner: apropas
+-- Name: id; Type: DEFAULT; Schema: public; Owner: ubuntu
 --
 
 ALTER TABLE ONLY attendees ALTER COLUMN id SET DEFAULT nextval('attendees_id_seq'::regclass);
 
 
 --
--- Name: id; Type: DEFAULT; Schema: public; Owner: apropas
+-- Name: id; Type: DEFAULT; Schema: public; Owner: ubuntu
 --
 
 ALTER TABLE ONLY businesses ALTER COLUMN id SET DEFAULT nextval('businesses_id_seq'::regclass);
 
 
 --
--- Name: id; Type: DEFAULT; Schema: public; Owner: apropas
+-- Name: id; Type: DEFAULT; Schema: public; Owner: ubuntu
 --
 
 ALTER TABLE ONLY classes ALTER COLUMN id SET DEFAULT nextval('classes_id_seq'::regclass);
 
 
 --
--- Name: id; Type: DEFAULT; Schema: public; Owner: apropas
+-- Name: id; Type: DEFAULT; Schema: public; Owner: ubuntu
 --
 
 ALTER TABLE ONLY clients ALTER COLUMN id SET DEFAULT nextval('clients_id_seq'::regclass);
 
 
 --
--- Name: id; Type: DEFAULT; Schema: public; Owner: apropas
+-- Name: id; Type: DEFAULT; Schema: public; Owner: ubuntu
 --
 
 ALTER TABLE ONLY instructors ALTER COLUMN id SET DEFAULT nextval('instructors_id_seq'::regclass);
 
 
 --
--- Name: id; Type: DEFAULT; Schema: public; Owner: apropas
+-- Name: id; Type: DEFAULT; Schema: public; Owner: ubuntu
 --
 
 ALTER TABLE ONLY users ALTER COLUMN id SET DEFAULT nextval('users_id_seq'::regclass);
 
 
 --
--- Data for Name: attended_classes; Type: TABLE DATA; Schema: public; Owner: apropas
+-- Data for Name: attended_classes; Type: TABLE DATA; Schema: public; Owner: ubuntu
 --
 
 COPY attended_classes (attendee_id, class_id, minutes) FROM stdin;
@@ -343,7 +343,7 @@ COPY attended_classes (attendee_id, class_id, minutes) FROM stdin;
 
 
 --
--- Data for Name: attendees; Type: TABLE DATA; Schema: public; Owner: apropas
+-- Data for Name: attendees; Type: TABLE DATA; Schema: public; Owner: ubuntu
 --
 
 COPY attendees (id, name, email, created_at, updated_at) FROM stdin;
@@ -351,34 +351,34 @@ COPY attendees (id, name, email, created_at, updated_at) FROM stdin;
 
 
 --
--- Name: attendees_id_seq; Type: SEQUENCE SET; Schema: public; Owner: apropas
+-- Name: attendees_id_seq; Type: SEQUENCE SET; Schema: public; Owner: ubuntu
 --
 
 SELECT pg_catalog.setval('attendees_id_seq', 2819, true);
 
 
 --
--- Data for Name: businesses; Type: TABLE DATA; Schema: public; Owner: apropas
+-- Data for Name: businesses; Type: TABLE DATA; Schema: public; Owner: ubuntu
 --
 
 COPY businesses (id, name, street, city, state, zip, created_at, updated_at, website, pdf_url, email, social_media_1, social_media_2, social_media_3) FROM stdin;
-24	Tall Oak Enterprises, LLC	26 Flicker Dr.	Greenville	SC	29609	2016-07-12 10:42:52.673224	2016-07-15 16:13:34.354633	www.DrAndyRoark.com	roarktemplate.pdf	drandyroarkacademy@gmail.com		@DrAndyRoark	
-25	My Fake Business	87653 Made Up ln.	Fremont	CA	94538	2016-07-18 14:55:53.462986	\N		\N	apropas@gmail.com			
+24	Tall Oak Enterprises, LLC	26 Flicker Dr.	Greenville	SC	29609	2016-07-12 10:42:52.673224	2016-07-15 16:13:34.354633	www.DrAndyRoark.com	roarktemplate.pdf	drandyroarkacademy@gmail.com		@DrAndyRoark
+25	My Fake Business	87653 Made Up ln.	Fremont	CA	94538	2016-07-18 14:55:53.462986	\N		\N	ubuntu@gmail.com
 22	Veterinary Training & Consulting	410 Raymondale Drive #26	South Pasadena	CA	91030	2016-06-01 22:30:20.261584	2016-07-19 12:15:43.959825	www.davidlissrvt.com	lisstemplate.pdf	david@davidlissrvt.com	\N	\N	\N
-26	Business LLC	878798 some place rd.	Fremont	CA	94538	2016-07-18 15:16:30.407648	2016-07-19 18:11:18.238921		roarktemplate.pdf	apropas@comcast.net			
+26	Business LLC	878798 some place rd.	Fremont	CA	94538	2016-07-18 15:16:30.407648	2016-07-19 18:11:18.238921		roarktemplate.pdf	ubuntu@comcast.net
 23	dummy	1234 some street	Chicago	OH	56789	2016-06-11 00:28:04.188177	2016-06-30 12:53:48.87824	www.blah.com	template.pdf	\N	\N	\N	\N
 \.
 
 
 --
--- Name: businesses_id_seq; Type: SEQUENCE SET; Schema: public; Owner: apropas
+-- Name: businesses_id_seq; Type: SEQUENCE SET; Schema: public; Owner: ubuntu
 --
 
 SELECT pg_catalog.setval('businesses_id_seq', 26, true);
 
 
 --
--- Data for Name: class_instructor; Type: TABLE DATA; Schema: public; Owner: apropas
+-- Data for Name: class_instructor; Type: TABLE DATA; Schema: public; Owner: ubuntu
 --
 
 COPY class_instructor (instructor_id, class_id) FROM stdin;
@@ -391,7 +391,7 @@ COPY class_instructor (instructor_id, class_id) FROM stdin;
 
 
 --
--- Data for Name: classes; Type: TABLE DATA; Schema: public; Owner: apropas
+-- Data for Name: classes; Type: TABLE DATA; Schema: public; Owner: ubuntu
 --
 
 COPY classes (id, name, duration, email_text, date, created_at, updated_at, race_verbiage, cvpm_verbiage, race_course_num, business_id) FROM stdin;
@@ -403,14 +403,14 @@ COPY classes (id, name, duration, email_text, date, created_at, updated_at, race
 
 
 --
--- Name: classes_id_seq; Type: SEQUENCE SET; Schema: public; Owner: apropas
+-- Name: classes_id_seq; Type: SEQUENCE SET; Schema: public; Owner: ubuntu
 --
 
 SELECT pg_catalog.setval('classes_id_seq', 18, true);
 
 
 --
--- Data for Name: clients; Type: TABLE DATA; Schema: public; Owner: apropas
+-- Data for Name: clients; Type: TABLE DATA; Schema: public; Owner: ubuntu
 --
 
 COPY clients (id, name, title, created_at, updated_at, business_id) FROM stdin;
@@ -423,14 +423,14 @@ COPY clients (id, name, title, created_at, updated_at, business_id) FROM stdin;
 
 
 --
--- Name: clients_id_seq; Type: SEQUENCE SET; Schema: public; Owner: apropas
+-- Name: clients_id_seq; Type: SEQUENCE SET; Schema: public; Owner: ubuntu
 --
 
 SELECT pg_catalog.setval('clients_id_seq', 14, true);
 
 
 --
--- Data for Name: instructors; Type: TABLE DATA; Schema: public; Owner: apropas
+-- Data for Name: instructors; Type: TABLE DATA; Schema: public; Owner: ubuntu
 --
 
 COPY instructors (id, name, created_at, updated_at) FROM stdin;
@@ -443,18 +443,18 @@ COPY instructors (id, name, created_at, updated_at) FROM stdin;
 
 
 --
--- Name: instructors_id_seq; Type: SEQUENCE SET; Schema: public; Owner: apropas
+-- Name: instructors_id_seq; Type: SEQUENCE SET; Schema: public; Owner: ubuntu
 --
 
 SELECT pg_catalog.setval('instructors_id_seq', 29, true);
 
 
 --
--- Data for Name: users; Type: TABLE DATA; Schema: public; Owner: apropas
+-- Data for Name: users; Type: TABLE DATA; Schema: public; Owner: ubuntu
 --
 
 COPY users (id, password, created_at, updated_at, permission, name, email, business_id) FROM stdin;
-25	$2b$12$aE1wTbQ2eqlNfg8a9hC8p.Atp6zEca.Btqc6b3P/cMWzX9Iz9QRa6	2016-06-02 11:08:51.745716	2016-07-17 14:49:58.284547	super-admin	Anna Propas	apropas@gmail.com	23
+25	$2b$12$aE1wTbQ2eqlNfg8a9hC8p.Atp6zEca.Btqc6b3P/cMWzX9Iz9QRa6	2016-06-02 11:08:51.745716	2016-07-17 14:49:58.284547	super-admin	Anna Propas	ubuntu@gmail.com	23
 34	$2b$12$CSw/A0/MBWKDTCzzwODeqee/XQKwLyUmMiKV97CqWY7y3d2uAuHKO	2016-06-07 12:32:44.906829	2016-07-19 12:14:08.629188	user	Bobbie Roberts	bob@bob.com	22
 30	$2b$12$TNlMUVK6ZFtaIJ0dqN5ij.gmk/Lgld3XgTnmEKWj9p7SKC8mExg7S	2016-06-07 11:51:57.636074	2016-06-07 20:16:24.989795	admin	David Liss	david@davidlissrvt.com	22
 36	$2b$12$qBcNwk6Ln5ZGOC1MsRtTveQao8HNET1fuon/olrrpWmZYxRdHYCuO	2016-07-12 00:29:47.7231	\N	super-admin	Jamie Holms	jholms@gmail.com	23
@@ -463,14 +463,14 @@ COPY users (id, password, created_at, updated_at, permission, name, email, busin
 
 
 --
--- Name: users_id_seq; Type: SEQUENCE SET; Schema: public; Owner: apropas
+-- Name: users_id_seq; Type: SEQUENCE SET; Schema: public; Owner: ubuntu
 --
 
 SELECT pg_catalog.setval('users_id_seq', 37, true);
 
 
 --
--- Name: attendees_pkey; Type: CONSTRAINT; Schema: public; Owner: apropas
+-- Name: attendees_pkey; Type: CONSTRAINT; Schema: public; Owner: ubuntu
 --
 
 ALTER TABLE ONLY attendees
@@ -478,7 +478,7 @@ ALTER TABLE ONLY attendees
 
 
 --
--- Name: businesses_pkey; Type: CONSTRAINT; Schema: public; Owner: apropas
+-- Name: businesses_pkey; Type: CONSTRAINT; Schema: public; Owner: ubuntu
 --
 
 ALTER TABLE ONLY businesses
@@ -486,7 +486,7 @@ ALTER TABLE ONLY businesses
 
 
 --
--- Name: classes_pkey; Type: CONSTRAINT; Schema: public; Owner: apropas
+-- Name: classes_pkey; Type: CONSTRAINT; Schema: public; Owner: ubuntu
 --
 
 ALTER TABLE ONLY classes
@@ -494,7 +494,7 @@ ALTER TABLE ONLY classes
 
 
 --
--- Name: clients_name_key; Type: CONSTRAINT; Schema: public; Owner: apropas
+-- Name: clients_name_key; Type: CONSTRAINT; Schema: public; Owner: ubuntu
 --
 
 ALTER TABLE ONLY clients
@@ -502,7 +502,7 @@ ALTER TABLE ONLY clients
 
 
 --
--- Name: clients_pkey; Type: CONSTRAINT; Schema: public; Owner: apropas
+-- Name: clients_pkey; Type: CONSTRAINT; Schema: public; Owner: ubuntu
 --
 
 ALTER TABLE ONLY clients
@@ -510,7 +510,7 @@ ALTER TABLE ONLY clients
 
 
 --
--- Name: instructors_name_key; Type: CONSTRAINT; Schema: public; Owner: apropas
+-- Name: instructors_name_key; Type: CONSTRAINT; Schema: public; Owner: ubuntu
 --
 
 ALTER TABLE ONLY instructors
@@ -518,7 +518,7 @@ ALTER TABLE ONLY instructors
 
 
 --
--- Name: instructors_pkey; Type: CONSTRAINT; Schema: public; Owner: apropas
+-- Name: instructors_pkey; Type: CONSTRAINT; Schema: public; Owner: ubuntu
 --
 
 ALTER TABLE ONLY instructors
@@ -526,7 +526,7 @@ ALTER TABLE ONLY instructors
 
 
 --
--- Name: users_pkey; Type: CONSTRAINT; Schema: public; Owner: apropas
+-- Name: users_pkey; Type: CONSTRAINT; Schema: public; Owner: ubuntu
 --
 
 ALTER TABLE ONLY users
@@ -534,7 +534,7 @@ ALTER TABLE ONLY users
 
 
 --
--- Name: attended_classes_attendee_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: apropas
+-- Name: attended_classes_attendee_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: ubuntu
 --
 
 ALTER TABLE ONLY attended_classes
@@ -542,7 +542,7 @@ ALTER TABLE ONLY attended_classes
 
 
 --
--- Name: attended_classes_class_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: apropas
+-- Name: attended_classes_class_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: ubuntu
 --
 
 ALTER TABLE ONLY attended_classes
@@ -550,7 +550,7 @@ ALTER TABLE ONLY attended_classes
 
 
 --
--- Name: class_instructor_class_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: apropas
+-- Name: class_instructor_class_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: ubuntu
 --
 
 ALTER TABLE ONLY class_instructor
@@ -558,7 +558,7 @@ ALTER TABLE ONLY class_instructor
 
 
 --
--- Name: class_instructor_instructor_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: apropas
+-- Name: class_instructor_instructor_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: ubuntu
 --
 
 ALTER TABLE ONLY class_instructor
@@ -566,7 +566,7 @@ ALTER TABLE ONLY class_instructor
 
 
 --
--- Name: classes_business_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: apropas
+-- Name: classes_business_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: ubuntu
 --
 
 ALTER TABLE ONLY classes
@@ -574,7 +574,7 @@ ALTER TABLE ONLY classes
 
 
 --
--- Name: clients_business_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: apropas
+-- Name: clients_business_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: ubuntu
 --
 
 ALTER TABLE ONLY clients
@@ -582,7 +582,7 @@ ALTER TABLE ONLY clients
 
 
 --
--- Name: users_business_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: apropas
+-- Name: users_business_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: ubuntu
 --
 
 ALTER TABLE ONLY users
@@ -590,16 +590,15 @@ ALTER TABLE ONLY users
 
 
 --
--- Name: public; Type: ACL; Schema: -; Owner: apropas
+-- Name: public; Type: ACL; Schema: -; Owner: ubuntu
 --
 
 REVOKE ALL ON SCHEMA public FROM PUBLIC;
-REVOKE ALL ON SCHEMA public FROM apropas;
-GRANT ALL ON SCHEMA public TO apropas;
+REVOKE ALL ON SCHEMA public FROM ubuntu;
+GRANT ALL ON SCHEMA public TO ubuntu;
 GRANT ALL ON SCHEMA public TO PUBLIC;
 
 
 --
 -- PostgreSQL database dump complete
 --
-
