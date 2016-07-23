@@ -1,4 +1,4 @@
-from server.psqlconnection import PSQLConnector
+from conf.psqlconnection import PSQLConnector
 import re
 
 class Businesses(object):

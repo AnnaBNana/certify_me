@@ -2,15 +2,15 @@ from flask import Flask, render_template, request, redirect, jsonify, session, f
 import os
 
 #import models
-from server.attendees import Attendees
-from server.businesses import Businesses
-from server.certificates import Certificates
-from server.classes import Classes
-from server.clients import Clients
-from server.dropboxconnection import Dropbox
-from server.instructors import Instructors
-from server.sendgridconnection import SendgridConnection
-from server.users import Users
+from conf.attendees import Attendees
+from conf.businesses import Businesses
+from conf.certificates import Certificates
+from conf.classes import Classes
+from conf.clients import Clients
+from conf.dropboxconnection import Dropbox
+from conf.instructors import Instructors
+from conf.sendgridconnection import SendgridConnection
+from conf.users import Users
 
 
 app= Flask(__name__)
@@ -26,11 +26,6 @@ dropbox = Dropbox(app)
 instructors = Instructors(app)
 sendgrid = SendgridConnection(app)
 users = Users(app)
-
-# try the save all in dropbox
-# dropbox.save_all()
-
-# sendgrid.send()
 
 
 #base page loading routes: index, main, permissions check, logout

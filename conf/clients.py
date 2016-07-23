@@ -1,6 +1,7 @@
 from flask import session
-from server.psqlconnection import PSQLConnector
-from server.businesses import Businesses
+
+from conf.psqlconnection import PSQLConnector
+from conf.businesses import Businesses
 
 
 class Clients(object):

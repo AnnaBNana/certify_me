@@ -1,7 +1,7 @@
 from flask import session
 import re
-from server.psqlconnection import PSQLConnector
-from flask.ext.bcrypt import Bcrypt
+from conf.psqlconnection import PSQLConnector
+from flask_bcrypt import Bcrypt
 
 class Users(object):
     def __init__(self, app):

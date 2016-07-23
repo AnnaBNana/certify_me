@@ -1,5 +1,5 @@
-from server.psqlconnection import PSQLConnector
-from server.classes import Classes
+from conf.psqlconnection import PSQLConnector
+from conf.classes import Classes
 
 
 class Attendees(object):

@@ -23,8 +23,8 @@ from reportlab.lib.enums import TA_JUSTIFY, TA_LEFT, TA_CENTER
 import StringIO
 from werkzeug import secure_filename
 
-from server.attendees import Attendees
-from server.psqlconnection import PSQLConnector
+from conf.attendees import Attendees
+from conf.psqlconnection import PSQLConnector
 
 class Certificates(object):
     def __init__(self, app):

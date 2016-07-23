@@ -1,4 +1,4 @@
-from server.psqlconnection import PSQLConnector
+from conf.psqlconnection import PSQLConnector
 
 class Instructors(object):
     def __init__(self, app):

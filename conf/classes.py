@@ -1,7 +1,9 @@
-from flask import session
 import re
-from server.psqlconnection import PSQLConnector
-from server.instructors import Instructors
+
+from flask import session
+
+from conf.psqlconnection import PSQLConnector
+from conf.instructors import Instructors
 
 
 class Classes(object):
