@@ -2,8 +2,8 @@ from conf.psqlconnection import PSQLConnector
 import re
 
 class Businesses(object):
-    def __init__(self, app):
-        self.postgresql = PSQLConnector(app, 'CertifyMe')
+    def __init__(self, app, db):
+        self.postgresql = PSQLConnector(app, db)
         self.street_addr_regex = re.compile(r'^\d+\s[a-zA-Z]+')
         self.zip_addr_regex = re.compile(r'^[0-9]{5}')
         self.email_regex = re.compile(r'^[a-zA-Z0-9\.\+_-]+@[a-zA-Z0-9\._-]+\.[a-zA-Z]*$')
@@ -84,6 +84,7 @@ class Businesses(object):
             "name": "dummy"
         }
         businesses = self.postgresql.query_db(query, values)
+        print "businesses in model", businesses
         return businesses
 
     def add_pdf_url(self, business_data):

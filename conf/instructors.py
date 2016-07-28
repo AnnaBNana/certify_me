@@ -1,8 +1,8 @@
 from conf.psqlconnection import PSQLConnector
 
 class Instructors(object):
-    def __init__(self, app):
-        self.postgresql = PSQLConnector(app, 'CertifyMe')
+    def __init__(self, app, db):
+        self.postgresql = PSQLConnector(app, db)
 
     def add(self, instructor_list, class_id):
         instructor_query = "INSERT INTO instructors (name, created_at) VALUES (:name, NOW()) RETURNING id"

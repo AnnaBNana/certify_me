@@ -5,9 +5,9 @@ from conf.businesses import Businesses
 
 
 class Clients(object):
-    def __init__(self, app):
-        self.postgresql = PSQLConnector(app, 'CertifyMe')
-        self.businesses = Businesses(app)
+    def __init__(self, app, db):
+        self.postgresql = PSQLConnector(app, db)
+        self.businesses = Businesses(app, db)
 
     def add(self, id, form_data):
         valid = True

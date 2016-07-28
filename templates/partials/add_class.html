@@ -7,47 +7,23 @@
       <div class="row">
         <label>name:</label>
         <input class="twelve columns required" type="text" name="name" placeholder="seminar title">
-        {% with name_error = get_flashed_messages(category_filter=['name_error'])%}
-          {% if name_error %}
-            {% for msg in name_error %}
-              <div class="error">{{ msg }}</div>
-            {% endfor %}
-          {% endif %}
-        {% endwith %}
       </div>
+      <div class="row jserror namerr"></div>
       <div class="row">
         <label>race course number:</label>
         <input class="twelve columns required" type="text" name="course_num" placeholder="race course number">
-        {% with name_error = get_flashed_messages(category_filter=['course_num_error'])%}
-          {% if name_error %}
-            {% for msg in name_error %}
-              <div class="error">{{ msg }}</div>
-            {% endfor %}
-          {% endif %}
-        {% endwith %}
       </div>
+      <div class="row jserror courserr"></div>
       <div class="row">
         <label>duration:</label>
         <input class="twelve columns required" type="number" name="duration" placeholder="required duration for attendees in minutes">
-        {% with duration_error = get_flashed_messages(category_filter=['duration_error'])%}
-          {% if duration_error %}
-            {% for msg in duration_error %}
-              <div class="error">{{ msg }}</div>
-            {% endfor %}
-          {% endif %}
-        {% endwith %}
       </div>
+      <div class="row jserror durationerr"></div>
       <div class="row">
         <label>date:</label>
-        <input class="twelve columns required" type="date" name="date" value="">
-        {% with date_error = get_flashed_messages(category_filter=['date_error'])%}
-          {% if date_error %}
-            {% for msg in date_error %}
-              <div class="error">{{ msg }}</div>
-            {% endfor %}
-          {% endif %}
-        {% endwith %}
+        <input class="twelve columns required" type="date" name="date" value="" placeholder="mm/dd/yyyy">
       </div>
+      <div class="row jserror daterr"></div>
       <div class="row instructor">
         <label>instructor:</label>
         <select class=" twelve columns" name="existing_instructor">
@@ -57,13 +33,7 @@
           {% endfor %}
         </select>
       </div>
-      {% with instructor_error = get_flashed_messages(category_filter=['instructor_error'])%}
-        {% if instructor_error %}
-          {% for msg in instructor_error %}
-            <div class="error">{{ msg }}</div>
-          {% endfor %}
-        {% endif %}
-      {% endwith %}
+      <div class="row jserror instructorerr"></div>
       <div class="row add_target">
         <button type="button" class="twelve columns new_instructor">add a new or additional instructor</button>
       </div>
@@ -71,26 +41,14 @@
         <label>email text:</label>
         <!-- placeholder text should be pulled from text of the email for that clients most recent seminar -->
         <textarea class="twelve columns required" type="text" name="email_text" placeholder="email text to be sent to every attendee"></textarea>
-        {% with email_error = get_flashed_messages(category_filter=['email_error'])%}
-          {% if email_error %}
-            {% for msg in email_error %}
-              <div class="error">{{ msg }}</div>
-            {% endfor %}
-          {% endif %}
-        {% endwith %}
       </div>
+      <div class="row jserror emailerr"></div>
       <div class="row">
         <label>RACE verbiage:</label>
         <!-- to be inserted at bottom of certificate. will be different for each seminar -->
         <textarea class="twelve columns required" type="text" name="race_verbiage" placeholder="RACE required text for certificate"></textarea>
-        {% with race_error = get_flashed_messages(category_filter=['race_error'])%}
-          {% if race_error %}
-            {% for msg in race_error %}
-              <div class="error">{{ msg }}</div>
-            {% endfor %}
-          {% endif %}
-        {% endwith %}
       </div>
+      <div class="row jserror racerr"></div>
       <div class="row">
         <label>CVPM verbiage (optional):</label>
         <!-- same as above, but only some users will be able to see this -->

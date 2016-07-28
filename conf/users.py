@@ -4,10 +4,11 @@ from conf.psqlconnection import PSQLConnector
 from flask_bcrypt import Bcrypt
 
 class Users(object):
-    def __init__(self, app):
-        self.postgresql = PSQLConnector(app, 'CertifyMe')
+    def __init__(self, app, db):
+        self.postgresql = PSQLConnector(app, db)
         self.bcrypt = Bcrypt(app)
         self.email_regex = re.compile(r'^[a-zA-Z0-9\.\+_-]+@[a-zA-Z0-9\._-]+\.[a-zA-Z]*$')
+
     def add(self, form_data):
         message = {}
         # check if email already exists in the database

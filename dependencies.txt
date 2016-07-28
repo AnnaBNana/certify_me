@@ -1,9 +1,10 @@
-pip install flask
-pip install flask-sqlalchemy
+pip install flask==0.11.1
+pip install flask-sqlalchemy==2.0
 pip install psycopg2
-pip install flask-bcrypt
-pip install pypdf2
-pip install reportlab
-pip install pdfminer
-pip install dropbox
+pip install flask-bcrypt==0.7.1
+pip install pypdf2==1.26.0
+pip install reportlab==3.3.0
+pip install pdfminer==20140328
+pip install dropbox==6.5.0
 pip install sendgrid
+pip install uwsgi==2.0.13.1

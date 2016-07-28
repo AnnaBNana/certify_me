@@ -3,9 +3,9 @@ from conf.classes import Classes
 
 
 class Attendees(object):
-    def __init__(self, app):
-        self.classes = Classes(app)
-        self.postgresql = PSQLConnector(app, 'CertifyMe')
+    def __init__(self, app, db):
+        self.classes = Classes(app, db)
+        self.postgresql = PSQLConnector(app, db)
 
     def add_attendees(self, contents, class_id):
         # we are missing validation for csv files to ensure they are formatted as expected
@@ -14,12 +14,14 @@ class Attendees(object):
         i = 0
         min_check = {}
         rel_info = []
+        header_marker = None;
         for row in contents:
-            # print "row: ", row
-            if i == 2:
-                header = row
-            elif i > 2:
-                if row:
+            print "row: ", row
+            if row:
+                print "inside conditional", row
+                if row[1] == "Email":
+                    header_marker = i
+                if header_marker and i > header_marker:
                     if row[1] not in min_check:
                         row_data = {
                             'name': row[0],
@@ -28,10 +30,12 @@ class Attendees(object):
                         }
                         attendee_info.append(row_data)
                     if row[1] in min_check:
+                        print "email:", row[1]
                         min_check[row[1]] += int(row[2])
                     else:
+                        print "email:", row[1]
                         min_check[row[1]] = int(row[2])
-            i += 1
+                i += 1
         for info in attendee_info:
             if info['email'] in min_check:
                 info['min'] = min_check[info['email']]

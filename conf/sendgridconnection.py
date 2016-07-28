@@ -22,7 +22,7 @@ class SendgridConnection(object):
         personalization.add_to(Email(student_data['email']))
         mail.add_personalization(personalization)
         mail.set_subject("Certificate for: " + class_data['name'])
-        mail.add_content(Content('text/plain', class_data['email_text']))
+        mail.add_content(Content('text/html', "<p>" + student_data['name'] + ", </p>" + class_data['email_text']))
         attachment = Attachment()
         attachment.set_content(encoded_string)
         attachment.set_type("application/pdf")

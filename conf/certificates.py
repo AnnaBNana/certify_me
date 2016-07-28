@@ -27,12 +27,12 @@ from conf.attendees import Attendees
 from conf.psqlconnection import PSQLConnector
 
 class Certificates(object):
-    def __init__(self, app):
+    def __init__(self, app, db):
         self.app = app
-        self.postgresql = PSQLConnector(app, 'CertifyMe')
+        self.postgresql = PSQLConnector(app, db)
         self.app.config['UPLOAD_FOLDER'] = 'static/uploads/'
         self.stylesheet = getSampleStyleSheet()
-        self.attendees = Attendees(app)
+        self.attendees = Attendees(app, db)
         self.alphanum_regex = re.compile(r'\w+')
 
     def save_files(self, files):
@@ -195,7 +195,7 @@ class Certificates(object):
                 style.fontName = 'Helvetica-Oblique'
             elif key == "date":
                 d = datetime.datetime.strptime(student['class_date'], '%Y-%m-%d')
-                d = d.strftime('%b %d,%Y')
+                d = d.strftime('%B %d,%Y')
                 s = "has attended the following webinar on " + str(d)
                 style.fontSize = 14
             cv.setFillColor("white")

@@ -7,14 +7,16 @@ from conf.instructors import Instructors
 
 
 class Classes(object):
-    def __init__(self, app):
-        self.postgresql = PSQLConnector(app, 'CertifyMe')
-        self.instructors = Instructors(app)
+    def __init__(self, app, db):
+        self.postgresql = PSQLConnector(app, db)
+        self.instructors = Instructors(app, db)
 
     def add(self, form_data):
         session
         print "form data", form_data
-        validate = True
+        valid = True
+        messages = {}
+        data = {}
         course_regex = re.compile(r'^(\d+)-(\d+)')
         match_obj = re.match(course_regex, form_data['course_num'])
         instructor_list = []
@@ -24,35 +26,28 @@ class Classes(object):
                 #if it does push value to a list
                 instructor_list.append(v)
         if len(form_data['name']) < 6:
-            flash("Name should be at lease 6 characters long", "name_error")
-            validate = False
+            messages['name_error'] = "name must be 6 characters or more"
+            valid = False
         if not match_obj:
-            flash("Expected digits-digits format, please check course number", "course_num_error")
+            messages['course_num_error'] = "Expected digits-digits format, please check course number"
         if not form_data['duration'].isdigit():
-            flash("Please enter a whole number", "duration_error")
-            validate = False
+            messages['duration_error']= "Please enter a whole number"
+            valid = False
         if len(form_data['date']) < 10:
-            flash("Please enter correct date format", "date_error")
-            validate = False
+            messages['date_error']= "Please enter correct date format"
+            valid = False
         if form_data['existing_instructor'] == "" and len(instructor_list) < 1:
-            print "instructor validation fail"
-            flash("Please choose existing instructor or add at least one new instructor", "instructor_error")
-            validate = False
+            messages['instructor_error']= "Please choose existing instructor or add at least one new instructor"
+            valid = False
         #make this requirement longer in deployment, length requirement shortened for testing
         if len(form_data['email_text']) < 4:
-            print "email validation fail"
-            flash("Email must be at least 4 characters in length", "email_error")
-            validate = False
+            messages['email_error']= "Email must be at least 4 characters in length"
+            valid = False
         if len(form_data['race_verbiage']) < 4:
             print "race validation fail"
-            flash("Race verbiage must be at least 4 characters in length", "race_error")
-            validate = False
-        if not validate:
-            print "validation fail"
-            return "error"
-        else:
-            print "validation pass"
-            print instructor_list
+            messages['race_verbiage']= "Race verbiage must be at least 4 characters in length"
+            valid = False
+        if valid:
             query = "INSERT INTO classes (name, duration, business_id, email_text, date, created_at, race_verbiage, cvpm_verbiage, race_course_num) VALUES (:name, :duration, :business_id, :email_text, :date, NOW(), :race_verbiage, :cvpm_verbiage, :race_course_num) RETURNING id"
             values = {
                 "name": form_data['name'],
@@ -71,10 +66,10 @@ class Classes(object):
             instructor_ids = self.instructors.add(instructor_list, class_id)
             if 'existing_instructor' in form_data and len(form_data['existing_instructor']) > 0:
                 instructor_ids.append(form_data['existing_instructor'])
-            print "instructor ids: ", instructor_ids
             # with returned ids, we then go and add entries to relational table
             self.instructors.add_class_instructors(class_id, instructor_ids)
-            return class_id
+            messages['id'] = class_id
+        return messages
 
     def update(self, form_data):
         # update class

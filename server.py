@@ -15,17 +15,18 @@ from conf.users import Users
 
 app= Flask(__name__)
 app.secret_key = os.urandom(24)
+db = "CertifyMe"
 
 # assign model classes to variables
-attendees = Attendees(app)
-businesses = Businesses(app)
-certificates = Certificates(app)
-classes = Classes(app)
-clients = Clients(app)
+attendees = Attendees(app, db)
+businesses = Businesses(app, db)
+certificates = Certificates(app, db)
+classes = Classes(app, db)
+clients = Clients(app, db)
 dropbox = Dropbox(app)
-instructors = Instructors(app)
+instructors = Instructors(app, db)
 sendgrid = SendgridConnection(app)
-users = Users(app)
+users = Users(app, db)
 
 
 #base page loading routes: index, main, permissions check, logout
@@ -53,7 +54,7 @@ def main():
 
 @app.route('/permission_partial')
 def permission():
-    print session
+    print "this is my full session data", session
     if 'logged' in session:
         if session['permission'] == "super-admin":
             return redirect('/index/choose_business')
@@ -201,6 +202,7 @@ def show_class(id):
         one_class = classes.findOne(id)
         class_instructors = instructors.find_all_class_instructors(id)
         all_instructors = instructors.find_all_other(id)
+        print all_instructors
         return render_template('partials/class.html', title=title, one_class=one_class, instructors=class_instructors, all_instructors=all_instructors)
     else:
         error = {'error': 'redirect'}
@@ -335,12 +337,11 @@ def activate_client():
 @app.route('/add_class', methods=['POST'])
 def new_class():
     if 'logged' in session:
-        class_id = classes.add(request.form)
-        session['class_id'] = class_id
-        print "operation complete, id is: ", class_id
-        if class_id == "error":
-            return redirect('/index/add_class')
+        messages = classes.add(request.form)
+        if "id" not in messages:
+            return jsonify(messages)
         else:
+            session['class_id'] = messages['id']
             return redirect('/index/certificates')
     else:
         error = {'error': 'redirect'}
