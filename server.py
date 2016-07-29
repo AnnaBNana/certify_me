@@ -129,7 +129,6 @@ def choose_business():
     if 'logged' in session:
         title = "Choose a Business"
         all_businesses = businesses.findAll()
-        print "businesses: ", all_businesses
         return render_template('partials/choose_client.html', title=title, all_businesses=all_businesses)
     else:
         error = {'error': 'redirect'}

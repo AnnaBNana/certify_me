@@ -16,32 +16,41 @@ $(document).ready(function() {
       $('.jserror').hide();
       var data = $(this).serialize();
       $.post('/add_class', data, function(res) {
-        // console.log(res)
+        console.log(res)
+        var error = false;
         if (res.error) {
+          error = true;
           window.location.assign('/')
         }
         if (res.name_error) {
+          error = true;
           $('.namerr').html(res.name_error).show('slow');
         }
         if (res.course_num_error) {
+          error = true;
           $('.courserr').html(res.course_num_error).show('slow');
         }
         if (res.duration_error) {
+          error = true;
           $('.durationerr').html(res.duration_error).show('slow');
         }
         if (res.date_error) {
+          error = true;
           $('.daterr').html(res.date_error).show('slow');
         }
         if (res.instructor_error) {
+          error = true;
           $('.instructorerr').html(res.instructor_error).show('slow');
         }
         if (res.email_error) {
+          error = true;
           $('.emailerr').html(res.email_error).show('slow');
         }
         if (res.race_verbiage) {
+          error = true;
           $('.racerr').html(res.race_verbiage).show('slow');
         }
-        if (res.id) {
+        if (!error) {
           $('.main_content').html(res);
         }
       })

@@ -84,7 +84,6 @@ class Businesses(object):
             "name": "dummy"
         }
         businesses = self.postgresql.query_db(query, values)
-        print "businesses in model", businesses
         return businesses
 
     def add_pdf_url(self, business_data):
