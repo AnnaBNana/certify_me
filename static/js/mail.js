@@ -42,7 +42,13 @@ $(document).ready(function() {
     var height = $(document).height();
     $('.dim').css({'min-height': height});
     $('.dim').show();
-    $.get('/index/dropbox_upload', function(res){
+    var students = {};
+    //grab attendee id from each row where box is checked
+    $("input[type='checkbox']:checked").each(function(){
+      var student = $(this).val();
+      students[student] = student
+    });
+    $.post('/dropbox_upload', students, function(res){
       $('.dizzy-gillespie').hide();
       $('.dim').hide();
       if (res.error) {

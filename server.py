@@ -263,24 +263,6 @@ def add_biz():
         return jsonify(error)
 
 
-@app.route('/index/dropbox_upload')
-def dropbox_upload():
-    if 'logged' in session:
-        class_id = session['class_id']
-        business_id = session['business_id']
-        biz_data = businesses.findOne(business_id)
-        class_data = classes.findOne(class_id)
-        if dropbox.save_all(biz_data, class_data):
-            message = {'success': 'All files uploaded'}
-        else:
-            message = {'upload_error': "files not uploaded"}
-        print message
-        return jsonify(message)
-    else:
-        error = {'error': 'redirect'}
-        return jsonify(error)
-
-
 """
 end partial loading routes
 begin delete routes
@@ -431,10 +413,10 @@ def generate_certificates():
         # when adding new entry to attendees, status should always be in_db (check)
         # should only generate certificates for people who attended the class, and whose status is in_db (check)
         # after certs are made, we should change to cert_generated(check)
-        # should only send email to class attendees whose status is cert_generated
-        # after email sent confirmation, we should change attendee status to email_sent
-        # is status is email sent, then store files remotely
-        # once dropbox success, change status to stored_remotely
+        # should only send email to class attendees whose status is cert_generated(check)
+        # after email sent confirmation, we should change attendee status to email_sent (checl)
+        # is status is email sent, then store files remotely (check)
+        # once dropbox success, change status to complete (check)
         business_id = session['business_id']
         class_id = request.form['class']
         session['class_id'] = class_id
@@ -513,12 +495,38 @@ def send_mail():
         business_id = session['business_id']
         business_data = businesses.findOne(business_id)
         class_data = classes.findOne(class_id)
+        students = []
         for id in request.form:
             student_data = attendees.findOne(id)
             if sendgrid.send(business_data, class_data, student_data):
+                students.append({'attendee_id': id})
                 message = {'success': 'mail sent'}
             else:
                 message = {'send_error': 'mail not sent'}
+        attendees.update_status(students, "email_sent")
+        return jsonify(message)
+    else:
+        error = {'error': 'redirect'}
+        return jsonify(error)
+
+
+@app.route('/dropbox_upload', methods=['POST'])
+def dropbox_upload():
+    if 'logged' in session:
+        # request.form will contain an array of dicts with student id's as the key and value
+        students = []
+        for id in request.form:
+            students.append({'attendee_id': id})
+        class_id = session['class_id']
+        business_id = session['business_id']
+        biz_data = businesses.findOne(business_id)
+        class_data = classes.findOne(class_id)
+        if dropbox.save_all(biz_data, class_data):
+            message = {'success': 'All files uploaded'}
+            attendees.update_status(students, "complete")
+        else:
+            message = {'upload_error': "files not uploaded"}
+        print message
         return jsonify(message)
     else:
         error = {'error': 'redirect'}

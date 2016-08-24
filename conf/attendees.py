@@ -90,7 +90,6 @@ class Attendees(object):
         return students
 
     def update_status(self, students, status):
-        print "testing update status in attendees.py line 93", students
         query = "UPDATE attendees SET status=:status WHERE id=:id"
         for student in students:
             values = {
