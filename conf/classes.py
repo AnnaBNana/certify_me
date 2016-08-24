@@ -153,11 +153,3 @@ class Classes(object):
             "class_id": class_id
         }
         self.postgresql.query_db(query, values)
-
-    # def update_csv_url(self, csv, id):
-    #     query = "UPDATE classes SET csv_url=:csv_url WHERE id=:id"
-    #     values = {
-    #         "csv_url": csv_url,
-    #         "id": id
-    #     }
-    #     self.postgresql.query_db(query, values)

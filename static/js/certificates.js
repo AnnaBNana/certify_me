@@ -125,6 +125,17 @@ $(document).ready(function() {
       }
     })
   });
+  $('.skip').click(function(){
+    var id = $('.skip_class').val();
+    console.log(id);
+    $.get("/index/mail/" + id, function(res){
+      if (res.error) {
+        window.location.assign('/')
+      } else {
+        $('.main_content').html(res);
+      }
+    })
+  });
 
   $('.close_container,.stay').click(function(){
     $('.popup').hide('slow')

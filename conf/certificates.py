@@ -95,14 +95,12 @@ class Certificates(object):
         layout_bounds = layout.bbox
         keywords = ['student', 'seminar', 'instructor', 'race_verbiage', 'date', 'cvpm_verbiage', 'class_id']
         for lt_obj in layout:
-            print "object: ", lt_obj
-            print "lt obj object name: ", lt_obj.__class__.__name__
-            print "lt obj bbox: ", lt_obj.bbox
+            # print "object: ", lt_obj
+            # print "lt obj object name: ", lt_obj.__class__.__name__
+            # print "lt obj bbox: ", lt_obj.bbox
             if isinstance(lt_obj, LTTextBox) or isinstance(lt_obj, LTTextLine):
-                print "lt obj text: ", lt_obj.get_text()
+                # print "lt obj text: ", lt_obj.get_text()
                 # if any of the keywords from above list are found, save coords in key value pair and save keyword, set found bool to true for use in setting bounding boxes
-                if self.alphanum_regex.search(lt_obj.get_text()):
-                    print "this line evaluates to true: ", lt_obj.get_text()
                 if self.alphanum_regex.search(lt_obj.get_text()):
                     for k in keywords:
                         if k in lt_obj.get_text().lower():
@@ -121,7 +119,7 @@ class Certificates(object):
                         'top': prev_top_coords,
                         'bottom': bottom_coords
                     }
-                    print "coords dict in order found:", flowable_dict
+                    # print "coords dict in order found:", flowable_dict
                     found = flag = False
                     if keyword != prev_keyword:
                         found = True

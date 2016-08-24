@@ -8,7 +8,6 @@
     <textarea class="twelve columns email_text" name="email_text">{{students[0]['email_text']}}</textarea>
     <button class="change_text" type="button" name="button">Save Changes to Email Text</button>
   </div>
-
   <table class="offset-by-one ten columns">
     <thead>
       <th>checked</th>
@@ -19,7 +18,7 @@
     <tbody>
       {% for student in students %}
       <tr>
-        <td><input type="checkbox" name="status" checked value="{{student.attendee_id}}"></td>
+        <td><input type="checkbox" name="status" {% if student.status == "cert_generated" %} checked {% endif %} value="{{student.attendee_id}}"></td>
         <td>{{student.name}}</td>
         <td>{{student.email}}</td>
         <td>{{student.minutes}}</td>
@@ -29,6 +28,7 @@
   </table>
   <div class="offset-by-one ten columns">
     <button type="button" class="send">Send Emails</button>
+    <button type="button" name="button" class="savedb">save all files to dropbox</button>
   </div>
 </div>
 <div class="popup jssuccess text">

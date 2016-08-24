@@ -85,7 +85,10 @@ $(document).ready(function() {
       }
     });
   });
+
   $('.close_container,.done').click(function(){
     $('.popup').hide('slow')
   });
+
+
 });

@@ -16,7 +16,7 @@ $(document).ready(function() {
       $('.jserror').hide();
       var data = $(this).serialize();
       $.post('/add_class', data, function(res) {
-        console.log(res)
+        // console.log(res)
         var error = false;
         if (res.error) {
           error = true;

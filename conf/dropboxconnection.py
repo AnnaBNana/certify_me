@@ -29,12 +29,12 @@ class Dropbox(object):
             else:
                 message = {}
         # after all operations complete, remove files from local file storage
-        print "list dir before removal of files:", os.listdir(self.app.config['UPLOAD_FOLDER'])
+        # print "list dir before removal of files:", os.listdir(self.app.config['UPLOAD_FOLDER'])
         for file_name in os.listdir(self.app.config['UPLOAD_FOLDER']):
             file_path = os.path.join(self.app.config['UPLOAD_FOLDER'], file_name)
             if os.path.isfile(file_path):
                 os.remove(file_path)
-        print "list dir after removal of files:", os.listdir(self.app.config['UPLOAD_FOLDER'])
+        # print "list dir after removal of files:", os.listdir(self.app.config['UPLOAD_FOLDER'])
         return message
 
     def get_file(self, file_name, business):

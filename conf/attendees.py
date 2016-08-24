@@ -9,19 +9,19 @@ class Attendees(object):
 
     def add_attendees(self, contents, class_id):
         # we are missing validation for csv files to ensure they are formatted as expected
-        query = "INSERT INTO attendees (name, email, created_at) VALUES (:name, :email, NOW()) RETURNING id"
+        query = "INSERT INTO attendees (name, email, status, created_at) VALUES (:name, :email, :status, NOW()) RETURNING id"
         attendee_info = []
         i = 0
         min_check = {}
         rel_info = []
         header_marker = None;
         for row in contents:
-            print "row: ", row
+            # print "row: ", row
             if row:
-                print "inside conditional", row
+                # print "inside conditional", row
                 if row[1] == "Email":
                     header_marker = i
-                if header_marker and i > header_marker:
+                if header_marker and i > header_marker and row[1]:
                     if row[1] not in min_check:
                         row_data = {
                             'name': row[0],
@@ -41,7 +41,8 @@ class Attendees(object):
                 info['min'] = min_check[info['email']]
             values = {
                 'name': info['name'],
-                'email': info['email']
+                'email': info['email'],
+                'status': 'in_db'
             }
             at_id = self.postgresql.query_db(query, values)
             info = {
@@ -64,9 +65,10 @@ class Attendees(object):
             self.postgresql.query_db(query, values)
 
     def get_cert_data(self, class_id):
-        query = "SELECT a.name AS name, a.email AS email, ac.minutes AS minutes, c.name AS class_name, c.duration AS duration, c.email_text AS email_text, c.date AS class_date, c.race_verbiage AS race_verbiage, c.cvpm_verbiage AS cvpm_verbiage, c.race_course_num AS course_num FROM attendees AS a LEFT JOIN  attended_classes AS ac ON a.id=ac.attendee_id LEFT JOIN classes AS c ON ac.class_id=c.id WHERE c.id=:class_id"
+        query = "SELECT a.id AS attendee_id, a.name AS name, a.email AS email, ac.minutes AS minutes, c.name AS class_name, c.duration AS duration, c.email_text AS email_text, c.date AS class_date, c.race_verbiage AS race_verbiage, c.cvpm_verbiage AS cvpm_verbiage, c.race_course_num AS course_num FROM attendees AS a LEFT JOIN  attended_classes AS ac ON a.id=ac.attendee_id LEFT JOIN classes AS c ON ac.class_id=c.id WHERE c.id=:class_id AND a.status=:status"
         values = {
-            "class_id": class_id
+            "class_id": class_id,
+            "status": "in_db"
         }
         cert_data = self.postgresql.query_db(query, values)
         return cert_data
@@ -80,9 +82,19 @@ class Attendees(object):
         return student[0]
 
     def find_all_in_class(self, class_id):
-        query = "SELECT a.id AS attendee_id, a.name AS name, a.email AS email, ac.minutes AS minutes, c.duration AS duration, c.email_text AS email_text FROM attendees AS a LEFT JOIN attended_classes AS ac ON a.id=ac.attendee_id LEFT JOIN classes AS c ON ac.class_id=c.id WHERE c.id=:class_id AND ac.minutes >= c.duration AND a.email!= '' ORDER BY a.name"
+        query = "SELECT a.id AS attendee_id, a.name AS name, a.email AS email, a.status AS status, ac.minutes AS minutes, c.duration AS duration, c.email_text AS email_text FROM attendees AS a LEFT JOIN attended_classes AS ac ON a.id=ac.attendee_id LEFT JOIN classes AS c ON ac.class_id=c.id WHERE c.id=:class_id AND ac.minutes >= c.duration AND a.email!= '' ORDER BY a.created_at DESC"
         values = {
             "class_id": class_id
         }
         students = self.postgresql.query_db(query, values)
         return students
+
+    def update_status(self, students, status):
+        print "testing update status in attendees.py line 93", students
+        query = "UPDATE attendees SET status=:status WHERE id=:id"
+        for student in students:
+            values = {
+                'status': status,
+                'id': student['attendee_id']
+            }
+            self.postgresql.query_db(query, values)

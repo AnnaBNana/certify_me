@@ -40,6 +40,22 @@
       <input class="four columns make" type="submit" value="Generate Certificates">
     </div>
   </form>
+  <div class="offset-by-one ten columns skip">
+    <div class="row centered">
+      or skip to view and send emails
+    </div>
+    <div class="row">
+      <label>select a seminar:</label>
+      <select class="twelve columns skip_class" name="class">
+        <option value="">no class selected</option>
+        {% for class in incomplete_classes %}
+        <option value="{{class.id}}">{{class.name}}</option>
+        {% endfor %}
+      </select>
+  </div>
+  <div class="row">
+    <button type="button" name="button" class="skip">skip to view and send emails</button>
+  </div>
 </div>
 {% if session['permission'] == "super-admin" and session['business_id'] == 23 %}
 <div class="popup client_alert">

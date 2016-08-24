@@ -29,7 +29,10 @@ sendgrid = SendgridConnection(app)
 users = Users(app, db)
 
 
-#base page loading routes: index, main, permissions check, logout
+"""
+base page loading routes: index, main, permissions check, logout
+"""
+
 @app.route('/')
 def index():
     if 'logged' in session:
@@ -88,7 +91,12 @@ def logout():
     return redirect('/')
 
 
-#begin partial loading routes
+"""
+end base loading routes
+begin partial loading routes
+"""
+
+
 @app.route('/index/add_user')
 def add_user():
     if 'logged' in session:
@@ -232,6 +240,20 @@ def mail():
         return jsonify(error)
 
 
+@app.route('/index/mail/<id>')
+def skip_to_mail(id):
+    if 'logged' in session:
+        if 'id':
+            title = "Send Emails"
+            session['class_id'] = id
+            students = attendees.find_all_in_class(id)
+            # print "students:", students
+            return render_template('partials/mail.html', title=title, students=students)
+    else:
+        error = {'error': 'redirect'}
+        return jsonify(error)
+
+
 @app.route('/index/add_biz')
 def add_biz():
     if 'logged' in session:
@@ -252,14 +274,19 @@ def dropbox_upload():
             message = {'success': 'All files uploaded'}
         else:
             message = {'upload_error': "files not uploaded"}
+        print message
         return jsonify(message)
     else:
         error = {'error': 'redirect'}
         return jsonify(error)
-#end partial loading routes
 
 
-#begin delete routes
+"""
+end partial loading routes
+begin delete routes
+"""
+
+
 @app.route('/delete/user/<id>')
 def destroy_user(id):
     users.destroy(id)
@@ -269,10 +296,14 @@ def destroy_user(id):
 def destroy_owner(id):
     clients.destroy(id)
     return redirect('/index/clients')
-#end delete routes
 
 
-#begin post routes
+"""
+end delete routes
+begin post routes
+"""
+
+
 @app.route('/login', methods=['POST'])
 def login():
     logged = users.login(request.form)
@@ -396,6 +427,14 @@ def update_class():
 @app.route('/certificates', methods=['POST'])
 def generate_certificates():
     if 'logged' in session:
+        # should prevent dupes in attended classes table
+        # when adding new entry to attendees, status should always be in_db (check)
+        # should only generate certificates for people who attended the class, and whose status is in_db (check)
+        # after certs are made, we should change to cert_generated(check)
+        # should only send email to class attendees whose status is cert_generated
+        # after email sent confirmation, we should change attendee status to email_sent
+        # is status is email sent, then store files remotely
+        # once dropbox success, change status to stored_remotely
         business_id = session['business_id']
         class_id = request.form['class']
         session['class_id'] = class_id
@@ -434,6 +473,16 @@ def generate_certificates():
             "inst": inst
         }
         messages_array = certificates.generate(pdf_data)
+        # print "looking for success message in messages array line 476 server.py", messages_array
+        for message in messages_array:
+            valid = True
+            if 'success' not in message:
+                messages_array.append(
+                    {'error': 'there was a problem adding all certificates, please try again'}
+                )
+                valid = False
+        if valid:
+            attendees.update_status(students, "cert_generated")
         messages = {'messages': messages_array}
         return jsonify(messages)
     else:
