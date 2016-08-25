@@ -3,3 +3,5 @@ venv
 .sass_cache
 
 static/uploads
+
+*.pyc
