@@ -194,7 +194,7 @@ class Certificates(object):
             elif key == "date":
                 d = datetime.datetime.strptime(student['class_date'], '%Y-%m-%d')
                 d = d.strftime('%B %d,%Y')
-                s = "has attended the following webinar on " + str(d)
+                s = "has attended the following on " + str(d)
                 style.fontSize = 14
             cv.setFillColor("white")
             # cover up keyword

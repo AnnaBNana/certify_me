@@ -1,6 +1,6 @@
 venv
 
-.sass_cache
+*.sass_cache
 
 static/uploads
 
