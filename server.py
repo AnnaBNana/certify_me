@@ -414,7 +414,7 @@ def generate_certificates():
         # should only generate certificates for people who attended the class, and whose status is in_db (check)
         # after certs are made, we should change to cert_generated(check)
         # should only send email to class attendees whose status is cert_generated(check)
-        # after email sent confirmation, we should change attendee status to email_sent (checl)
+        # after email sent confirmation, we should change attendee status to email_sent (check)
         # if status is email sent, then store files remotely (check)
         # once dropbox success, change status to complete (check)
         business_id = session['business_id']
