@@ -4,11 +4,20 @@ import os
 import base64
 
 class SendgridConnection(object):
+
+    #######################################################################
+    # CONSTRUCTOR METHODS, INITIALIZE ATTRIBUTES FOR CONNECTION TO SENDGRID
+    #######################################################################
+
     def __init__(self, app):
         self.app = app
         self.access_token = os.environ.get('SENDGRID_ACCESS_TOKEN')
         self.app.config['UPLOAD_FOLDER'] = 'static/uploads/'
         self.sg = sendgrid.SendGridAPIClient(apikey=self.access_token)
+
+    #######################################################################
+    # SEND EMAIL METHODS
+    #######################################################################
 
     def send(self, business_data, class_data, student_data):
         stripped_name = student_data['name'].replace(" ", "")

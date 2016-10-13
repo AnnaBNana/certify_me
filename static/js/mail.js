@@ -15,7 +15,8 @@ $(document).ready(function() {
     var height = $(document).height();
     $('.dim').css({'min-height': height});
     $('.dim').show();
-    $.post('/send_mail', students, function(res){
+    $.post('/send_mail', students, function(res, err){
+      // console.log(err);
       $('.dizzy-gillespie').hide();
       $('.dim').hide();
       if (res.error) {
@@ -48,7 +49,8 @@ $(document).ready(function() {
       var student = $(this).val();
       students[student] = student
     });
-    $.post('/dropbox_upload', students, function(res){
+    $.post('/dropbox_upload', students, function(res, error){
+      // console.log("my status code", res.statusCode);
       $('.dizzy-gillespie').hide();
       $('.dim').hide();
       if (res.error) {
@@ -56,13 +58,20 @@ $(document).ready(function() {
       }
       else if (res.upload_error) {
         $('.uploaded').html('there was an error uploading to dropbox, please try again later');
-        $('.popup').hide('slow')
+        $('.popup').hide('slow');
         $('.uploaded').show('slow');
       } else {
         var placement = $(document).height() - ($('.popup').height() * 2);
         $('.popup').css({'top': placement});
         $('.uploaded').show('slow');
       }
+    }).fail(function(err){
+      console.log(err.status);
+      $('.dizzy-gillespie').hide();
+      $('.dim').hide();
+      $('.uploaded').html('some files may not have uploaded successfully, please try again');
+      $('.popup').hide('slow');
+      $('.uploaded').show('slow');
     })
   });
 

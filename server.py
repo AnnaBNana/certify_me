@@ -1,7 +1,12 @@
 from flask import Flask, render_template, request, redirect, jsonify, session, flash
 import os
 
-#import models
+
+#######################################################################
+#IMPORT CONF FILES
+#######################################################################
+
+
 from conf.attendees import Attendees
 from conf.businesses import Businesses
 from conf.certificates import Certificates
@@ -17,7 +22,12 @@ app= Flask(__name__)
 app.secret_key = os.urandom(24)
 db = "CertifyMe"
 
-# assign model classes to variables
+
+#######################################################################
+#ASSIGN MODEL CLASSES TO VARIABLES
+#######################################################################
+
+
 attendees = Attendees(app, db)
 businesses = Businesses(app, db)
 certificates = Certificates(app, db)
@@ -29,9 +39,9 @@ sendgrid = SendgridConnection(app)
 users = Users(app, db)
 
 
-"""
-base page loading routes: index, main, permissions check, logout
-"""
+#######################################################################
+#BASE PAGE LOADING ROUTES: INDEX, MAIN, CHECK PERMISSIONS
+#######################################################################
 
 @app.route('/')
 def index():
@@ -91,10 +101,11 @@ def logout():
     return redirect('/')
 
 
-"""
-end base loading routes
-begin partial loading routes
-"""
+#######################################################################
+#END BASE LOADING ROUTES
+#######################################################################
+#BEGIN PARTIAL LOADING ROUTES
+#######################################################################
 
 
 @app.route('/index/add_user')
@@ -263,10 +274,11 @@ def add_biz():
         return jsonify(error)
 
 
-"""
-end partial loading routes
-begin delete routes
-"""
+#######################################################################
+#END PARTIAL LOADING ROUTES
+#######################################################################
+#BEGIN DELETE ROUTES
+#######################################################################
 
 
 @app.route('/delete/user/<id>')
@@ -280,10 +292,11 @@ def destroy_owner(id):
     return redirect('/index/clients')
 
 
-"""
-end delete routes
-begin post routes
-"""
+#######################################################################
+#END DELETE ROUTES
+#######################################################################
+#BEGIN POST ROUTES
+#######################################################################
 
 
 @app.route('/login', methods=['POST'])
@@ -406,6 +419,7 @@ def update_class():
         return jsonify(error)
 
 
+#THIS IS A BIG-ASS FUNCTION, WTF IS GOING ON HERE?
 @app.route('/certificates', methods=['POST'])
 def generate_certificates():
     if 'logged' in session:
@@ -510,27 +524,42 @@ def send_mail():
         return jsonify(error)
 
 
-@app.route('/dropbox_upload', methods=['POST'])
-def dropbox_upload():
-    if 'logged' in session:
-        # request.form will contain an array of dicts with student id's as the key and value
-        students = []
-        for id in request.form:
-            students.append({'attendee_id': id})
-        class_id = session['class_id']
-        business_id = session['business_id']
-        biz_data = businesses.findOne(business_id)
-        class_data = classes.findOne(class_id)
-        if dropbox.save_all(biz_data, class_data):
-            message = {'success': 'All files uploaded'}
-            attendees.update_status(students, "complete")
-        else:
-            message = {'upload_error': "files not uploaded"}
-        print message
-        return jsonify(message)
-    else:
-        error = {'error': 'redirect'}
-        return jsonify(error)
+# @app.route('/dropbox_upload', methods=['POST'])
+# def dropbox_upload():
+#     if 'logged' in session:
+#         # request.form will contain an array of dicts with student id's as the key and value
+#         students = []
+#         for id in request.form:
+#             students.append({'attendee_id': id})
+#         class_id = session['class_id']
+#         business_id = session['business_id']
+#         biz_data = businesses.findOne(business_id)
+#         class_data = classes.findOne(class_id)
+#         if dropbox.save_all(biz_data, class_data):
+#             message = {'success': 'All files uploaded'}
+#             attendees.update_status(students, "complete")
+#         else:
+#             message = {'upload_error': "files not uploaded"}
+#         print message
+#         return jsonify(message)
+#     else:
+#         error = {'error': 'redirect'}
+#         return jsonify(error)
+
+
+#######################################################################
+#END POST ROUTES
+#######################################################################
+
+
+#######################################################################
+#RUN TEST SERVER WITH DEBUG MSGS
+#######################################################################
 
 
 app.run(debug=True)
+
+
+#######################################################################
+#END OF FILE (FINALLY)
+#######################################################################
