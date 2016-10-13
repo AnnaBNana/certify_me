@@ -34,7 +34,14 @@ $(document).ready(function() {
         $('.popup').css({'top': placement})
         $('.sent').show('slow');
       }
-    })
+    }).fail(function(err){
+      console.log(err.status);
+      $('.dizzy-gillespie').hide();
+      $('.dim').hide();
+      $('.uploaded').html('some emails may not have been sent successfully, please try again');
+      $('.popup').hide('slow');
+      $('.uploaded').show('slow');
+    });
   });
 
   $('.savedb').click(function(){
@@ -72,7 +79,7 @@ $(document).ready(function() {
       $('.uploaded').html('some files may not have uploaded successfully, please try again');
       $('.popup').hide('slow');
       $('.uploaded').show('slow');
-    })
+    });
   });
 
   $('.restart').click(function(){
@@ -104,6 +111,5 @@ $(document).ready(function() {
   $('.close_container,.done').click(function(){
     $('.popup').hide('slow')
   });
-
 
 });
