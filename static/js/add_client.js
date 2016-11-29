@@ -54,6 +54,8 @@ $(document).ready(function() {
           $('input:not(:submit),select').each(function(){
             $(this).val("");
           });
+          $('form').attr('data-source', "new");
+          $('form').attr('data-id', res.biz_id);
         }
       })
     }
@@ -67,7 +69,8 @@ $(document).ready(function() {
     })
   })
   $('.activate').click(function(){
-    $.get('/index/add_class', function(res) {
+    var data = {'id': $('form').attr('data-id'), 'source': $('form').attr('data-source')}
+    $.post('/choose_business', data, function(res) {
       $('.popup').hide()
       if (res.error) {
         window.location.assign('/')

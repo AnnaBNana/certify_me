@@ -11,9 +11,7 @@ $(document).ready(function() {
   });
   //when next is clicked, load add class partial
   $('.add,.gen').click(function(){
-    var source = $(this).attr('data-source')
-    console.log(source)
-    client = {"id": $('.existing_client').val(), "source": source}
+    client = {"id": $('.existing_client').val(), "source": $(this).attr('data-source')}
     // console.log(client)
     $.post('/choose_business', client, function(res) {
       if (res.error) {

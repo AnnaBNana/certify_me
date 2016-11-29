@@ -1,12 +1,12 @@
 import dropbox
 import os
+from inspect import currentframe, getframeinfo
 
 class Dropbox(object):
     #######################################################################
     # CONSTRUCTOR METHODS, INITIALIZE ATTRIBUTES FOR CONNECTION TO DROPBOX
     #######################################################################
     def __init__(self, app):
-        #dropbox settings
         self.app = app
         self.access_token = os.environ.get('DROPBOX_ACCESS_TOKEN')
         self.client = dropbox.client.DropboxClient(self.access_token)
@@ -14,32 +14,41 @@ class Dropbox(object):
         self.app.config['UPLOAD_FOLDER'] = 'static/uploads/'
 
     #######################################################################
-    # STORE ALL GENERATED PDFS TO DROPBOX
+    # SAVE TO DROPBOX
     #######################################################################
 
     def save_all(self, biz, seminar):
-        name = biz['name']
-        date = str(seminar['date'])
+        data = {
+            'name': biz['name'],
+            'date': str(seminar['date']),
+            'pdf_url': biz['pdf_url']
+        }
+        message = {}
         for f in os.listdir(self.app.config['UPLOAD_FOLDER']):
-            print "line 25 in drop connection: file:", f
-            message = {}
-            if os.path.isfile(self.app.config['UPLOAD_FOLDER'] + f):
-                print "line 28 in drop connection: is file"
-                client_path = "/" + name.replace(" ", "") + "/" + date + "/"
-                file_path = os.path.join(self.app.config['UPLOAD_FOLDER'], f)
-                if f.endswith('.csv'):
-                    fo = open(self.app.config['UPLOAD_FOLDER'] + f, 'r')
-                elif f.endswith('.pdf'):
-                    fo = open(self.app.config['UPLOAD_FOLDER'] + f, 'rb')
-                    if f == biz['pdf_url']:
-                        client_path = "/" + name.replace(" ", "") + "/"
-                else:
-                    continue
-                if self.client.put_file(client_path + f, fo, overwrite=True):
-                    os.remove(self.app.config['UPLOAD_FOLDER'] + f)
-                    message = {'success': 'success'}
-        print "list dir after removal of files:", os.listdir(self.app.config['UPLOAD_FOLDER'])
+            if self.upload(data, f):
+                self.delete_file(f)
+                message = {'success': 'success'}
         return message
+
+    def upload(self, data, file_name):
+        if os.path.isfile(self.app.config['UPLOAD_FOLDER'] + file_name):
+            client_path = "/" + data['name'].replace(" ", "") + "/" + data['date'] + "/"
+            file_path = os.path.join(self.app.config['UPLOAD_FOLDER'], file_name)
+            if file_name.endswith('.csv'):
+                fo = open(self.app.config['UPLOAD_FOLDER'] + file_name, 'r')
+            elif file_name.endswith('.pdf'):
+                fo = open(self.app.config['UPLOAD_FOLDER'] + file_name, 'rb')
+                if file_name == data['pdf_url']:
+                    client_path = "/" + data['name'].replace(" ", "") + "/"
+            if self.client.put_file(client_path + file_name, fo, overwrite=True):
+                return True
+
+    #######################################################################
+    # REMOVE FILE FROM LOCAL STORAGE
+    #######################################################################
+
+    def delete_file(self, file_name):
+        os.remove(self.app.config['UPLOAD_FOLDER'] + file_name)
 
     #######################################################################
     # RETRIEVE NEEDED FILES, SUCH AS BUSINESS TEMPLATE PDF, FROM DROPBOX

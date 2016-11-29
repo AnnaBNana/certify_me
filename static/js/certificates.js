@@ -111,6 +111,8 @@ $(document).ready(function() {
             }
           }
         }
+      }).fail(function(){
+        console.log('something weird happened, what are you going to do?');
       })
     }
     return false;

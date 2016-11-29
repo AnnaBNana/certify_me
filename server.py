@@ -1,5 +1,6 @@
 from flask import Flask, render_template, request, redirect, jsonify, session, flash
 import os
+from inspect import currentframe, getframeinfo
 
 
 #######################################################################
@@ -48,7 +49,6 @@ def index():
     if 'logged' in session:
         return redirect('/main')
     else:
-        print session
         title = "Certify Me!"
         return render_template('index.html', title=title)
 
@@ -57,9 +57,7 @@ def index():
 def main():
     if 'logged' in session:
         user_id = session['user_id']
-        print "this is my user id: ", user_id
         user = users.findOne(user_id)
-        print "this is my user info: ", user
         return render_template('main.html', user=user)
     else:
         return redirect('/')
@@ -67,7 +65,6 @@ def main():
 
 @app.route('/permission_partial')
 def permission():
-    print "this is my full session data", session
     if 'logged' in session:
         if session['permission'] == "super-admin":
             return redirect('/index/choose_business')
@@ -113,7 +110,6 @@ def add_user():
     if 'logged' in session:
         title = "Add a User"
         biz = businesses.findAll()
-        print biz
         return render_template('partials/add_user.html', title=title, all_clients=biz)
     else:
         error = {'error': 'redirect'}
@@ -133,7 +129,6 @@ def view_users():
 
 @app.route('/index/user/<id>')
 def show_user(id):
-    print id
     if 'logged' in session:
         user = users.findOne(id)
         title = "Edit User Info"
@@ -162,7 +157,6 @@ def add_client():
         return render_template('partials/add_client.html', title=title, businesses=all_businesses)
     else:
         error = {'error': 'redirect'}
-        print error
         return jsonify(error)
 
 
@@ -193,8 +187,7 @@ def show_client(id):
 def add_class():
     if 'logged' in session:
         title = "Add a Seminar"
-        business_id = session['business_id']
-        instructor_list = instructors.findAll(business_id)
+        instructor_list = instructors.findAll(session['business_id'])
         return render_template('partials/add_class.html', title=title, instructors=instructor_list)
     else:
         error = {'error': 'redirect'}
@@ -220,7 +213,6 @@ def show_class(id):
         one_class = classes.findOne(id)
         class_instructors = instructors.find_all_class_instructors(id)
         all_instructors = instructors.find_all_other(id)
-        print all_instructors
         return render_template('partials/class.html', title=title, one_class=one_class, instructors=class_instructors, all_instructors=all_instructors)
     else:
         error = {'error': 'redirect'}
@@ -245,7 +237,8 @@ def mail():
         title = "Send Emails"
         class_id = session['class_id']
         students = attendees.find_all_in_class(class_id)
-        return render_template('partials/mail.html', title=title, students=students)
+        email_text = classes.get_email_text(class_id)
+        return render_template('partials/mail.html', title=title, students=students, email_text=email_text)
     else:
         error = {'error': 'redirect'}
         return jsonify(error)
@@ -258,7 +251,6 @@ def skip_to_mail(id):
             title = "Send Emails"
             session['class_id'] = id
             students = attendees.find_all_in_class(id)
-            # print "students:", students
             return render_template('partials/mail.html', title=title, students=students)
     else:
         error = {'error': 'redirect'}
@@ -302,13 +294,9 @@ def destroy_owner(id):
 @app.route('/login', methods=['POST'])
 def login():
     logged = users.login(request.form)
-    print "logged", logged
     if 'success' in logged:
-        print "user ", logged['success'], " is logged in"
-        print "user permission level is: ", logged['permission']
         return redirect('/main')
     else:
-        print "error", logged['error']
         flash(logged['error'])
         return redirect('/')
 
@@ -326,19 +314,19 @@ def add_user_form():
 @app.route('/add_client', methods=['POST'])
 def add_client_form():
     if 'logged' in session:
-        message = {}
         #handle case of existing biz
         if 'existing_biz' in request.form:
             biz_id = request.form['existing_biz']
         else:
             biz_data = businesses.add(request.form)
             if 'message' in biz_data:
-                message = biz['message']
-            elif 'biz_id' in biz_data:
+                message = biz_data['message']
+            if 'biz_id'in biz_data:
                 biz_id = biz_data['biz_id']
         if biz_id:
             client_msg = clients.add(biz_id, request.form)
             message = client_msg
+            message['biz_id'] = biz_id
         return jsonify(message)
     else:
         error = {'error': 'redirect'}
@@ -349,10 +337,9 @@ def add_client_form():
 def activate_client():
     if 'logged' in session:
         session['business_id'] = request.form['id']
-        print "my current session data", session
         if request.form['source'] == "add":
             return redirect('/index/add_class')
-        elif request.form['source'] == "gen":
+        elif request.form['source'] == "gen" or request.form['source'] == "new":
             return redirect('/index/certificates')
     else:
         error = {'error': 'redirect'}
@@ -397,7 +384,6 @@ def update_password():
 @app.route('/update_client', methods=['POST'])
 def update_client():
     if 'logged' in session:
-        # print request.form
         businesses.update(request.form)
         clients.update(request.form)
         success = {"success": "success"}
@@ -409,7 +395,6 @@ def update_client():
 
 @app.route('/update_class', methods=['POST'])
 def update_class():
-    print "form data: ", request.form
     if 'logged' in session:
         classes.update(request.form)
         success = {"success": "success"}
@@ -423,21 +408,13 @@ def update_class():
 @app.route('/certificates', methods=['POST'])
 def generate_certificates():
     if 'logged' in session:
-        # should prevent dupes in attended classes table
-        # when adding new entry to attendees, status should always be in_db (check)
-        # should only generate certificates for people who attended the class, and whose status is in_db (check)
-        # after certs are made, we should change to cert_generated(check)
-        # should only send email to class attendees whose status is cert_generated(check)
-        # after email sent confirmation, we should change attendee status to email_sent (check)
-        # if status is email sent, then store files remotely (check)
-        # once dropbox success, change status to complete (check)
         business_id = session['business_id']
         class_id = request.form['class']
         session['class_id'] = class_id
         business = businesses.findOne(business_id)
+        seminar = classes.findOne(class_id)
         # save files to temp local storage, return file names array
         files = certificates.save_files(request.files)
-        print request.form
         if request.form['existing_pdf']:
             pdf = request.form['existing_pdf']
             # will return error if doc not found in client's dropbox folder
@@ -459,6 +436,13 @@ def generate_certificates():
                     "id": business_id
                 }
                 businesses.add_pdf_url(business_data)
+                dropbox_data = {
+                    "name": business['name'],
+                    "date": str(seminar['date']),
+                    "pdf_url": business['pdf_url']
+                }
+                dropbox.upload(dropbox_data, file_name)
+        #get all students in class
         students = attendees.get_cert_data(class_id)
         inst = instructors.find_all_class_instructors(class_id)
         pdf_data = {
@@ -469,16 +453,6 @@ def generate_certificates():
             "inst": inst
         }
         messages_array = certificates.generate(pdf_data)
-        # print "looking for success message in messages array line 476 server.py", messages_array
-        for message in messages_array:
-            valid = True
-            if 'success' not in message:
-                messages_array.append(
-                    {'error': 'there was a problem adding all certificates, please try again'}
-                )
-                valid = False
-        if valid:
-            attendees.update_status(students, "cert_generated")
         messages = {'messages': messages_array}
         return jsonify(messages)
     else:
@@ -502,9 +476,6 @@ def update_email():
 @app.route('/send_mail', methods=['POST'])
 def send_mail():
     if 'logged' in session:
-        # request.form is a dict containing all student id's
-        # key and value are the id
-        print request.form
         class_id = session['class_id']
         business_id = session['business_id']
         business_data = businesses.findOne(business_id)
@@ -524,27 +495,27 @@ def send_mail():
         return jsonify(error)
 
 
-# @app.route('/dropbox_upload', methods=['POST'])
-# def dropbox_upload():
-#     if 'logged' in session:
-#         # request.form will contain an array of dicts with student id's as the key and value
-#         students = []
-#         for id in request.form:
-#             students.append({'attendee_id': id})
-#         class_id = session['class_id']
-#         business_id = session['business_id']
-#         biz_data = businesses.findOne(business_id)
-#         class_data = classes.findOne(class_id)
-#         if dropbox.save_all(biz_data, class_data):
-#             message = {'success': 'All files uploaded'}
-#             attendees.update_status(students, "complete")
-#         else:
-#             message = {'upload_error': "files not uploaded"}
-#         print message
-#         return jsonify(message)
-#     else:
-#         error = {'error': 'redirect'}
-#         return jsonify(error)
+@app.route('/dropbox_upload', methods=['POST'])
+def dropbox_upload():
+    if 'logged' in session:
+        # request.form will contain an array of dicts with student id's as the key and value
+        students = []
+        for id in request.form:
+            students.append({'attendee_id': id})
+        class_id = session['class_id']
+        business_id = session['business_id']
+        biz_data = businesses.findOne(business_id)
+        class_data = classes.findOne(class_id)
+        if dropbox.save_all(biz_data, class_data):
+            message = {'success': 'All files uploaded'}
+            attendees.update_status(students, "complete")
+        else:
+            message = {'upload_error': "files not uploaded"}
+        print message
+        return jsonify(message)
+    else:
+        error = {'error': 'redirect'}
+        return jsonify(error)
 
 
 #######################################################################

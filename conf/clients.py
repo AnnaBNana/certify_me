@@ -15,11 +15,21 @@ class Clients(object):
         if len(form_data['name']) < 5:
             message['name_error'] = "name must be 4 characters or more"
             valid = False
-        if len(form_data['title']) < 3:
-            message['title_error'] = "title must be 2 characters or more"
-            valid = False
+        else:
+            name_query = "SELECT * FROM clients\
+            WHERE name=:name\
+            AND business_id=:business_id"
+            name_data = {
+                'name': form_data['name'],
+                'business_id': id
+            }
+            name = self.postgresql.query_db(name_query, name_data)
+            if name:
+                message['name_error'] = "a client with this name is already associated with this business"
+                valid = False
         if valid:
-            client_query = "INSERT INTO clients (name, title, business_id, created_at) VALUES (:name, :title, :business_id, NOW()) RETURNING id;"
+            client_query = "INSERT INTO clients (name, title, business_id, created_at)\
+            VALUES (:name, :title, :business_id, NOW()) RETURNING id;"
             client_values = {
                 "name": form_data['name'],
                 "title": form_data['title'],
@@ -27,6 +37,7 @@ class Clients(object):
             }
             self.postgresql.query_db(client_query, client_values)
             message['success'] = "client added to database"
+        print "message in add", message
         return message
 
     def update(self, form_data):

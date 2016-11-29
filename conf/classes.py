@@ -1,4 +1,5 @@
 import re
+from inspect import currentframe, getframeinfo
 
 from flask import session
 
@@ -129,7 +130,6 @@ class Classes(object):
         classes = self.postgresql.query_db(query, values)
         return classes
 
-
     def findOne(self, class_id):
         query = "SELECT * FROM classes WHERE id=:class_id";
         values = {
@@ -143,8 +143,7 @@ class Classes(object):
         values = {
             "id": class_id
         }
-        duration = self.postgresql.query_db(query, values)
-        return duration
+        return self.postgresql.query_db(query, values)
 
     def update_email(self, email_text, class_id):
         query = "UPDATE classes SET email_text=:email_text WHERE id=:class_id"
@@ -153,3 +152,11 @@ class Classes(object):
             "class_id": class_id
         }
         self.postgresql.query_db(query, values)
+
+    def get_email_text(self, class_id):
+        query = "SELECT email_text FROM classes WHERE id=:class_id"
+        values = {
+            "class_id": class_id
+        }
+        email_text = self.postgresql.query_db(query, values)
+        return email_text[0]['email_text']

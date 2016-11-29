@@ -1,5 +1,6 @@
 from conf.psqlconnection import PSQLConnector
 from conf.classes import Classes
+from inspect import currentframe, getframeinfo
 
 
 class Attendees(object):

@@ -34,7 +34,10 @@ class Businesses(object):
             message['email_error'] = "email format is not valid"
             valid = False
         if valid:
-            biz_query = "INSERT INTO businesses (name, street, city, state, zip, website, email, social_media_1, social_media_2, social_media_3, created_at) VALUES (:name, :street, :city, :state, :zip, :website, :email, :facebook, :twitter, :instagram, NOW()) RETURNING id;"
+            biz_query = "INSERT INTO businesses (name, street, city, state, zip, website,\
+            email, social_media_1, social_media_2, social_media_3, created_at)\
+            VALUES (:name, :street, :city, :state, :zip, :website, :email, :facebook, :twitter, :instagram, NOW())\
+            RETURNING id;"
             biz_values = {
                 "name": form_data['business_name'],
                 "street": form_data['street_addr'],
@@ -55,7 +58,10 @@ class Businesses(object):
 
     def update(self, form_data):
         # print form_data
-        query = "UPDATE businesses SET name=:name, street=:street, city=:city, state=:state, zip=:zip, website=:website, social_media_1=:facebook, social_media_2=:twitter, social_media_3=:instagram, updated_at=NOW() WHERE id=:id"
+        query = "UPDATE businesses\
+        SET name=:name, street=:street, city=:city, state=:state, zip=:zip, website=:website,\
+        social_media_1=:facebook, social_media_2=:twitter, social_media_3=:instagram, updated_at=NOW()\
+        WHERE id=:id"
         values = {
             "name": form_data['business_name'],
             "street": form_data['street_addr'],

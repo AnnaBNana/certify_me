@@ -2,6 +2,7 @@ import csv
 import datetime
 import os
 import re
+from inspect import currentframe, getframeinfo
 
 from pdfminer.pdfparser import PDFParser
 from pdfminer.pdfdocument import PDFDocument
@@ -22,6 +23,7 @@ from reportlab.lib.styles import ParagraphStyle
 from reportlab.lib.enums import TA_JUSTIFY, TA_LEFT, TA_CENTER
 import StringIO
 from werkzeug import secure_filename
+
 
 from conf.attendees import Attendees
 from conf.psqlconnection import PSQLConnector
@@ -53,15 +55,29 @@ class Certificates(object):
 
     def generate(self, pdf_data):
         layout = self.read_layout(pdf_data['template_pdf'])
+        # print "certificates line 57 layout from read layout function:", layout
         layout_data = self.parse_layout(layout)
         #get student data, execute the next two functions for each person in class
         students = pdf_data['students']
+        print "{}, line {}".format(getframeinfo(currentframe()).filename, getframeinfo(currentframe()).lineno), "students", students
         for student in students:
+            print "{}, line {}".format(getframeinfo(currentframe()).filename, getframeinfo(currentframe()).lineno), "student", student
             if student['email']:
-                # print "students with email in certificates.py line 61:", student
+                print "{}, line {}".format(getframeinfo(currentframe()).filename, getframeinfo(currentframe()).lineno), "student email", student['email']
                 messages = self.make_pdf(layout_data, student, pdf_data['inst'])
-                # if 'success' in message:
-                self.merge_pdfs(student, pdf_data['template_pdf'])
+                # print "certificates line 67 messages:", messages
+                valid = True
+                for message in messages:
+                    if 'placement_error' in message:
+                        # print "certificates line 71 placement error:", message
+                        valid = False
+                if valid:
+                    self.merge_pdfs(student, pdf_data['template_pdf'])
+            else:
+                messages = [
+                    {'email_error': 'please provide valid email for each student'}
+                ]
+                break
         return messages
 
     def read_layout(self, template_pdf):
@@ -72,10 +88,6 @@ class Certificates(object):
         if not document.is_extractable:
             raise PDFTextExtractionNotAllowed
         rsrcmgr = PDFResourceManager()
-        device = PDFDevice(rsrcmgr)
-        interpreter = PDFPageInterpreter(rsrcmgr, device)
-        for page in PDFPage.create_pages(document):
-            interpreter.process_page(page)
         laparams = LAParams()
         device = PDFPageAggregator(rsrcmgr, laparams=laparams)
         interpreter = PDFPageInterpreter(rsrcmgr, device)
@@ -84,6 +96,7 @@ class Certificates(object):
             layout = device.get_result()
             self.parse_layout(layout)
         fp.close()
+        # print "certificates line 98, finished reading layout:", layout
         return layout
 
     def parse_layout(self, layout):
@@ -94,10 +107,11 @@ class Certificates(object):
         found = flag = False
         layout_bounds = layout.bbox
         keywords = ['student', 'seminar', 'instructor', 'race_verbiage', 'date', 'cvpm_verbiage', 'class_id']
+        # print "certificates line 97 layout:", layout
         for lt_obj in layout:
-            # print "object: ", lt_obj
-            # print "lt obj object name: ", lt_obj.__class__.__name__
-            # print "lt obj bbox: ", lt_obj.bbox
+            # print "certificates line 99 object: ", lt_obj
+            # print "certificates line 100 lt obj object name: ", lt_obj.__class__.__name__
+            # print "certificates line 101 lt obj bbox: ", lt_obj.bbox
             if isinstance(lt_obj, LTTextBox) or isinstance(lt_obj, LTTextLine):
                 # print "lt obj text: ", lt_obj.get_text()
                 # if any of the keywords from above list are found, save coords in key value pair and save keyword, set found bool to true for use in setting bounding boxes
@@ -112,7 +126,7 @@ class Certificates(object):
                 if self.alphanum_regex.search(lt_obj.get_text()) and not found:
                     # create a top set of coords that include the bounding box of the most recent text containing line
                     top_coords = lt_obj.bbox
-                # if our keyword has been found and line is not blank, end bounding box, add new item to our dict of coords, and reset booleans and start looking for next keyword
+                 # if our keyword has been found and line is not blank, end bounding box, add new item to our dict of coords, and reset booleans and start looking for next keyword
                 if self.alphanum_regex.search(lt_obj.get_text()) and flag:
                     bottom_coords = lt_obj.bbox
                     flowable_dict[prev_keyword] = {
@@ -132,13 +146,14 @@ class Certificates(object):
                     prev_top_coords = top_coords
                     top_coords = lt_obj.bbox
                     prev_keyword = keyword
-                # temp_coords = lt_obj.bbox
+                temp_coords = lt_obj.bbox
             elif isinstance(lt_obj, LTFigure):
                 self.parse_layout(lt_obj)
-        # if the last line contains a keyword, our flag boolean will be left open.  close it using arbitrary params based on doc dimensions, which will always be letter size
+        # # if the last line contains a keyword, our flag boolean will be left open.  close it using arbitrary params based on doc dimensions, which will always be letter size
+        # print "flag", flag
         if flag:
             layoutx2 = layout_bounds[2]
-            print "layout x2:", layoutx2
+            # print "certificates line 141 layout x2:", layoutx2
             flowable_dict[keyword] = {
                 'top': prev_top_coords,
                 'bottom': (0,0,layoutx2,80)
@@ -148,6 +163,7 @@ class Certificates(object):
             'coords': coords,
             'flowable_bounds': flowable_dict,
             'layout_bounds': layout_bounds}
+        # print "layout data certificates line 151:", layout_data
         return layout_data
 
     def make_pdf(self, layout_data, student, instructors):
@@ -159,6 +175,7 @@ class Certificates(object):
         layout_bounds = layout_data['layout_bounds']
         w1 = layout_bounds[2] - 160
         new_file = self.app.config['UPLOAD_FOLDER'] + "temp.pdf"
+        # print "new file, certificates line 177", new_file
         packet = StringIO.StringIO()
         cv = Canvas(packet, pagesize=letter)
         font = "Helvetica"
