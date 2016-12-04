@@ -485,6 +485,10 @@ def send_mail():
             if sendgrid.send(business_data, class_data, student_data):
                 attendees.update_status(id, "email_sent")
                 message = {'success': 'mail sent'}
+                if student_data['status'] == 'in_dropbox':
+                    attendees.update_status(id, 'complete')
+                elif student_data['status'] == 'cert_generated':
+                    attendees.update_status(id, 'mail_sent')
             else:
                 message = {'send_error': 'mail not sent'}
         return jsonify(message)
@@ -503,10 +507,13 @@ def dropbox_upload():
         if dropbox.save_all(biz_data, class_data):
             message = {'success': 'All files uploaded'}
             for id in request.form:
-                attendees.update_status(id, "complete")
+                status = attendees.get_status(id)
+                if status == 'mail_sent':
+                    attendees.update_status(id, 'complete')
+                elif status == 'cert_generated':
+                    attendees.update_status(id, 'in_dropbox')
         else:
             message = {'upload_error': "files not uploaded"}
-        print message
         return jsonify(message)
     else:
         error = {'error': 'redirect'}

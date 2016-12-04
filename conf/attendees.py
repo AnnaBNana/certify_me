@@ -129,6 +129,11 @@ class Attendees(object):
         }
         self.postgresql.query_db(query, values)
 
+    def get_status(self, id):
+        query = "SELECT status FROM attendees WHERE id=:id"
+        values = {'id':id}
+        return self.postgresql.query_db(query, values)
+
 '''
 valid status for students:
 in_db = student saved in db only
