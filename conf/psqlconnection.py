@@ -1,5 +1,6 @@
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.sql import text
+from inspect import currentframe, getframeinfo
 
 class PSQLConnection(object):
     def __init__(self, app, db):
@@ -13,7 +14,6 @@ class PSQLConnection(object):
         DATABASE_URI = "postgresql+psycopg2://{}:{}@127.0.0.1:{}/{}".format(config['user'], config['password'], config['port'], config['database'])
         app.config['SQLALCHEMY_DATABASE_URI'] = DATABASE_URI
         app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = True
-        # print app.config
         self.db = SQLAlchemy(app)
     def query_db(self, query, data=None):
         result = self.db.session.execute(text(query), data)

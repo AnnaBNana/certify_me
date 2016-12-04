@@ -480,15 +480,13 @@ def send_mail():
         business_id = session['business_id']
         business_data = businesses.findOne(business_id)
         class_data = classes.findOne(class_id)
-        students = []
         for id in request.form:
             student_data = attendees.findOne(id)
             if sendgrid.send(business_data, class_data, student_data):
-                students.append({'attendee_id': id})
+                attendees.update_status(id, "email_sent")
                 message = {'success': 'mail sent'}
             else:
                 message = {'send_error': 'mail not sent'}
-        attendees.update_status(students, "email_sent")
         return jsonify(message)
     else:
         error = {'error': 'redirect'}
@@ -498,17 +496,14 @@ def send_mail():
 @app.route('/dropbox_upload', methods=['POST'])
 def dropbox_upload():
     if 'logged' in session:
-        # request.form will contain an array of dicts with student id's as the key and value
-        students = []
-        for id in request.form:
-            students.append({'attendee_id': id})
         class_id = session['class_id']
         business_id = session['business_id']
         biz_data = businesses.findOne(business_id)
         class_data = classes.findOne(class_id)
         if dropbox.save_all(biz_data, class_data):
             message = {'success': 'All files uploaded'}
-            attendees.update_status(students, "complete")
+            for id in request.form:
+                attendees.update_status(id, "complete")
         else:
             message = {'upload_error': "files not uploaded"}
         print message

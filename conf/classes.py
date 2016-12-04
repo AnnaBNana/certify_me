@@ -13,8 +13,6 @@ class Classes(object):
         self.instructors = Instructors(app, db)
 
     def add(self, form_data):
-        session
-        print "form data", form_data
         valid = True
         messages = {}
         data = {}
@@ -45,7 +43,6 @@ class Classes(object):
             messages['email_error']= "Email must be at least 4 characters in length"
             valid = False
         if len(form_data['race_verbiage']) < 4:
-            print "race validation fail"
             messages['race_verbiage']= "Race verbiage must be at least 4 characters in length"
             valid = False
         if valid:
@@ -62,7 +59,6 @@ class Classes(object):
             }
             # add class, return id
             class_id = self.postgresql.query_db(query, values)
-            print class_id
             # add instructor names from list items to db as a group, return ids
             instructor_ids = self.instructors.add(instructor_list, class_id)
             if 'existing_instructor' in form_data and len(form_data['existing_instructor']) > 0:
@@ -104,7 +100,10 @@ class Classes(object):
             elif key.startswith('new_instructor') and len(form_data[key]) > 0:
                 add_instructor.append(form_data[key])
         self.instructors.delete_class_relationship(class_id, remove_instructors)
-        added_instructors = self.instructors.add(add_instructor, class_id)
+        added_instructors=[]
+        print "{}, line {}".format(getframeinfo(currentframe()).filename, getframeinfo(currentframe()).lineno), "add instructor array:", add_instructor
+        if add_instructor:
+            added_instructors = self.instructors.add(add_instructor, class_id)
         if len(form_data['existing_instructor']) > 0:
             added_instructors.append(form_data['existing_instructor'])
         self.instructors.add_class_instructors(class_id, added_instructors)

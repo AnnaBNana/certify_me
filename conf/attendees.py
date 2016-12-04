@@ -66,11 +66,11 @@ class Attendees(object):
         attendee_info = []
         i = 0
         min_check = {}
-        rel_info = []
+        # rel_info = []
         header_marker = None;
         for row in contents:
             if row:
-                if row[1] == "Email":
+                if str(row[1]).lower() == "email":
                     header_marker = i
                 if header_marker and i > header_marker and row[1]:
                     if row[1] not in min_check:
@@ -81,14 +81,11 @@ class Attendees(object):
                         }
                         attendee_info.append(row_data)
                     if row[1] in min_check:
-                        print "email:", row[1]
                         min_check[row[1]] += int(row[2])
                     else:
-                        print "email:", row[1]
                         min_check[row[1]] = int(row[2])
                 i += 1
         for info in attendee_info:
-            #COULD ADD ATTENDEE AT THIS STAGE INSTEAD OF BULK AT THE END
             if info['email'] in min_check:
                 info['min'] = min_check[info['email']]
             values = {
@@ -98,37 +95,46 @@ class Attendees(object):
             }
             #UPSERT STUDENT ACCORDING TO DATA EXTRACTED FROM CSV, EMAIL IS UNIQUE CONSTRAINT
             student_id = self.postgresql.query_db(upsert_query, values)
-            ac_info = {
+            ac_data = {
                 "id": student_id,
-                "minutes": info['min']
+                "minutes": info['min'],
+                "class_id": class_id
             }
-            rel_info.append(ac_info)
-        self.add_attended_classes(rel_info, class_id)
+            self.add_attended_classes(ac_data)
         return attendee_info
 
-    def add_attended_classes(self, attendee_info, class_id):
+    def add_attended_classes(self, data):
         upsert_query = "INSERT into attended_classes (attendee_id, class_id, minutes)\
                         VALUES (:attendee_id, :class_id, :minutes)\
                         ON CONFLICT (attendee_id, class_id)\
                         DO UPDATE SET minutes = :minutes\
                         RETURNING attendee_id"
-        for info in attendee_info:
-            values = {
-                "attendee_id": info['id'],
-                "class_id": class_id,
-                "minutes": info['minutes']
-            }
-            self.postgresql.query_db(upsert_query, values)
+        values = {
+            "attendee_id": data['id'],
+            "class_id": data['class_id'],
+            "minutes": data['minutes']
+        }
+        self.postgresql.query_db(upsert_query, values)
 
     #######################################################################
     # UPDATE METHODS
     #######################################################################
 
-    def update_status(self, students, status):
+
+    def update_status(self, id, status):
         query = "UPDATE attendees SET status=:status WHERE id=:id"
-        for student in students:
-            values = {
-                'status': status,
-                'id': student['attendee_id']
-            }
-            self.postgresql.query_db(query, values)
+        values = {
+            'status': status,
+            'id': id
+        }
+        self.postgresql.query_db(query, values)
+
+'''
+valid status for students:
+in_db = student saved in db only
+too_short = class not attended for long enough to qualify for cert
+cert_generated = student qualifies, and cert has been created
+mail_sent = emial sent, not saved to dropbox
+in_dropbox = saved to dropbox, email not sent
+complete = email sent and saved to dropbox
+'''

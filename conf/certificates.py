@@ -37,6 +37,11 @@ class Certificates(object):
         self.attendees = Attendees(app, db)
         self.alphanum_regex = re.compile(r'\w+')
 
+####################################################
+########### SAVE ALL UPLOADED FILES ################
+####################################################
+
+    #ADD ERROR HANDLING!
     def save_files(self, files):
         filearray = []
         for all_file in files:
@@ -46,6 +51,10 @@ class Certificates(object):
             filearray.append(new_file.filename)
         return filearray
 
+####################################################
+##### UNPACK CSV AND SAVE ALL ATTENDEES ############
+####################################################
+
     def parseCSV(self, class_data):
         with open(self.app.config['UPLOAD_FOLDER'] + class_data['csv_file'], 'rU') as csvfile:
             csvfile.seek(0)
@@ -53,35 +62,29 @@ class Certificates(object):
             attendee_info = self.attendees.add_attendees(reader, class_data['class_id'])
         return attendee_info
 
+####################################################
+###### CONTROLLER METHOD FOR PDF GENERATION ########
+####################################################
+
     def generate(self, pdf_data):
         layout = self.read_layout(pdf_data['template_pdf'])
-        # print "certificates line 57 layout from read layout function:", layout
         layout_data = self.parse_layout(layout)
-        #get student data, execute the next two functions for each person in class
         students = pdf_data['students']
-        print "{}, line {}".format(getframeinfo(currentframe()).filename, getframeinfo(currentframe()).lineno), "students", students
+        messages = []
         for student in students:
-            print "{}, line {}".format(getframeinfo(currentframe()).filename, getframeinfo(currentframe()).lineno), "student", student
-            if student['email']:
-                print "{}, line {}".format(getframeinfo(currentframe()).filename, getframeinfo(currentframe()).lineno), "student email", student['email']
+            if student['minutes'] >= student['duration']:
                 messages = self.make_pdf(layout_data, student, pdf_data['inst'])
-                # print "certificates line 67 messages:", messages
                 valid = True
                 for message in messages:
                     if 'placement_error' in message:
-                        # print "certificates line 71 placement error:", message
                         valid = False
                 if valid:
                     self.merge_pdfs(student, pdf_data['template_pdf'])
             else:
-                messages = [
-                    {'email_error': 'please provide valid email for each student'}
-                ]
-                break
+                self.attendees.update_status(student['attendee_id'], "too_short")
         return messages
 
     def read_layout(self, template_pdf):
-        #put pdf miner code for preping layout for parsing
         fp = open(self.app.config['UPLOAD_FOLDER'] + template_pdf, 'rb')
         parser = PDFParser(fp)
         document = PDFDocument(parser)
@@ -96,7 +99,6 @@ class Certificates(object):
             layout = device.get_result()
             self.parse_layout(layout)
         fp.close()
-        # print "certificates line 98, finished reading layout:", layout
         return layout
 
     def parse_layout(self, layout):
@@ -254,3 +256,4 @@ class Certificates(object):
         output.write(outputStream)
         outputStream.close()
         os.remove(self.app.config['UPLOAD_FOLDER'] + 'temp.pdf')
+        self.attendees.update_status(student['attendee_id'], "cert_generated")
