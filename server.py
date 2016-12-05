@@ -506,6 +506,7 @@ def dropbox_upload():
         class_data = classes.findOne(class_id)
         if dropbox.save_all(biz_data, class_data):
             message = {'success': 'All files uploaded'}
+
             for id in request.form:
                 status = attendees.get_status(id)
                 if status == 'mail_sent':
