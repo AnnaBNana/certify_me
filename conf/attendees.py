@@ -57,6 +57,8 @@ class Attendees(object):
     # INSERT METHODS
     #######################################################################
 
+    #what are expected column names?
+
     def add_attendees(self, contents, class_id):
         upsert_query = "INSERT INTO attendees (name, email, status, created_at)\
                         VALUES (:name, :email, :status, NOW())\
@@ -70,7 +72,11 @@ class Attendees(object):
         header_marker = None;
         for row in contents:
             if row:
-                if str(row[1]).lower() == "email":
+                if isinstance(row[1],basestring):
+                    row[1].encode('utf8')
+                else:
+                    unicode(row[1]).encode('utf8')
+                if row[1].lower() == "email":
                     header_marker = i
                 if header_marker and i > header_marker and row[1]:
                     if row[1] not in min_check:
