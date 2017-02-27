@@ -194,6 +194,7 @@ class Certificates(object):
                 style.fontSize = 18
             elif key =='student':
                 s = student['name']
+                s = s.encode('utf-8')
                 style.fontSize = 28
                 style.fontName = 'Helvetica-BoldOblique'
             elif key == 'seminar':
