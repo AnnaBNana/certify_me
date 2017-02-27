@@ -242,6 +242,7 @@ class Certificates(object):
 
     def merge_pdfs(self, student, template_pdf):
         name = student['name']
+        name = name.encode('utf-8')
         name = name.replace(" ", "")
         # basic merge of two docs
         pdf1 = PdfFileReader(file(self.app.config['UPLOAD_FOLDER'] + template_pdf, "rb"))
