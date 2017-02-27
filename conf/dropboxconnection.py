@@ -32,7 +32,7 @@ class Dropbox(object):
 
     def upload(self, data, file_name):
         if os.path.isfile(self.app.config['UPLOAD_FOLDER'] + file_name):
-            client_path = "/" + data['name'].replace(" ", "") + "/" + data['date'] + "/"
+            client_path = "/" + data['name'].replace(" ", "").encode('utf-8') + "/" + data['date'] + "/"
             file_path = os.path.join(self.app.config['UPLOAD_FOLDER'], file_name)
             if file_name.endswith('.csv'):
                 fo = open(self.app.config['UPLOAD_FOLDER'] + file_name, 'r')

@@ -23,6 +23,7 @@ class SendgridConnection(object):
         stripped_name = student_data['name'].replace(" ", "")
         pdf_name = stripped_name + ".pdf"
         file_path = self.app.config['UPLOAD_FOLDER'] + stripped_name + ".pdf"
+        file_path = file_path.encode('utf-8')
         with open(file_path, "rb") as pdf_file:
             encoded_string = base64.b64encode(pdf_file.read())
         mail = Mail()
