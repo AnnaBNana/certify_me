@@ -1,4 +1,4 @@
-#Certify Me
+# Certify Me
 
 Certify Me is a tool for certificate generation.  The app stores data about businesses, their certificate requirements, their seminars, attendees, instructors, etc, and allows the user to generate certificates based on this data.
 
